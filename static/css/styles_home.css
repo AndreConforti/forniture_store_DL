@@ -1,0 +1,93 @@
+:root {
+    /* Cores de fundo */
+    --primary-bg: #0a1f44; /* Fundo principal (menu superior, áreas principais) */
+    --secondary-bg: #eef1f4; /* Fundo secundário (menu lateral, cartões) */
+    --neutral-bg: #f0f2f5; /* Fundo neutro (seções específicas, modais) */
+
+    /* Cores de texto */
+    --text-primary: #d1d5db;; /* Texto principal (títulos, destaques) */
+    --text-secondary: #a0a4a8; /* Texto secundário (menus, detalhes) */
+
+    /* Cores de interação */
+    --accent-color: #0a1f44; /* Cor de destaque (links, botões interativos) */
+    --hover-bg: #153576; /* Fundo ao passar o mouse (botões, menus interativos) */
+    --hover-text: #ffffff; /* Texto ao passar o mouse (links, botões interativos) */
+    --focus-border: #0a1f44; /* Borda ao focar (inputs, botões clicáveis) */
+
+    /* Cores para estados especiais */
+    --disabled-bg: #8a8f94; /* Estado desativado (botões inativos, campos bloqueados) */
+    --disabled-text: #c0c4c8; /* Texto desativado (itens sem interação ativa) */
+
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-bg) !important;
+    color: var(--text-primary);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Sidebar */
+.sidebar {
+    background-color: var(--secondary-bg) !important;
+    color: var(--primary-bg) !important;
+    padding: 20px;
+    border-right: 1px solid var(--secondary-bg);
+}
+
+.nav.flex-column.collapse:not(.show) {
+    display: none !important;
+}
+
+.nav.flex-column.collapse.show {
+    display: block !important;
+}
+
+.nav.flex-column.collapsing {
+    -webkit-transition: none;
+    transition: none;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    white-space: nowrap;
+}
+
+#sidebarMenu .nav .nav {
+    border-left: 2px solid #dee2e6;
+    margin-left: 1rem;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--primary-bg) !important;
+    color: var(--text-primary) !important;
+    padding: 10px;
+    text-align: center;
+}
+
+.footer .text-muted {
+    color: var(--text-primary) !important;
+}
+
+button {
+    background-color: var(--secondary-bg) !important;
+    color: var(--primary-bg) !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn {
+    background-color: var(--accent-color) !important;
+    color: var(--text-primary) !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+
+}

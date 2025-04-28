@@ -1,0 +1,12 @@
+{% extends "base/base_sidebar.html" %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="alert alert-success">
+        <h2><i class="fas fa-check-circle"></i> Logout realizado com sucesso</h2>
+    </div>
+    <a href="{% url 'custom_login' %}" class="btn btn-bege mt-3">
+        <i class="fas fa-sign-in-alt"></i> Voltar ao login
+    </a>
+</div>
+{% endblock %}

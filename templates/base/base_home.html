@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}DL Móveis{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/styles_home.css' %}">
+    {% block head %}
+    {% endblock %}
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+    <!-- 1. Navbar (sempre no topo) -->
+    {% include 'partials/_navbar.html' %}
+    
+    <!-- 2. Container Principal (flexível) -->
+    <div class="container-fluid flex-grow-1 d-flex px-0">    
+        <!-- Sidebar -->
+        {% include 'partials/_sidebar.html' %}
+        
+        <!-- 3. Área de Conteúdo Dinâmico -->
+        <main class="col flex-grow-1 overflow-auto p-4">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+    
+    <!-- 4. Footer -->
+    {% include 'partials/_footer.html' %}
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block scripts %}
+    {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,9 @@
+/* Efeito hover para os cards */
+.summary-card {
+    transition: all 0.3s ease; /* Suaviza a transição */
+}
+
+.summary-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve */
+    transform: translateY(-2px); /* Levanta levemente o card */
+}

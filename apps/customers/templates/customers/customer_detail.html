@@ -1,0 +1,20 @@
+{% extends "base/base_home.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Detalhes do Cliente</h2>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <p><strong>Nome:</strong> {{ object.display_name }}</p>
+            <p><strong>CPF/CNPJ:</strong> {{ object.formatted_document }}</p>
+            <p><strong>Tipo:</strong> {{ object.get_customer_type_display }}</p>
+            <p><strong>Telefone:</strong> {{ object.formatted_phone }}</p>
+            <p><strong>E-mail:</strong> {{ object.email|default:"-" }}</p>
+        </div>
+    </div>
+    <a href="{% url 'customers:edit' object.pk %}" class="btn btn-primary">
+        <i class="bi bi-pencil"></i> Editar Cliente
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+<div class="row g-3 mb-4">
+    <!-- CEP -->
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="form-floating">
+                <input type="text" class="form-control"
+                    id="{{ form.zip_code.id_for_label }}"
+                    name="{{ form.zip_code.html_name }}"
+                    placeholder=" "
+                    value="{{ form.zip_code.value|default_if_none:'' }}"
+                    data-action="cep-lookup">
+                <label for="{{ form.zip_code.id_for_label }}" class="text-brown">
+                    {{ form.zip_code.label }}
+                </label>
+            </div>
+            <button class="btn btn-brown" type="button" id="search-zip-code" disabled>
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Logradouro -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.street.id_for_label }}"
+                   name="{{ form.street.html_name }}"
+                   placeholder=" "
+                   value="{{ form.street.value|default_if_none:'' }}">
+            <label for="{{ form.street.id_for_label }}" class="text-brown">
+                {{ form.street.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Número -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.number.id_for_label }}"
+                   name="{{ form.number.html_name }}"
+                   placeholder=" "
+                   value="{{ form.number.value|default_if_none:'' }}">
+            <label for="{{ form.number.id_for_label }}" class="text-brown">
+                {{ form.number.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Complemento -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.complement.id_for_label }}"
+                   name="{{ form.complement.html_name }}"
+                   placeholder=" "
+                   value="{{ form.complement.value|default_if_none:'' }}">
+            <label for="{{ form.complement.id_for_label }}" class="text-brown">
+                {{ form.complement.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Bairro -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.neighborhood.id_for_label }}"
+                   name="{{ form.neighborhood.html_name }}"
+                   placeholder=" "
+                   value="{{ form.neighborhood.value|default_if_none:'' }}">
+            <label for="{{ form.neighborhood.id_for_label }}" class="text-brown">
+                {{ form.neighborhood.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Cidade -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.city.id_for_label }}"
+                   name="{{ form.city.html_name }}"
+                   placeholder=" "
+                   value="{{ form.city.value|default_if_none:'' }}">
+            <label for="{{ form.city.id_for_label }}" class="text-brown">
+                {{ form.city.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- UF -->
+    <div class="col-md-2">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown text-uppercase"
+                   id="{{ form.state.id_for_label }}"
+                   name="{{ form.state.html_name }}"
+                   placeholder=" "
+                   value="{{ form.state.value|default_if_none:'' }}"
+                   maxlength="2">
+            <label for="{{ form.state.id_for_label }}" class="text-brown">
+                {{ form.state.label }}
+            </label>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,96 @@
+<div class="row g-3 mb-4">
+    <!-- Tipo de Cliente -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <select class="form-select customer-type-select" id="{{ form.customer_type.id_for_label }}"
+                    name="{{ form.customer_type.html_name }}">
+                {% for value, label in form.customer_type.field.choices %}
+                    <option value="{{ value }}" {% if form.customer_type.value == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="{{ form.customer_type.id_for_label }}" class="text-navy">
+                {{ form.customer_type.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Nome Completo -->
+    <div class="col-md-5">
+        <div class="form-floating">
+            <input type="text" class="form-control" 
+                   id="{{ form.full_name.id_for_label }}"
+                   name="{{ form.full_name.html_name }}"
+                   placeholder=" "
+                   value="{{ form.full_name.value|default_if_none:'' }}">
+            <label for="{{ form.full_name.id_for_label }}" class="text-navy">
+                {{ form.full_name.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Nome Preferido -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                   id="{{ form.preferred_name.id_for_label }}"
+                   name="{{ form.preferred_name.html_name }}"
+                   placeholder=" "
+                   value="{{ form.preferred_name.value|default_if_none:'' }}">
+            <label for="{{ form.preferred_name.id_for_label }}" class="text-navy">
+                {{ form.preferred_name.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- CPF/CNPJ -->
+    <div class="col-md-4">
+        <div class="input-group">
+            <div class="form-floating">
+                <input type="text" class="form-control"
+                    id="{{ form.tax_id.id_for_label }}"
+                    name="{{ form.tax_id.html_name }}"
+                    placeholder=" "
+                    value="{{ form.instance.formatted_document|default_if_none:'' }}"
+                    data-mask="document">
+                <label for="{{ form.tax_id.id_for_label }}" class="--text-secondary">
+                    {{ form.tax_id.label }}
+                </label>
+            </div>
+            <button class="btn btn-brown" type="button" id="search-tax-id" data-action="search-document" disabled>
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Telefone -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input type="tel" class="form-control"
+                   id="{{ form.phone.id_for_label }}"
+                   name="{{ form.phone.html_name }}"
+                   placeholder=" "
+                   value="{{ form.phone.value|default_if_none:'' }}">
+            <label for="{{ form.phone.id_for_label }}" class="text-navy">
+                {{ form.phone.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- E-mail -->
+    <div class="col-md-5">
+        <div class="form-floating">
+            <input type="email" class="form-control"
+                   id="{{ form.email.id_for_label }}"
+                   name="{{ form.email.html_name }}"
+                   placeholder=" "
+                   value="{{ form.email.value|default_if_none:'' }}">
+            <label for="{{ form.email.id_for_label }}" class="text-navy">
+                {{ form.email.label }}
+            </label>
+        </div>
+    </div>
+</div>

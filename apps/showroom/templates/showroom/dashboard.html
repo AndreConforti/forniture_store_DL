@@ -1,0 +1,18 @@
+{% extends 'base/base_home.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'showroom/css/dashboard.css' %}">
+{% endblock %}
+
+{% block title %}Painel Principal{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <!-- Inclui os Cards de Resumo -->
+    {% include 'showroom/includes/_summary_cards.html' %}
+    
+    <!-- Inclui a Tabela de Pedidos -->
+    {% include 'showroom/includes/_recent_orders.html' %}
+</div>
+{% endblock %}

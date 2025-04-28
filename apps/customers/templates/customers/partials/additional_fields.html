@@ -1,0 +1,74 @@
+<div class="row g-3 mb-4">
+    <!-- Profissão -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.profession.id_for_label }}"
+                   name="{{ form.profession.html_name }}"
+                   placeholder=" "
+                   value="{{ form.profession.value|default_if_none:'' }}">
+            <label for="{{ form.profession.id_for_label }}" class="text-brown">
+                {{ form.profession.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Status -->
+    <div class="col-md-3">
+        <div class="form-check form-switch mt-3 pt-1">
+            <input class="form-check-input focus-brown" type="checkbox" 
+                   id="{{ form.is_active.id_for_label }}"
+                   name="{{ form.is_active.html_name }}"
+                   {% if form.is_active.value %}checked{% endif %}>
+            <label class="form-check-label text-brown" for="{{ form.is_active.id_for_label }}">
+                {{ form.is_active.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- VIP -->
+    <div class="col-md-3">
+        <div class="form-check form-switch mt-3 pt-1">
+            <input class="form-check-input focus-brown" type="checkbox" 
+                   id="{{ form.is_vip.id_for_label }}"
+                   name="{{ form.is_vip.html_name }}"
+                   {% if form.is_vip.value %}checked{% endif %}>
+            <label class="form-check-label text-brown" for="{{ form.is_vip.id_for_label }}">
+                {{ form.is_vip.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<!-- Interesses -->
+<div class="row g-3 mb-4">
+    <div class="col-12">
+        <div class="form-floating">
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.interests.id_for_label }}"
+                   name="{{ form.interests.html_name }}"
+                   placeholder=" "
+                   value="{{ form.interests.value|default_if_none:'' }}">
+            <label for="{{ form.interests.id_for_label }}" class="text-brown">
+                {{ form.interests.label }}
+            </label>
+            <small class="text-brown mt-1 d-block">Produtos ou serviços de interesse</small>
+        </div>
+    </div>
+</div>
+
+<!-- Observações -->
+<div class="row g-3">
+    <div class="col-12">
+        <div class="form-floating">
+            <textarea class="form-control border-brown focus-brown" 
+                      id="{{ form.notes.id_for_label }}"
+                      name="{{ form.notes.html_name }}"
+                      placeholder=" "
+                      style="height: 100px">{{ form.notes.value|default_if_none:'' }}</textarea>
+            <label for="{{ form.notes.id_for_label }}" class="text-brown">
+                {{ form.notes.label }}
+            </label>
+        </div>
+    </div>
+</div>

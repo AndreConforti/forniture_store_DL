@@ -1,0 +1,18 @@
+.form-control:focus {
+    border-color: var(--focus-border) !important;
+    box-shadow: 0 0 0 0.25rem rgba(10, 31, 68, 0.25); /* Cor baseada no --primary-bg */
+}
+
+.form-select {
+    appearance: none; /* Remove o estilo padrão */
+}
+.form-select:focus {
+    border-color: var(--focus-border) !important;
+    box-shadow: 0 0 0 0.25rem rgba(10, 31, 68, 0.25);
+}
+
+.form-select option:hover,
+.form-select option:checked {
+    background-color: var(--focus-border) !important;
+    color: #fff; /* Ajuste a cor do texto, se necessário */
+}

@@ -1,0 +1,98 @@
+<div class="col-md-2 col-lg-2 sidebar bg-light d-none d-md-flex flex-column">
+    <div class="flex-grow-1 d-flex flex-column overflow-hidden">
+        <div class="overflow-auto py-2">
+            <ul class="nav flex-column" id="sidebarMenu">
+                <!-- Clientes -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#customersSubmenu">
+                        <i class="bi bi-people me-2"></i> Clientes
+                    </a>
+                    <ul class="nav flex-column collapse ps-3" id="customersSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'customers:create' %}">
+                                <i class="bi bi-plus-circle me-2"></i> Cadastrar Novo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'customers:list' %}">
+                                <i class="bi bi-list-check me-2"></i> Listar Clientes
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Fornecedores -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#suppliersSubmenu">
+                        <i class="bi bi-truck me-2"></i> Fornecedores
+                    </a>
+                    <ul class="nav flex-column collapse ps-3" id="suppliersSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-plus-circle me-2"></i> Cadastrar Novo
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-list-check me-2"></i> Listar Fornecedores
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Pedidos -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu">
+                        <i class="bi bi-cart me-2"></i> Pedidos
+                    </a>
+                    <ul class="nav flex-column collapse ps-3" id="ordersSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-plus-circle me-2"></i> Novo Pedido
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-list-check me-2"></i> Consultar Pedidos
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Relatórios -->
+                <li class="nav-item has-submenu">
+                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#reportsSubmenu">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Relatórios
+                    </a>
+                    <ul class="nav flex-column collapse ps-3" id="reportsSubmenu">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-people me-2"></i> Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-truck me-2"></i> Fornecedores
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-cart me-2"></i> Pedidos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-credit-card me-2"></i> Contas a Pagar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="bi bi-cash-coin me-2"></i> Contas a Receber
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
