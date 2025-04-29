@@ -4,7 +4,7 @@ from .views import (
     CustomerDetailView, 
     CustomerUpdateView,
     customer_create_view, 
-    fetch_company_data
+    fetch_company_data_view
 )
 
 app_name = 'customers'  # Namespace para URLs (opcional, mas recomendado)
@@ -14,5 +14,5 @@ urlpatterns = [
     path('create/', customer_create_view, name='create'),	
     path('<int:pk>/', CustomerDetailView.as_view(), name='detail'),
     path('<int:pk>/edit/', CustomerUpdateView.as_view(), name='edit'),
-    path('search-cnpj/', fetch_company_data, name='search_cnpj')
+    path('search-cnpj/', fetch_company_data_view, name='search_cnpj')
 ]
