@@ -1,4 +1,4 @@
-# Sistema de Gestão de Loja de Móveis e Decoração
+# Sistema de Gestão de Loja Física de Móveis e Decoração
 
 Este projeto foi desenvolvido para atender às necessidades de uma loja, incluindo o gerenciamento de **clientes**, **produtos**, **fornecedores**, **pedidos**, **estoque**, **contas a pagar e receber** e geração de **relatórios relevantes**.
 
