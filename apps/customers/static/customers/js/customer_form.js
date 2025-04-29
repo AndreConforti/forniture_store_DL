@@ -8,4 +8,38 @@ $(document).ready(function() {
 
     toggleSearchButtons();
     $('.customer-type-select').change(toggleSearchButtons);
+
+// Função para buscar CNPJ e preencher o formulário
+    $('#search-tax-id').click(function() {
+        const taxId = $('#id_tax_id').val().replace(/\D/g, '');  // Remove caracteres especiais
+
+        if (!taxId) {
+            alert('Informe um CNPJ válido.');
+            return;
+        }
+
+        $.ajax({
+            url: '/customers/search-cnpj/',  // Certifique-se de que essa é a URL correta
+            type: 'GET',
+            data: { tax_id: taxId },
+            dataType: 'json',
+            success: function(data) {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    $('#id_full_name').val(data.full_name);
+                    $('#id_preferred_name').val(data.preferred_name);
+                    $('#id_zip_code').val(data.zip_code);
+                    $('#id_street').val(data.street);
+                    $('#id_number').val(data.number);
+                    $('#id_neighborhood').val(data.neighborhood);
+                    $('#id_city').val(data.city);
+                    $('#id_state').val(data.state);
+                }
+            },
+            error: function() {
+                alert('Erro ao buscar dados do CNPJ. Tente novamente.');
+            }
+        });
+    });
 });

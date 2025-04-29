@@ -191,10 +191,18 @@ class Customer(models.Model):
 
     @property
     def formatted_phone(self):
+        """Formata o número de telefone corretamente para fixo e celular"""
         if not self.phone:
             return ""
-        phone = self.phone.zfill(11)
-        return f"({phone[:2]}) {phone[2:7]}-{phone[7:]}"
+
+        phone = self.phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")  # Remove caracteres especiais
+
+        if len(phone) == 10:  # Telefone fixo
+            return f"({phone[:2]}) {phone[2:6]}-{phone[6:]}"
+        elif len(phone) == 11:  # Celular
+            return f"({phone[:2]}) {phone[2:7]}-{phone[7:]}"
+        
+        return phone
 
     def __str__(self):
         return f"{self.display_name} ({self.tax_id})"
