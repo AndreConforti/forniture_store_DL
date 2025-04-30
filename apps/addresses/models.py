@@ -87,6 +87,8 @@ class Address(models.Model):
             MinLengthValidator(8),
             RegexValidator(r'^\d{8}$', "Use 8 dígitos sem hífen")
         ],
+        blank=True,
+        null=True,
         help_text="8 dígitos sem hífen (ex: 12345678)"
     )
     # Relacionamento genérico

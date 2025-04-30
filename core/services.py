@@ -34,3 +34,32 @@ def fetch_company_data(tax_id):
             logger.error(f"Erro ao consultar API {api_url}: {e}")
 
     return None
+
+
+def fetch_address_data(zip_code):
+    """Consulta CEP em APIs públicas e retorna os dados formatados"""
+    zip_code = zip_code.replace('-', '').strip()
+    
+    apis = [
+        f"https://viacep.com.br/ws/{zip_code}/json/",
+        f"https://brasilapi.com.br/api/cep/v1/{zip_code}"
+    ]
+
+    for api_url in apis:
+        try:
+            response = requests.get(api_url, timeout=5)
+            response.raise_for_status()
+            data = response.json()
+
+            if data and "erro" not in data:
+                return {
+                    "zip_code": zip_code,
+                    "street": data.get("logradouro", ""),
+                    "neighborhood": data.get("bairro", ""),
+                    "city": data.get("localidade", ""),
+                    "state": data.get("uf", "")
+                }
+        except requests.RequestException as e:
+            logger.error(f"Erro ao consultar API {api_url}: {e}")
+
+    return None

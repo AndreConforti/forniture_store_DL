@@ -67,7 +67,7 @@ class Customer(models.Model):
         max_length=18,
         blank=True,
         null=True,
-        unique=True
+        unique=True,
     )
 
     is_active = models.BooleanField(
