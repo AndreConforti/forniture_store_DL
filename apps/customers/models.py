@@ -4,6 +4,7 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.forms import ValidationError
 from django.db import transaction
 from apps.addresses.models import Address
+from core.services import fetch_company_data
 from validate_docbr import CPF, CNPJ
 import logging
 import requests
@@ -66,7 +67,7 @@ class Customer(models.Model):
         max_length=18,
         blank=True,
         null=True,
-        unique=True
+        unique=True,
     )
 
     is_active = models.BooleanField(
@@ -132,54 +133,25 @@ class Customer(models.Model):
     def save(self, *args, **kwargs):
         """Aplica a validação antes de salvar"""
         with transaction.atomic():
-            if self.customer_type == "CORP":
-                self.fetch_company_data()  # Consulta e preenche os dados antes de validar
-            self.clean()  # Valida CPF/CNPJ antes de salvar
-            super().save(*args, **kwargs)
+            super().save(*args, **kwargs)  # Primeiro salva o cliente para garantir que tenha um ID
 
-    
-    def fetch_company_data(self):
-        """Consulta CNPJ em APIs públicas e preenche os dados"""
-        if self.customer_type == "CORP" and self.tax_id:
-            apis = [
-                f"https://open.cnpja.com/office/{self.tax_id}",
-                f"https://publica.cnpj.ws/cnpj/{self.tax_id}"
-            ]
+            # Se for Pessoa Jurídica, busca os dados na API
+            if self.customer_type == "CORP" and self.tax_id:
+                data = fetch_company_data(self.tax_id)
+                if data:
+                    self.full_name = data["full_name"]
+                    self.preferred_name = data["preferred_name"]
+                    super().save()  # Salva novamente com os dados da API
 
-            for api_url in apis:
-                try:
-                    response = requests.get(api_url, timeout=5)
-                    response.raise_for_status()
-                    data = response.json()
-
-                    if data:
-                        # Aplica title() para padronizar a capitalização
-                        self.full_name = (data.get('company', {}).get('name') or data.get('razao_social', "")).title()
-                        self.preferred_name = (data.get('alias') or data.get('estabelecimento', {}).get('nome_fantasia', "")).title()
-
-                        # Salva o cliente primeiro para garantir que tenha um ID
-                        super().save()
-
-                        # Obtém ou cria um endereço associado
-                        address = self.address or Address(content_object=self)
-                        address.content_object = self  # Isso define object_id corretamente
-
-                        address.zip_code = data.get('address', {}).get('zip') or data.get('estabelecimento', {}).get('cep')
-                        address.street = (data.get('address', {}).get('street') or f"{data.get('estabelecimento', {}).get('tipo_logradouro')} {data.get('estabelecimento', {}).get('logradouro')}").title()
-                        address.number = data.get('address', {}).get('number') or data.get('estabelecimento', {}).get('numero')
-                        address.neighborhood = (data.get('address', {}).get('district') or data.get('estabelecimento', {}).get('bairro', "")).title()
-                        address.city = (data.get('address', {}).get('city') or data.get('estabelecimento', {}).get('cidade', {}).get('nome', "")).title()
-                        address.state = data.get('address', {}).get('state') or data.get('estabelecimento', {}).get('estado', {}).get('sigla')
-
-                        # Salva o endereço associado ao cliente
-                        address.save()
-                        
-                        return True
-                except requests.RequestException as e:
-                    logger.error(f"Erro ao consultar API {api_url}: {e}")
-
-        return False
-
+                    # Criando ou atualizando endereço corretamente usando GenericRelation
+                    address = self.addresses.first() or Address(content_object=self)
+                    address.zip_code = data["zip_code"]
+                    address.street = data["street"]
+                    address.number = data["number"]
+                    address.neighborhood = data["neighborhood"]
+                    address.city = data["city"]
+                    address.state = data["state"]
+                    address.save()
 
     @property
     def address(self):
