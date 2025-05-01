@@ -16,7 +16,7 @@
     <!-- Status -->
     <div class="col-md-3">
         <div class="form-check form-switch mt-3 pt-1">
-            <input class="form-check-input focus-brown" type="checkbox" 
+            <input class="form-check-input" type="checkbox" 
                    id="{{ form.is_active.id_for_label }}"
                    name="{{ form.is_active.html_name }}"
                    {% if form.is_active.value %}checked{% endif %}>
@@ -29,7 +29,7 @@
     <!-- VIP -->
     <div class="col-md-3">
         <div class="form-check form-switch mt-3 pt-1">
-            <input class="form-check-input focus-brown" type="checkbox" 
+            <input class="form-check-input" type="checkbox" 
                    id="{{ form.is_vip.id_for_label }}"
                    name="{{ form.is_vip.html_name }}"
                    {% if form.is_vip.value %}checked{% endif %}>

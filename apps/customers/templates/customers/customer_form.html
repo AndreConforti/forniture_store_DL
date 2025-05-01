@@ -21,23 +21,38 @@
                 <!-- Abas -->
                 <ul class="nav nav-tabs mb-3 nav-underline" id="customerTabs" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active text-navy" id="basic-tab" data-bs-toggle="tab" 
-                                data-bs-target="#basic-tab-pane" type="button" role="tab" 
-                                aria-controls="basic-tab-pane" aria-selected="true">
+                        <button class="nav-link active tab-active" 
+                                id="basic-tab" 
+                                data-bs-toggle="tab" 
+                                data-bs-target="#basic-tab-pane" 
+                                type="button" 
+                                role="tab" 
+                                aria-controls="basic-tab-pane" 
+                                aria-selected="true">
                             <i class="bi bi-person-vcard me-1"></i> Dados Básicos
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link text-brown" id="address-tab" data-bs-toggle="tab"
-                                data-bs-target="#address-tab-pane" type="button" role="tab"
-                                aria-controls="address-tab-pane" aria-selected="false">
+                        <button class="nav-link tab-inactive" 
+                                id="address-tab" 
+                                data-bs-toggle="tab"
+                                data-bs-target="#address-tab-pane" 
+                                type="button" 
+                                role="tab"
+                                aria-controls="address-tab-pane" 
+                                aria-selected="false">
                             <i class="bi bi-geo-alt me-1"></i> Endereço
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link text-brown" id="additional-tab" data-bs-toggle="tab"
-                                data-bs-target="#additional-tab-pane" type="button" role="tab"
-                                aria-controls="additional-tab-pane" aria-selected="false">
+                        <button class="nav-link tab-inactive" 
+                                id="additional-tab" 
+                                data-bs-toggle="tab"
+                                data-bs-target="#additional-tab-pane" 
+                                type="button" 
+                                role="tab"
+                                aria-controls="additional-tab-pane" 
+                                aria-selected="false">
                             <i class="bi bi-info-circle me-1"></i> Adicionais
                         </button>
                     </li>
@@ -63,9 +78,6 @@
 
                 <!-- Botões de Ação -->
                 <div class="d-flex justify-content-between mt-4 pt-3 border-top">
-                    <a href="{% url 'customers:list' %}" class="btn btn-outline-navy">
-                        <i class="bi bi-arrow-left me-1"></i> Voltar
-                    </a>
                     <button type="submit"  class="btn bg-primary text-white">
                         <i class="bi bi-save me-1"></i> Salvar Cliente
                     </button>

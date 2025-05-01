@@ -1,98 +1,98 @@
-<div class="col-md-2 col-lg-2 sidebar bg-light d-none d-md-flex flex-column">
-    <div class="flex-grow-1 d-flex flex-column overflow-hidden">
-        <div class="overflow-auto py-2">
-            <ul class="nav flex-column" id="sidebarMenu">
-                <!-- Clientes -->
-                <li class="nav-item has-submenu">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#customersSubmenu">
-                        <i class="bi bi-people me-2"></i> Clientes
-                    </a>
-                    <ul class="nav flex-column collapse ps-3" id="customersSubmenu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'customers:create' %}">
-                                <i class="bi bi-plus-circle me-2"></i> Cadastrar Novo
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'customers:list' %}">
-                                <i class="bi bi-list-check me-2"></i> Listar Clientes
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+<!-- Botão para abrir o Sidebar -->
+<button class="btn btn-primary rounded-0" data-bs-toggle="offcanvas" data-bs-target="#offcanvasSidebar">
+    <i class="bi bi-list"></i> Menu
+</button>
 
-                <!-- Fornecedores -->
-                <li class="nav-item has-submenu">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#suppliersSubmenu">
-                        <i class="bi bi-truck me-2"></i> Fornecedores
-                    </a>
-                    <ul class="nav flex-column collapse ps-3" id="suppliersSubmenu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-plus-circle me-2"></i> Cadastrar Novo
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-list-check me-2"></i> Listar Fornecedores
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+<!-- Sidebar Offcanvas -->
+<div class="offcanvas offcanvas-start bg-sidebar" id="offcanvasSidebar">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title text-light">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <ul class="nav flex-column">
+            <!-- Clientes -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#customersSubmenu">
+                    <i class="bi bi-people me-2"></i> Clientes
+                </a>
+                <ul class="collapse ms-3" id="customersSubmenu">
+                    <li><a class="nav-link text-light" href="{% url 'customers:create' %}">Cadastrar Cliente</a></li>
+                    <li><a class="nav-link text-light" href="{% url 'customers:list' %}">Listar Clientes</a></li>
+                    <li><a class="nav-link text-light" href="#">Histórico de Compras</a></li>
+                </ul>
+            </li>
 
-                <!-- Pedidos -->
-                <li class="nav-item has-submenu">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#ordersSubmenu">
-                        <i class="bi bi-cart me-2"></i> Pedidos
-                    </a>
-                    <ul class="nav flex-column collapse ps-3" id="ordersSubmenu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-plus-circle me-2"></i> Novo Pedido
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-list-check me-2"></i> Consultar Pedidos
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+            <!-- Pedidos -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#ordersSubmenu">
+                    <i class="bi bi-cart me-2"></i> Pedidos
+                </a>
+                <ul class="collapse ms-3" id="ordersSubmenu">
+                    <li><a class="nav-link text-light" href="#">Novo Pedido</a></li>
+                    <li><a class="nav-link text-light" href="#">Consultar Pedidos</a></li>
+                    <li><a class="nav-link text-light" href="#">Status de Entrega</a></li>
+                </ul>
+            </li>
 
-                <!-- Relatórios -->
-                <li class="nav-item has-submenu">
-                    <a class="nav-link" href="#" data-bs-toggle="collapse" data-bs-target="#reportsSubmenu">
-                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Relatórios
-                    </a>
-                    <ul class="nav flex-column collapse ps-3" id="reportsSubmenu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-people me-2"></i> Clientes
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-truck me-2"></i> Fornecedores
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-cart me-2"></i> Pedidos
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-credit-card me-2"></i> Contas a Pagar
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="bi bi-cash-coin me-2"></i> Contas a Receber
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
+            <!-- Produtos -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#productsSubmenu">
+                    <i class="bi bi-box-seam me-2"></i> Produtos
+                </a>
+                <ul class="collapse ms-3" id="productsSubmenu">
+                    <li><a class="nav-link text-light" href="#">Cadastrar Produto</a></li>
+                    <li><a class="nav-link text-light" href="#">Gerenciar Estoque</a></li>
+                    <li><a class="nav-link text-light" href="#">Categorias</a></li>
+                </ul>
+            </li>
+
+            <!-- Fornecedores -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#suppliersSubmenu">
+                    <i class="bi bi-truck me-2"></i> Fornecedores
+                </a>
+                <ul class="collapse ms-3" id="suppliersSubmenu">
+                    <li><a class="nav-link text-light" href="#">Cadastrar Novo</a></li>
+                    <li><a class="nav-link text-light" href="#">Listar Fornecedores</a></li>
+                    <li><a class="nav-link text-light" href="#">Pedidos Pendentes</a></li>
+                </ul>
+            </li>
+
+            <!-- Relatórios -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#reportsSubmenu">
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i> Relatórios
+                </a>
+                <ul class="collapse ms-3" id="reportsSubmenu">
+                    <li><a class="nav-link text-light" href="#">Clientes</a></li>
+                    <li><a class="nav-link text-light" href="#">Fornecedores</a></li>
+                    <li><a class="nav-link text-light" href="#">Pedidos</a></li>
+                    <li><a class="nav-link text-light" href="#">Estoque</a></li>
+                </ul>
+            </li>
+
+            <!-- Contas a Pagar -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#billsPaySubmenu">
+                    <i class="bi bi-credit-card me-2"></i> Contas a Pagar
+                </a>
+                <ul class="collapse ms-3" id="billsPaySubmenu">
+                    <li><a class="nav-link text-light" href="#">Faturas Pendentes</a></li>
+                    <li><a class="nav-link text-light" href="#">Pagamentos Realizados</a></li>
+                </ul>
+            </li>
+
+            <!-- Contas a Receber -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#billsReceiveSubmenu">
+                    <i class="bi bi-cash-coin me-2"></i> Contas a Receber
+                </a>
+                <ul class="collapse ms-3" id="billsReceiveSubmenu">
+                    <li><a class="nav-link text-light" href="#">Pagamentos a Receber</a></li>
+                    <li><a class="nav-link text-light" href="#">Histórico de Pagamentos</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </div>

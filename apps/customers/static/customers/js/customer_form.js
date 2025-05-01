@@ -9,7 +9,7 @@ $(document).ready(function() {
     toggleSearchButtons();
     $('.customer-type-select').change(toggleSearchButtons);
 
-// Função para buscar CNPJ e preencher o formulário
+    // Função para buscar CNPJ e preencher o formulário
     $('#search-tax-id').click(function() {
         const taxId = $('#id_tax_id').val().replace(/\D/g, '');  // Remove caracteres especiais
 
@@ -39,6 +39,35 @@ $(document).ready(function() {
             },
             error: function() {
                 alert('Erro ao buscar dados do CNPJ. Tente novamente.');
+            }
+        });
+    });
+
+    // Função para buscar CEP e preencher o formulário
+    $('#search-zip-code').click(function() {
+        const zipCode = $('#id_zip_code').val().replace(/\D/g, '');
+        if (!zipCode || zipCode.length < 8) {
+            alert('Informe um CEP válido.');
+            return;
+        }
+
+        $.ajax({
+            url: '/customers/search-zip-code/',
+            type: 'GET',
+            data: { zip_code: zipCode },
+            dataType: 'json',
+            success: function(data) {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    $('#id_street').val(data.street);
+                    $('#id_neighborhood').val(data.neighborhood);
+                    $('#id_city').val(data.city);
+                    $('#id_state').val(data.state);
+                }
+            },
+            error: function() {
+                alert('Erro ao buscar dados do CEP.');
             }
         });
     });
