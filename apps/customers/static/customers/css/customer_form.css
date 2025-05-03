@@ -1,46 +1,59 @@
+/* ===== Cores Base ===== 
+    --primary-dark: #020f25;     
+    --primary-medium: #022046;   
+    --primary-soft: #0950a8;     
+    --primary-light: #72a7f7;   
+    --primary-ultralight: #d0dff4;
+    
+    --secondary-dark: #101010;
+    --secondary-medium: #2a2a2a;
+    --secondary-soft: #3d3d3d;
+    --secondary-light: #636363;
+    --secondary-ultralight: #f8f8f8; 
+*/
+
 /* ===== ESTILOS DE FORMULÁRIO ===== */
 .form-control:focus,
 .form-select:focus {
-    border-color: var(--focus-border) !important;
-    box-shadow: 0 0 0 0.25rem rgba(10, 31, 68, 0.25); /* Cor baseada no --accent-color */
+    border-color: var(--primary-dark) !important;
+    box-shadow: 0 0 0 0.25rem rgba(10, 31, 68, 0.25); 
 }
 
 .form-select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg..."); /* Ícone personalizado (opcional) */
+    background-image: url("data:image/svg+xml,%3Csvg..."); 
     background-repeat: no-repeat;
     background-position: right 0.75rem center;
 }
 
 .form-select option:hover,
 .form-select option:checked {
-    background-color: var(--accent-color) !important;
-    color: var(--sidebar-text); /* Branco */
+    background-color: var(--primary-dark) !important;
+    color: var(--secondary-ultralight); /* Branco */
 }
 
 /* ===== COMPONENTE DE ABAS ===== */
 .nav-tabs {
-    border-bottom: 1px solid var(--text-secondary);
     position: relative;
 }
 
 /* Abas inativas */
 .nav-tabs .nav-link {
-    color: var(--primary-bg) !important;
-    background-color: var(--text-primary) !important;
+    color: var(--primary-dark) !important;
+    background-color: var(--secondary-light) !important;
     padding: 0.75rem 1.5rem;
     margin: 0 0.125rem;
     transition: all 0.3s ease;
     border-radius: 0.25rem 0.25rem 0 0;
     border: 1px solid transparent;
-    border-bottom: 1px solid var(--text-secondary);
+    border-bottom: 1px solid var(--secondary-ultralight);
     margin-bottom: -1px;
 }
 
 /* Aba ativa */
 .nav-tabs .nav-link.active {
-    color: var(--text-primary) !important;
-    background-color: var(--primary-bg) !important;
+    color: var(--secondary-ultralight) !important;
+    background-color: var(--primary-medium) !important;
     border-bottom-color: transparent !important; /* Remove borda inferior */
     position: relative;
     z-index: 2; /* Sobrepor à linha base */
@@ -53,13 +66,13 @@
     left: 0;
     right: 0;
     height: 1px;
-    background-color: var(--primary-bg);
+    background-color: var(--color-navy);
 }
 
 /* Hover (exceto aba ativa) */
 .nav-tabs .nav-link:hover:not(.active) {
-    color: var(--text-primary) !important;
-    background-color: var(--primary-bg) !important;
+    color: var(--secondary-ultralight) !important;
+    background-color: var(--primary-medium) !important;
     border-bottom-color: transparent !important;
 }
 
@@ -71,6 +84,12 @@
 /* Ícones dentro das abas */
 .nav-tabs .nav-link i {
     margin-right: 0.5rem;
+}
+
+/* Radio Buttons */
+.form-check-input:checked {
+    background-color: var(--primary-medium) !important;
+    border-color: var(--primary-medium) !important;
 }
 
 /* ===== RESPONSIVIDADE ===== */

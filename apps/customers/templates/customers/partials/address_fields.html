@@ -1,22 +1,33 @@
 <div class="row g-3 mb-4">
     <!-- CEP -->
     <div class="col-md-3">
-        <div class="input-group">
+        <div class="input-group has-validation">
             <div class="form-floating">
-                <input type="text" class="form-control"
-                    id="{{ form.zip_code.id_for_label }}"
-                    name="{{ form.zip_code.html_name }}"
-                    placeholder=" "
-                    value="{{ form.zip_code.value|default_if_none:'' }}"
-                    data-action="cep-lookup">
+                <input type="text" 
+                        class="form-control {% if form.zip_code.errors %}is-invalid{% endif %}"
+                        id="{{ form.zip_code.id_for_label }}"
+                        name="{{ form.zip_code.html_name }}"
+                        placeholder=" "
+                        value="{{ form.zip_code.value|default_if_none:'' }}"
+                        data-mask="00000-000"
+                        data-action="cep-lookup">
                 <label for="{{ form.zip_code.id_for_label }}" class="text-brown">
                     {{ form.zip_code.label }}
                 </label>
             </div>
-            <button class="btn btn-brown" type="button" id="search-zip-code" disabled>
+            <button class="btn btn-brown" 
+                    type="button" 
+                    id="search-zip-code"
+                    data-url="{% url 'customers:search_zip_code' %}">
                 <i class="bi bi-search"></i>
             </button>
+            {% if form.zip_code.errors %}
+            <div class="invalid-feedback">
+                {{ form.zip_code.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
+        <small class="text-muted">Formato: 00000-000</small>
     </div>
 
     <!-- Logradouro -->
