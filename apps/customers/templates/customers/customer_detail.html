@@ -1,20 +1,210 @@
 {% extends "base/base_home.html" %}
 {% load static %}
 
+{% block head %}
+    <link rel="stylesheet" href="{% static 'customers/css/customer_detail.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <h2>Detalhes do Cliente</h2>
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <p><strong>Nome:</strong> {{ object.display_name }}</p>
-            <p><strong>CPF/CNPJ:</strong> {{ object.formatted_document }}</p>
-            <p><strong>Tipo:</strong> {{ object.get_customer_type_display }}</p>
-            <p><strong>Telefone:</strong> {{ object.formatted_phone }}</p>
-            <p><strong>E-mail:</strong> {{ object.email|default:"-" }}</p>
+<div class="container-fluid mt-4">
+    <article class="card border-0 shadow-sm"> <!-- Article como container principal -->
+        <header class="card-header bg-primary-dark text-white"> <!-- Header semântico -->
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center header">
+                    <i class="bi bi-person-badge fs-4 me-2"></i>
+                    <h1 class="m-0 h4">Detalhes do Cliente</h1>
+                </div>
+                <a href="{% url 'customers:list' %}" class="btn btn-sm">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
+        </header>
+        
+        <div class="card-body p-3">
+            <!-- Seção de Informações Básicas -->
+            <section class="section-card m-2" aria-labelledby="dados-pessoais-heading">
+                <header class="section-header my-3">
+                    <h2 id="dados-pessoais-heading" class="m-0 h5">
+                        <i class="bi bi-person-lines-fill me-2"></i>Dados Pessoais
+                    </h2>
+                </header>
+                <div class="section-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Tipo:</span>
+                                <span class="info-value">
+                                    {% if customer.customer_type == 'IND' %}
+                                        Pessoa Física
+                                    {% else %}
+                                        Pessoa Jurídica
+                                    {% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="info-item">
+                                <span class="info-label">Nome Completo / Razão Social:</span>
+                                <span class="info-value">{{ customer.full_name|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">Apelido / Nome Fantasia:</span>
+                                <span class="info-value">{{ customer.preferred_name|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">CPF / CNPJ:</span>
+                                <span class="info-value">{{ formatted_tax_id|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Telefone:</span>
+                                <span class="info-value">{{ formatted_phone|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="info-item">
+                                <span class="info-label">E-mail:</span>
+                                <span class="info-value">{{ customer.email|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Status:</span>
+                                <span class="info-value badge {% if customer.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if customer.is_active %}Ativo{% else %}Inativo{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">VIP:</span>
+                                <span class="info-value badge {% if customer.is_vip %}bg-gold{% else %}bg-light text-dark{% endif %}">
+                                    {% if customer.is_vip %}Sim{% else %}Não{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Data Cadastro:</span>
+                                <span class="info-value">{{ customer.registration_date|date:"d/m/Y H:i" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Seção de Endereço -->
+            {% if address %}
+            <section class="section-card m-2" aria-labelledby="endereco-heading">
+                <header class="section-header my-3">
+                    <h2 id="endereco-heading" class="m-0 h5">
+                        <i class="bi bi-geo-alt-fill me-2"></i>Endereço
+                    </h2>
+                </header>
+                <div class="section-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <div class="info-item">
+                                <span class="info-label">Logradouro:</span>
+                                <span class="info-value">
+                                    {{ address.street|default:"-" }}, {{ address.number|default:"SN" }}
+                                    {% if address.complement %}- {{ address.complement }}{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">CEP:</span>
+                                <span class="info-value">{{ address.formatted_zip_code|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Bairro:</span>
+                                <span class="info-value">{{ address.neighborhood|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Cidade:</span>
+                                <span class="info-value">{{ address.city|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">UF:</span>
+                                <span class="info-value">{{ address.state|default:"-" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+            
+            <!-- Seção de Informações Adicionais -->
+            <section class="section-card m-2" aria-labelledby="info-adicionais-heading">
+                <header class="section-header my-3">
+                    <h2 id="info-adicionais-heading" class="m-0 h5">
+                        <i class="bi bi-info-circle-fill me-2"></i>Informações Adicionais
+                    </h2>
+                </header>
+                <div class="section-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="info-item">
+                                <span class="info-label">Profissão:</span>
+                                <span class="info-value">{{ customer.profession|default:"-" }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="info-item">
+                                <span class="info-label">Interesses:</span>
+                                <span class="info-value">{{ customer.interests|default:"-"|linebreaks }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="info-item">
+                                <span class="info-label">Observações:</span>
+                                <span class="info-value">{{ customer.notes|default:"-"|linebreaks }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
-    </div>
-    <a href="{% url 'customers:edit' object.pk %}" class="btn btn-primary">
-        <i class="bi bi-pencil"></i> Editar Cliente
-    </a>
+        
+        <footer class="card-footer bg-light">
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'customers:edit' customer.pk %}" class="btn btn-primary me-2">
+                    <i class="bi bi-pencil-square me-1"></i> Editar
+                </a>
+                <a href="{% url 'customers:list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul me-1"></i> Ver Todos
+                </a>
+            </div>
+        </footer>
+    </article>
 </div>
+{% endblock %}
+
+{% block scripts %}
 {% endblock %}

@@ -1,14 +1,13 @@
 from django.db import models
 from django.core.validators import RegexValidator, EmailValidator
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.forms import ValidationError
 from django.db import transaction
 from apps.addresses.models import Address
 from core.services import fetch_company_data
 from validate_docbr import CPF, CNPJ
 import logging
-import requests
-import pprint
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +25,6 @@ class Customer(models.Model):
         object_id_field='object_id'
     )
 
-    # Campos do Customer
     customer_type = models.CharField(
         verbose_name='Tipo de Cliente',
         max_length=6,
@@ -115,7 +113,7 @@ class Customer(models.Model):
         ]
 
     def clean(self):
-        """Limpa caracteres especiais antes de validar CPF/CNPJ"""
+        """Validação de CPF/CNPJ (mantida igual)"""
         super().clean()
 
         if self.tax_id:
@@ -131,27 +129,54 @@ class Customer(models.Model):
             self.tax_id = tax_id
 
     def save(self, *args, **kwargs):
-        """Aplica a validação antes de salvar"""
+        """Consolida a lógica de salvamento do cliente e endereço"""
         with transaction.atomic():
-            super().save(*args, **kwargs)  # Primeiro salva o cliente para garantir que tenha um ID
+            is_new = self.pk is None  # Verifica se é uma criação ou atualização
+            
+            # Salva primeiro o cliente para garantir que tem um ID
+            super().save(*args, **kwargs)
 
-            # Se for Pessoa Jurídica, busca os dados na API
+            # Lógica para Pessoa Jurídica (busca automática de dados)
             if self.customer_type == "CORP" and self.tax_id:
-                data = fetch_company_data(self.tax_id)
-                if data:
-                    self.full_name = data["full_name"]
-                    self.preferred_name = data["preferred_name"]
-                    super().save()  # Salva novamente com os dados da API
+                self._handle_corporate_customer()
 
-                    # Criando ou atualizando endereço corretamente usando GenericRelation
-                    address = self.addresses.first() or Address(content_object=self)
-                    address.zip_code = data["zip_code"]
-                    address.street = data["street"]
-                    address.number = data["number"]
-                    address.neighborhood = data["neighborhood"]
-                    address.city = data["city"]
-                    address.state = data["state"]
-                    address.save()
+            # Lógica para endereço (tanto PJ quanto PF)
+            if not is_new or 'address_data' in kwargs:
+                self._update_or_create_address(kwargs.pop('address_data', None))
+
+    def _handle_corporate_customer(self):
+        """Busca e atualiza dados de PJ automaticamente"""
+        data = fetch_company_data(self.tax_id)
+        if data:
+            self.full_name = data["full_name"]
+            self.preferred_name = data["preferred_name"]
+            super().save(update_fields=['full_name', 'preferred_name'])
+            
+            # Prepara dados de endereço da API
+            address_data = {
+                "zip_code": data["zip_code"],
+                "street": data["street"],
+                "number": data["number"],
+                "neighborhood": data["neighborhood"],
+                "city": data["city"],
+                "state": data["state"],
+            }
+            self._update_or_create_address(address_data)
+
+    def _update_or_create_address(self, address_data=None):
+        if not address_data:
+            return
+
+        # Filtra valores vazios
+        address_data = {k: v for k, v in address_data.items() if v}
+        
+        if address_data:
+            content_type = ContentType.objects.get_for_model(Customer)
+            address, created = Address.objects.update_or_create(
+                content_type=content_type,  # Campo content_type (não content_type__model)
+                object_id=self.pk,          # ID do cliente
+                defaults=address_data
+            )
 
     @property
     def address(self):
@@ -163,34 +188,24 @@ class Customer(models.Model):
 
     @property
     def formatted_phone(self):
-        """Formata o número de telefone corretamente para fixo e celular"""
         if not self.phone:
             return ""
-
-        phone = self.phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")  # Remove caracteres especiais
-
-        if len(phone) == 10:  # Telefone fixo
+        phone = self.phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        if len(phone) == 10:
             return f"({phone[:2]}) {phone[2:6]}-{phone[6:]}"
-        elif len(phone) == 11:  # Celular
+        elif len(phone) == 11:
             return f"({phone[:2]}) {phone[2:7]}-{phone[7:]}"
-        
         return phone
 
     def __str__(self):
         return f"{self.display_name} ({self.tax_id})"
 
     def formatted_tax_id(self):
-        """Retorna o CPF ou CNPJ formatado apenas para exibição"""
         if not self.tax_id:
             return ""
-
-        # Remove caracteres especiais antes de formatar
         tax_id = self.tax_id.replace('.', '').replace('-', '').replace('/', '').strip()
-
-        # Verifica o tamanho original para formatar corretamente
         if len(tax_id) == 11:
-            return f"{tax_id[:3]}.{tax_id[3:6]}.{tax_id[6:9]}-{tax_id[9:]}"  # CPF
+            return f"{tax_id[:3]}.{tax_id[3:6]}.{tax_id[6:9]}-{tax_id[9:]}"
         elif len(tax_id) == 14:
-            return f"{tax_id[:2]}.{tax_id[2:5]}.{tax_id[5:8]}/{tax_id[8:12]}-{tax_id[12:]}"  # CNPJ
-
+            return f"{tax_id[:2]}.{tax_id[2:5]}.{tax_id[5:8]}/{tax_id[8:12]}-{tax_id[12:]}"
         return tax_id

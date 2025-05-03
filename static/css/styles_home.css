@@ -1,30 +1,34 @@
 :root {
-    /* Cores de fundo */
-    --primary-bg: #0a1f44; /* Fundo principal (menu superior, áreas principais) */
-    --secondary-bg: #eef1f4; /* Fundo secundário (menu lateral, cartões) */
-    --neutral-bg: #f0f2f5; /* Fundo neutro (seções específicas, modais) */
-    --sidebar-bg: #153576; /* Destaque para o sidebar */
+    /* ===== Cores Base ===== 
+    --primary-dark: #020f25;    
+    --primary-medium: #022046;
+    --primary-soft: #0950a8;
+    --primary-light: #72a7f7;
+    --primary-ultralight: #d0dff4;
     
-    /* Cores de texto */
-    --text-primary: #d1d5db; /* Texto principal (títulos, destaques) */
-    --text-secondary: #a0a4a8; /* Texto secundário (menus, detalhes) */
-    --sidebar-text: #ffffff; /* Texto do sidebar */
-
-    /* Cores de interação */
-    --accent-color: #0a1f44; /* Cor de destaque (links, botões interativos) */
-    --hover-bg: #1c4a88; /* Fundo ao passar o mouse */
-    --hover-text: #ffffff; /* Texto ao passar o mouse */
-    --focus-border: #0a1f44; /* Borda ao focar */
-
-    /* Cores para estados especiais */
-    --disabled-bg: #8a8f94; /* Estado desativado */
-    --disabled-text: #c0c4c8; /* Texto desativado */
+    --secondary-dark: #101010;
+    --secondary-medium: #2a2a2a;
+    --secondary-soft: #3d3d3d;
+    --secondary-light: #a3a3a3;
+    --secondary-ultralight: #f8f8f8;
+    */
+    --primary-dark: #011f0d;    
+    --primary-medium: #024f18;
+    --primary-soft: #05942b;
+    --primary-light: #429f55;
+    --primary-ultralight: #99c3a2;
+    
+    --secondary-dark: #101010;
+    --secondary-medium: #2a2a2a;
+    --secondary-soft: #3d3d3d;
+    --secondary-light: #a3a3a3;
+    --secondary-ultralight: #f8f8f8;
 }
 
 /* Navbar */
 .navbar {
-    background-color: var(--primary-bg) !important;
-    color: var(--text-primary);
+    background-color: var(--primary-dark) !important;
+    color: var(--secondary-ultralight);
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -33,28 +37,21 @@
 
 /* Sidebar (Offcanvas) */
 .offcanvas {
-    background-color: var(--sidebar-bg) !important;
-    color: var(--sidebar-text) !important;
+    background-color: var(--primary-medium) !important;
+    color: var(--secondary-ultralight) !important;
     width: auto !important; /* Largura dinâmica */
     max-width: 250px; /* Limite máximo */
     border-radius: 0 !important;
 }
 
 .offcanvas-header {
-    background-color: var(--primary-bg);
-    color: var(--sidebar-text);
-    border-bottom: 1px solid var(--text-secondary);
-}
-
-.nav-link {
-    color: var(--sidebar-text) !important;
-    font-weight: bold;
-    padding: 10px 15px;
+    background-color: var(--primary-soft);
+    color: var(--secondary-ultralight);
 }
 
 .nav-link:hover {
-    background-color: var(--hover-bg) !important;
-    color: var(--hover-text) !important;
+    background-color: var(--primary-light) !important;
+    color: var(--primary-ultralight) !important;
 }
 
 .collapse .nav-link {
@@ -62,26 +59,34 @@
 }
 
 /* Botão de fechar */
-.btn-close-white {
-    filter: invert(1); /* Deixa o botão de fechar branco */
+/* Remove fundo e borda do botão de fechar */
+.bg-sidebar .btn-close {
+    background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23fff'%3e%3cpath d='M.293.293a1 1 0 0 1 1.414 0L8 6.586 14.293.293a1 1 0 1 1 1.414 1.414L9.414 8l6.293 6.293a1 1 0 0 1-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 0 1-1.414-1.414L6.586 8 .293 1.707a1 1 0 0 1 0-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    opacity: 1;
+    box-shadow: none;
 }
 
-
+/* Efeito hover */
+.bg-sidebar .btn-close:hover {
+    opacity: 0.8;
+}
 /* Footer */
 .footer {
-    background-color: var(--primary-bg) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--primary-dark) !important;
+    color: var(--secondary-ultralight) !important;
     padding: 10px;
     text-align: center;
 }
 
 .footer .text-muted {
-    color: var(--text-primary) !important;
+    color: var(--secondary-light) !important;
 }
 
+/* Botões */
+
 button {
-    background-color: var(--secondary-bg) !important;
-    color: var(--primary-bg) !important;
+    background-color: var(--primary-dark) !important;
+    color: var(--secondary-ultralight) !important;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
@@ -89,11 +94,12 @@ button {
 }
 
 .btn {
-    background-color: var(--accent-color) !important;
-    color: var(--text-primary) !important;
+    background-color: var(--primary-dark) !important;
+    color: var(--secondary-ultralight) !important;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
 
 }
+
