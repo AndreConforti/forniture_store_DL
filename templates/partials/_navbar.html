@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container-fluid">
+    <div class="container-fluid ps-5">
         <!-- Botão Hamburguer (aparece apenas em telas pequenas) -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -7,17 +7,17 @@
         
         <!-- Conteúdo da Navbar -->
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
+            <ul class="navbar-nav me-auto ps-3">
+                <li class="nav-item ps-5">
                     <a class="nav-link active" href="{% url 'showroom:dashboard' %}">Dashboard</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ps-5">
                     <a class="nav-link" href="#">Pedidos</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Clientes</a>
+                <li class="nav-item ps-5">
+                    <a class="nav-link" href="{% url 'customers:list' %}">Clientes</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item ps-5">
                     <a class="nav-link" href="#">Estoque</a>
                 </li>
             </ul>

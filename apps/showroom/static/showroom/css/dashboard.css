@@ -5,5 +5,9 @@
 
 .summary-card:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra leve */
-    transform: translateY(-2px); /* Levanta levemente o card */
+    transform: translateY(-3px); /* Levanta levemente o card */
+}
+
+a {
+    color: var(--primary-dark);
 }
