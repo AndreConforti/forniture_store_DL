@@ -1,0 +1,35 @@
+<div class="row g-3 mb-4">
+    <!-- Banco -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            {{ form.bank_name }}
+            <label for="{{ form.bank_name.id_for_label }}">{{ form.bank_name.label }}</label>
+        </div>
+    </div>
+    
+    <!-- Agência -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            {{ form.bank_agency }}
+            <label for="{{ form.bank_agency.id_for_label }}">{{ form.bank_agency.label }}</label>
+        </div>
+    </div>
+    
+    <!-- Conta -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            {{ form.bank_account }}
+            <label for="{{ form.bank_account.id_for_label }}">{{ form.bank_account.label }}</label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Chave PIX -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            {{ form.pix_key }}
+            <label for="{{ form.pix_key.id_for_label }}">{{ form.pix_key.label }}</label>
+        </div>
+    </div>
+</div>

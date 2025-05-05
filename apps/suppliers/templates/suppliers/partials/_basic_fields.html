@@ -1,0 +1,159 @@
+<div class="row g-3 mb-4">
+    <!-- Tipo de Fornecedor -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <select class="form-select supplier-type-select" id="{{ form.supplier_type.id_for_label }}"
+                    name="{{ form.supplier_type.html_name }}"
+                    data-action="supplier-type-change">
+                {% for value, label in form.supplier_type.field.choices %}
+                    <option value="{{ value }}" {% if form.supplier_type.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="{{ form.supplier_type.id_for_label }}" class="text-navy">
+                {{ form.supplier_type.label }} *
+            </label>
+        </div>
+    </div>
+
+    <!-- Razão Social -->
+    <div class="col-md-5">
+        <div class="form-floating">
+            <input type="text" class="form-control" 
+                   id="{{ form.corporate_name.id_for_label }}"
+                   name="{{ form.corporate_name.html_name }}"
+                   placeholder=" "
+                   value="{{ form.corporate_name.value|default_if_none:'' }}">
+            <label for="{{ form.corporate_name.id_for_label }}" class="text-navy">
+                {{ form.corporate_name.label }} *
+            </label>
+        </div>
+    </div>
+
+    <!-- Nome Fantasia -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                   id="{{ form.trade_name.id_for_label }}"
+                   name="{{ form.trade_name.html_name }}"
+                   placeholder=" "
+                   value="{{ form.trade_name.value|default_if_none:'' }}">
+            <label for="{{ form.trade_name.id_for_label }}" class="text-navy">
+                {{ form.trade_name.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- CNPJ/CPF -->
+    <div class="col-md-4">
+        <div class="input-group">
+            <div class="form-floating">
+                <input type="text" class="form-control"
+                    id="{{ form.tax_id.id_for_label }}"
+                    name="{{ form.tax_id.html_name }}"
+                    placeholder=" "
+                    value="{{ form.tax_id.value|default_if_none:'' }}"
+                    data-action="document-input"
+                    pattern="\d*"
+                    inputmode="numeric">
+                <label for="{{ form.tax_id.id_for_label }}" class="text-navy">
+                    {{ form.tax_id.label }} *
+                </label>
+            </div>
+            <button class="btn btn-brown" type="button" id="search-tax-id" data-action="cnpj-lookup">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <small class="form-text text-muted">Somente números</small>
+    </div>
+
+    <!-- Inscrição Estadual -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                   id="{{ form.state_registration.id_for_label }}"
+                   name="{{ form.state_registration.html_name }}"
+                   placeholder=" "
+                   value="{{ form.state_registration.value|default_if_none:'' }}">
+            <label for="{{ form.state_registration.id_for_label }}" class="text-navy">
+                {{ form.state_registration.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Inscrição Municipal -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                   id="{{ form.municipal_registration.id_for_label }}"
+                   name="{{ form.municipal_registration.html_name }}"
+                   placeholder=" "
+                   value="{{ form.municipal_registration.value|default_if_none:'' }}">
+            <label for="{{ form.municipal_registration.id_for_label }}" class="text-navy">
+                {{ form.municipal_registration.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Telefone -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            <input type="tel" class="form-control"
+                   id="{{ form.phone.id_for_label }}"
+                   name="{{ form.phone.html_name }}"
+                   placeholder=" "
+                   value="{{ form.phone.value|default_if_none:'' }}">
+            <label for="{{ form.phone.id_for_label }}" class="text-navy">
+                {{ form.phone.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- E-mail -->
+    <div class="col-md-5">
+        <div class="form-floating">
+            <input type="email" class="form-control"
+                   id="{{ form.email.id_for_label }}"
+                   name="{{ form.email.html_name }}"
+                   placeholder=" "
+                   value="{{ form.email.value|default_if_none:'' }}">
+            <label for="{{ form.email.id_for_label }}" class="text-navy">
+                {{ form.email.label }}
+            </label>
+        </div>
+    </div>
+
+    <!-- Responsável -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            <input type="text" class="form-control"
+                   id="{{ form.contact_person.id_for_label }}"
+                   name="{{ form.contact_person.html_name }}"
+                   placeholder=" "
+                   value="{{ form.contact_person.value|default_if_none:'' }}">
+            <label for="{{ form.contact_person.id_for_label }}" class="text-navy">
+                {{ form.contact_person.label }}
+            </label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Status -->
+    <div class="col-md-3">
+        <div class="form-check form-switch mt-3 pt-1">
+            <input class="form-check-input" type="checkbox" 
+                   id="{{ form.is_active.id_for_label }}"
+                   name="{{ form.is_active.html_name }}"
+                   {% if form.is_active.value %}checked{% endif %}>
+            <label class="form-check-label text-navy" for="{{ form.is_active.id_for_label }}">
+                {{ form.is_active.label }}
+            </label>
+        </div>
+    </div>
+</div>

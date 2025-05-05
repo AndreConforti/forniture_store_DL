@@ -1,0 +1,66 @@
+<div class="row g-3 mb-4">
+    <!-- CEP -->
+    <div class="col-md-3">
+        <div class="input-group">
+            <div class="form-floating">
+                {{ form.zip_code }}
+                <label for="{{ form.zip_code.id_for_label }}">{{ form.zip_code.label }}</label>
+            </div>
+            <button class="btn btn-outline-secondary" type="button" id="search-zip-code">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Logradouro -->
+    <div class="col-md-6">
+        <div class="form-floating">
+            {{ form.street }}
+            <label for="{{ form.street.id_for_label }}">{{ form.street.label }}</label>
+        </div>
+    </div>
+    
+    <!-- Número -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            {{ form.number }}
+            <label for="{{ form.number.id_for_label }}">{{ form.number.label }}</label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <!-- Complemento -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            {{ form.complement }}
+            <label for="{{ form.complement.id_for_label }}">{{ form.complement.label }}</label>
+        </div>
+    </div>
+    
+    <!-- Bairro -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            {{ form.neighborhood }}
+            <label for="{{ form.neighborhood.id_for_label }}">{{ form.neighborhood.label }}</label>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Cidade -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            {{ form.city }}
+            <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+        </div>
+    </div>
+    
+    <!-- UF -->
+    <div class="col-md-2">
+        <div class="form-floating">
+            {{ form.state }}
+            <label for="{{ form.state.id_for_label }}">{{ form.state.label }}</label>
+        </div>
+    </div>
+</div>

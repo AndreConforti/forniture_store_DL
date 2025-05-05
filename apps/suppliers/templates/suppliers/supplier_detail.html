@@ -1,0 +1,170 @@
+{% extends "base/base_home.html" %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'suppliers/css/supplier_detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <article class="card border-0 shadow-sm">
+        <header class="card-header bg-primary-dark text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-building fs-4 me-2"></i>
+                    <h1 class="m-0 h4">Detalhes do Fornecedor</h1>
+                </div>
+                <a href="{% url 'suppliers:list' %}" class="btn btn-sm btn-light">
+                    <i class="bi bi-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
+        </header>
+        
+        <div class="card-body p-4">
+            <!-- Dados Básicos -->
+            <section class="mb-5">
+                <h2 class="h5 mb-3 border-bottom pb-2">
+                    <i class="bi bi-card-text me-2"></i>Dados Cadastrais
+                </h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Razão Social:</dt>
+                            <dd class="col-sm-8">{{ supplier.full_name }}</dd>
+                            
+                            <dt class="col-sm-4">Nome Fantasia:</dt>
+                            <dd class="col-sm-8">{{ supplier.preferred_name|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">CNPJ/CPF:</dt>
+                            <dd class="col-sm-8">{{ supplier.formatted_tax_id }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Inscrição Estadual:</dt>
+                            <dd class="col-sm-8">{{ supplier.state_registration|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">Inscrição Municipal:</dt>
+                            <dd class="col-sm-8">{{ supplier.municipal_registration|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">Status:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge {% if supplier.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {% if supplier.is_active %}Ativo{% else %}Inativo{% endif %}
+                                </span>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Endereço -->
+            {% if supplier.address %}
+            <section class="mb-5">
+                <h2 class="h5 mb-3 border-bottom pb-2">
+                    <i class="bi bi-geo-alt me-2"></i>Endereço
+                </h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">CEP:</dt>
+                            <dd class="col-sm-8">{{ supplier.address.zip_code }}</dd>
+                            
+                            <dt class="col-sm-4">Endereço:</dt>
+                            <dd class="col-sm-8">
+                                {{ supplier.address.street }}, {{ supplier.address.number }}
+                                {% if supplier.address.complement %}- {{ supplier.address.complement }}{% endif %}
+                            </dd>
+                            
+                            <dt class="col-sm-4">Bairro:</dt>
+                            <dd class="col-sm-8">{{ supplier.address.neighborhood }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Cidade:</dt>
+                            <dd class="col-sm-8">{{ supplier.address.city }}</dd>
+                            
+                            <dt class="col-sm-4">Estado:</dt>
+                            <dd class="col-sm-8">{{ supplier.address.state }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+            {% endif %}
+
+            <!-- Contato -->
+            <section class="mb-5">
+                <h2 class="h5 mb-3 border-bottom pb-2">
+                    <i class="bi bi-telephone me-2"></i>Contato
+                </h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Telefone:</dt>
+                            <dd class="col-sm-8">{{ supplier.formatted_phone|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">E-mail:</dt>
+                            <dd class="col-sm-8">{{ supplier.email|default:"-" }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Responsável:</dt>
+                            <dd class="col-sm-8">{{ supplier.contact_person|default:"-" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dados Bancários -->
+            <section class="mb-5">
+                <h2 class="h5 mb-3 border-bottom pb-2">
+                    <i class="bi bi-bank me-2"></i>Dados Bancários
+                </h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Banco:</dt>
+                            <dd class="col-sm-8">{{ supplier.bank_name|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">Agência:</dt>
+                            <dd class="col-sm-8">{{ supplier.bank_agency|default:"-" }}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Conta:</dt>
+                            <dd class="col-sm-8">{{ supplier.bank_account|default:"-" }}</dd>
+                            
+                            <dt class="col-sm-4">Chave PIX:</dt>
+                            <dd class="col-sm-8">{{ supplier.pix_key|default:"-" }}</dd>
+                        </dl>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Observações -->
+            {% if supplier.notes %}
+            <section>
+                <h2 class="h5 mb-3 border-bottom pb-2">
+                    <i class="bi bi-chat-square-text me-2"></i>Observações
+                </h2>
+                <p>{{ supplier.notes|linebreaks }}</p>
+            </section>
+            {% endif %}
+        </div>
+        
+        <footer class="card-footer bg-light">
+            <div class="d-flex justify-content-end">
+                <a href="{% url 'suppliers:edit' supplier.pk %}" class="btn btn-primary me-2">
+                    <i class="bi bi-pencil-square me-1"></i> Editar
+                </a>
+                <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-list-ul me-1"></i> Ver Todos
+                </a>
+            </div>
+        </footer>
+    </article>
+</div>
+{% endblock %}
