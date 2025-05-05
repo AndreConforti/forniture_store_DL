@@ -1,0 +1,25 @@
+<div class="row g-3 mb-4">
+    <!-- Telefone -->
+    <div class="col-md-4">
+        <div class="form-floating">
+            {{ form.phone }}
+            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+        </div>
+    </div>
+    
+    <!-- E-mail -->
+    <div class="col-md-5">
+        <div class="form-floating">
+            {{ form.email }}
+            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        </div>
+    </div>
+    
+    <!-- Responsável -->
+    <div class="col-md-3">
+        <div class="form-floating">
+            {{ form.contact_person }}
+            <label for="{{ form.contact_person.id_for_label }}">{{ form.contact_person.label }}</label>
+        </div>
+    </div>
+</div>

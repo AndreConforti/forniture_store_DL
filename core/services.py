@@ -20,15 +20,40 @@ def fetch_company_data(tax_id):
             data = response.json()
 
             if data:
+                # Extrai a Inscrição Estadual (IE) ativa ou retorna ""
+                state_registration = ""
+                
+                # API 1 (open.cnpja.com)
+                if "registrations" in data:
+                    active_registration = next(
+                        (reg for reg in data.get("registrations", []) 
+                         if reg.get("enabled") and reg.get("type", {}).get("text") == "IE Normal"),
+                        None
+                    )
+                    if active_registration:
+                        state_registration = active_registration.get("number", "")
+                
+                # API 2 (publica.cnpj.ws)
+                elif "estabelecimento" in data:
+                    active_registration = next(
+                        (ie for ie in data.get("estabelecimento", {}).get("inscricoes_estaduais", []) 
+                         if ie.get("ativo")),
+                        None
+                    )
+                    if active_registration:
+                        state_registration = active_registration.get("inscricao_estadual", "")
+
                 return {
                     "full_name": (data.get('company', {}).get('name') or data.get('razao_social', "")).title(),
                     "preferred_name": (data.get('alias') or data.get('estabelecimento', {}).get('nome_fantasia', "")).title(),
-                    "zip_code": data.get('address', {}).get('zip') or data.get('estabelecimento', {}).get('cep'),
-                    "street": (data.get('address', {}).get('street') or f"{data.get('estabelecimento', {}).get('tipo_logradouro')} {data.get('estabelecimento', {}).get('logradouro')}").title(),
-                    "number": data.get('address', {}).get('number') or data.get('estabelecimento', {}).get('numero'),
+                    "zip_code": data.get('address', {}).get('zip') or data.get('estabelecimento', {}).get('cep', ""),
+                    "street": (data.get('address', {}).get('street') or 
+                              f"{data.get('estabelecimento', {}).get('tipo_logradouro', '')} {data.get('estabelecimento', {}).get('logradouro', '')}").title().strip(),
+                    "number": data.get('address', {}).get('number') or data.get('estabelecimento', {}).get('numero', ""),
                     "neighborhood": (data.get('address', {}).get('district') or data.get('estabelecimento', {}).get('bairro', "")).title(),
                     "city": (data.get('address', {}).get('city') or data.get('estabelecimento', {}).get('cidade', {}).get('nome', "")).title(),
-                    "state": data.get('address', {}).get('state') or data.get('estabelecimento', {}).get('estado', {}).get('sigla')
+                    "state": data.get('address', {}).get('state') or data.get('estabelecimento', {}).get('estado', {}).get('sigla', ""),
+                    "state_registration": state_registration  
                 }
         except requests.RequestException as e:
             logger.error(f"Erro ao consultar API {api_url}: {e}")

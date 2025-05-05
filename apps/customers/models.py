@@ -33,14 +33,14 @@ class Customer(models.Model):
     )
     
     full_name = models.CharField(
-        verbose_name='Nome Completo',
+        verbose_name='Nome Completo / Razão Social',    
         max_length=100,
         blank=True,
         null=True
     )
     
     preferred_name = models.CharField(
-        verbose_name='Como gostaria de ser chamado',
+        verbose_name='Apelido / Nome Fantasia',
         max_length=50,
         blank=True,
         null=True
@@ -113,7 +113,7 @@ class Customer(models.Model):
         ]
 
     def clean(self):
-        """Validação de CPF/CNPJ (mantida igual)"""
+        """Validação de CPF/CNPJ"""
         super().clean()
 
         if self.tax_id:

@@ -1,11 +1,10 @@
 from django.urls import path
+from core.utils import fetch_company_data_view, fetch_address_data_view
 from .views import (
     CustomerListView, 
     CustomerDetailView, 
     CustomerUpdateView,
     CustomerCreateView,
-    fetch_company_data_view,
-    fetch_address_data_view
 )
 
 app_name = 'customers'  # Namespace para URLs (opcional, mas recomendado)

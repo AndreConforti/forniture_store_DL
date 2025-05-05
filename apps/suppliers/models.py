@@ -34,14 +34,14 @@ class Supplier(models.Model):
         choices=SUPPLIER_TYPE_CHOICES,
         default='CORP'
     )
-    corporate_name = models.CharField(
-        verbose_name='Razão Social',
+    full_name = models.CharField(
+        verbose_name='Razão Social / Nome Completo',
         max_length=100,
         blank=True,
         null=True
     )
-    trade_name = models.CharField(
-        verbose_name='Nome Fantasia',
+    preferred_name = models.CharField(
+        verbose_name='Nome Fantasia / Apelido',
         max_length=50,
         blank=True,
         null=True
@@ -136,9 +136,9 @@ class Supplier(models.Model):
     class Meta:
         verbose_name = 'Fornecedor'
         verbose_name_plural = 'Fornecedores'
-        ordering = ['-registration_date', 'trade_name']
+        ordering = ['-registration_date', 'full_name']
         indexes = [
-            models.Index(fields=['corporate_name']),
+            models.Index(fields=['full_name']),
             models.Index(fields=['tax_id']),
             models.Index(fields=['is_active']),
         ]
@@ -180,9 +180,9 @@ class Supplier(models.Model):
         """Busca e atualiza dados de PJ automaticamente"""
         data = fetch_company_data(self.tax_id)
         if data:
-            self.corporate_name = data["corporate_name"]
-            self.trade_name = data["trade_name"]
-            super().save(update_fields=['corporate_name', 'trade_name'])
+            self.full_name = data["full_name"]
+            self.preferred_name = data["preferred_name"]
+            super().save(update_fields=['full_name', 'preferred_name'])
             
             # Prepara dados de endereço da API
             address_data = {
@@ -216,7 +216,7 @@ class Supplier(models.Model):
 
     @property
     def display_name(self):
-        return self.trade_name or self.corporate_name or f"Fornecedor {self.pk}"
+        return self.preferred_name or self.full_name or f"Fornecedor {self.pk}"
 
     @property
     def formatted_phone(self):
