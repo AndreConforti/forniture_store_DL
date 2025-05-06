@@ -2,34 +2,79 @@
     <!-- Banco -->
     <div class="col-md-4">
         <div class="form-floating">
-            {{ form.bank_name }}
-            <label for="{{ form.bank_name.id_for_label }}">{{ form.bank_name.label }}</label>
+            <input type="text" class="form-control {% if form.bank_name.errors %}is-invalid{% endif %}"
+                   id="{{ form.bank_name.id_for_label }}"
+                   name="{{ form.bank_name.html_name }}"
+                   placeholder=" "
+                   value="{{ form.bank_name.value|default_if_none:'' }}">
+            <label for="{{ form.bank_name.id_for_label }}" class="text-navy">
+                {{ form.bank_name.label }}
+            </label>
         </div>
+        {% if form.bank_name.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.bank_name.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
-    
+
     <!-- Agência -->
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="form-floating">
-            {{ form.bank_agency }}
-            <label for="{{ form.bank_agency.id_for_label }}">{{ form.bank_agency.label }}</label>
+            <input type="text" class="form-control {% if form.bank_agency.errors %}is-invalid{% endif %}"
+                   id="{{ form.bank_agency.id_for_label }}"
+                   name="{{ form.bank_agency.html_name }}"
+                   placeholder=" "
+                   value="{{ form.bank_agency.value|default_if_none:'' }}">
+            <label for="{{ form.bank_agency.id_for_label }}" class="text-navy">
+                {{ form.bank_agency.label }}
+            </label>
         </div>
+        {% if form.bank_agency.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.bank_agency.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
-    
+
     <!-- Conta -->
-    <div class="col-md-3">
+    <div class="col-md-4">
         <div class="form-floating">
-            {{ form.bank_account }}
-            <label for="{{ form.bank_account.id_for_label }}">{{ form.bank_account.label }}</label>
+            <input type="text" class="form-control {% if form.bank_account.errors %}is-invalid{% endif %}"
+                   id="{{ form.bank_account.id_for_label }}"
+                   name="{{ form.bank_account.html_name }}"
+                   placeholder=" "
+                   value="{{ form.bank_account.value|default_if_none:'' }}">
+            <label for="{{ form.bank_account.id_for_label }}" class="text-navy">
+                {{ form.bank_account.label }}
+            </label>
         </div>
+        {% if form.bank_account.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.bank_account.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
 </div>
 
 <div class="row g-3">
     <!-- Chave PIX -->
-    <div class="col-md-6">
+    <div class="col-12">
         <div class="form-floating">
-            {{ form.pix_key }}
-            <label for="{{ form.pix_key.id_for_label }}">{{ form.pix_key.label }}</label>
+            <input type="text" class="form-control {% if form.pix_key.errors %}is-invalid{% endif %}"
+                   id="{{ form.pix_key.id_for_label }}"
+                   name="{{ form.pix_key.html_name }}"
+                   placeholder=" "
+                   value="{{ form.pix_key.value|default_if_none:'' }}">
+            <label for="{{ form.pix_key.id_for_label }}" class="text-navy">
+                {{ form.pix_key.label }}
+            </label>
         </div>
+        {% if form.pix_key.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.pix_key.errors|join:", " }}
+        </div>
+        {% endif %}
+        <small class="text-muted">CPF/CNPJ, e-mail, telefone ou chave aleatória</small>
     </div>
 </div>

@@ -9,9 +9,7 @@ from core.services import fetch_company_data
 from validate_docbr import CPF, CNPJ
 import logging
 
-
 logger = logging.getLogger(__name__)
-
 
 class Supplier(models.Model):
     SUPPLIER_TYPE_CHOICES = [
@@ -27,7 +25,7 @@ class Supplier(models.Model):
         object_id_field='object_id'
     )
 
-    # Dados Básicos
+    # Informações básicas
     supplier_type = models.CharField(
         verbose_name='Tipo de Fornecedor',
         max_length=6,
@@ -37,8 +35,10 @@ class Supplier(models.Model):
     full_name = models.CharField(
         verbose_name='Razão Social / Nome Completo',
         max_length=100,
-        blank=True,
-        null=True
+        blank=False,  
+        null=False,  
+        default="",
+        help_text="Nome completo (PF) ou Razão Social (PJ)"
     )
     preferred_name = models.CharField(
         verbose_name='Nome Fantasia / Apelido',
@@ -49,12 +49,10 @@ class Supplier(models.Model):
     tax_id = models.CharField(
         verbose_name='CNPJ/CPF',
         max_length=18,
-        blank=True,
-        null=True,
-        unique=True,
+        unique=True
     )
 
-    # Dados Fiscais (serão preenchidos automaticamente pela API da Receita)
+    # Informações fiscais
     state_registration = models.CharField(
         verbose_name='Inscrição Estadual',
         max_length=20,
@@ -82,28 +80,28 @@ class Supplier(models.Model):
         null=True
     )
     contact_person = models.CharField(
-        verbose_name='Responsável',
+        verbose_name='Pessoa de Contato',
         max_length=100,
         blank=True,
         null=True
     )
 
-    # Dados Bancários
+    # Dados bancários
     bank_name = models.CharField(
         verbose_name='Banco',
         max_length=50,
         blank=True,
         null=True
     )
-    bank_account = models.CharField(
-        verbose_name='Conta',
-        max_length=20,
-        blank=True,
-        null=True
-    )
     bank_agency = models.CharField(
         verbose_name='Agência',
         max_length=10,
+        blank=True,
+        null=True
+    )
+    bank_account = models.CharField(
+        verbose_name='Conta',
+        max_length=20,
         blank=True,
         null=True
     )
@@ -114,7 +112,7 @@ class Supplier(models.Model):
         null=True
     )
 
-    # Status
+    # Status e metadados
     is_active = models.BooleanField(
         verbose_name='Ativo',
         default=True
@@ -142,7 +140,6 @@ class Supplier(models.Model):
             models.Index(fields=['tax_id']),
             models.Index(fields=['is_active']),
         ]
-
 
     def clean(self):
         """Validação de CPF/CNPJ"""
@@ -182,7 +179,8 @@ class Supplier(models.Model):
         if data:
             self.full_name = data["full_name"]
             self.preferred_name = data["preferred_name"]
-            super().save(update_fields=['full_name', 'preferred_name'])
+            self.state_registration = data.get("state_registration", "")
+            super().save(update_fields=['full_name', 'preferred_name', 'state_registration'])
             
             # Prepara dados de endereço da API
             address_data = {
@@ -205,8 +203,8 @@ class Supplier(models.Model):
         if address_data:
             content_type = ContentType.objects.get_for_model(Supplier)
             address, created = Address.objects.update_or_create(
-                content_type=content_type,  # Campo content_type (não content_type__model)
-                object_id=self.pk,          # ID do fornecedor
+                content_type=content_type,
+                object_id=self.pk,
                 defaults=address_data
             )
 

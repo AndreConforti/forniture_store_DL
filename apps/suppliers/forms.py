@@ -62,6 +62,16 @@ class SupplierForm(forms.ModelForm):
         })
     )
 
+    is_active = forms.BooleanField(
+        required=False,  # Não é obrigatório
+        initial=True,   # Marcado por padrão
+        label='Fornecedor ativo',
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'id': 'id_is_active'
+        })
+    )
+
     class Meta:
         model = Supplier
         fields = [
@@ -74,24 +84,22 @@ class SupplierForm(forms.ModelForm):
         widgets = {
             'supplier_type': forms.Select(attrs={
                 'class': 'form-select',
-                'data-action': 'supplier-type-change'  # Para JavaScript
+                'data-action': 'supplier-type-change'
             }),
             'full_name': forms.TextInput(attrs={'class': 'form-control'}),
             'preferred_name': forms.TextInput(attrs={'class': 'form-control'}),
             'tax_id': forms.TextInput(attrs={
                 'class': 'form-control',
                 'data-action': 'document-input',
-                'placeholder': 'Somente números',
-                'pattern': r'\d*',
-                'inputmode': 'numeric'
+                'placeholder': 'Somente números'
             }),
             'state_registration': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Opcional para PF'
+                'placeholder': 'Inscrição Estadual'
             }),
             'municipal_registration': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Opcional para PF'
+                'placeholder': 'Inscrição Municipal'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -99,49 +107,36 @@ class SupplierForm(forms.ModelForm):
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'exemplo@fornecedor.com'
+                'placeholder': 'exemplo@email.com'
             }),
             'contact_person': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Nome do responsável'
+                'placeholder': 'Nome do contato principal'
             }),
-            'bank_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Ex: Banco do Brasil'
-            }),
-            'bank_agency': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número da agência'
-            }),
-            'bank_account': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Número da conta'
-            }),
-            'pix_key': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Chave PIX (CPF/CNPJ, e-mail, telefone)'
-            }),
+            'bank_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'bank_agency': forms.TextInput(attrs={'class': 'form-control'}),
+            'bank_account': forms.TextInput(attrs={'class': 'form-control'}),
+            'pix_key': forms.TextInput(attrs={'class': 'form-control'}),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
             'notes': forms.Textarea(attrs={
                 'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Observações importantes'
+                'rows': 3
             }),
         }
         labels = {
             'tax_id': 'CPF/CNPJ',
-            'pix_key': 'Chave PIX'
+            'is_active': 'Fornecedor ativo'
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Ajusta campos obrigatórios dinamicamente
+        # Ajusta campos obrigatórios
         self.fields['full_name'].required = True
         self.fields['tax_id'].required = True
         
-        # Oculta campos fiscais se for PF
+        # Se for pessoa física, esconde campos de inscrição
         if self.instance and self.instance.supplier_type == 'IND':
             self.fields['state_registration'].widget = forms.HiddenInput()
             self.fields['municipal_registration'].widget = forms.HiddenInput()
@@ -153,14 +148,16 @@ class SupplierForm(forms.ModelForm):
         if not tax_id:
             raise forms.ValidationError("Documento obrigatório!")
 
+        # Remove caracteres especiais
         tax_id = tax_id.replace('.', '').replace('-', '').replace('/', '').strip()
 
+        # Validação de CPF/CNPJ
         if supplier_type == "IND":
             if len(tax_id) != 11:
                 raise forms.ValidationError("CPF inválido! Deve conter 11 números.")
             if not CPF().validate(tax_id):
                 raise forms.ValidationError("CPF inválido!")
-        else:  # CORP
+        elif supplier_type == "CORP":
             if len(tax_id) != 14:
                 raise forms.ValidationError("CNPJ inválido! Deve conter 14 números.")
             if not CNPJ().validate(tax_id):
@@ -172,32 +169,13 @@ class SupplierForm(forms.ModelForm):
         cleaned_data = super().clean()
         supplier_type = cleaned_data.get('supplier_type')
 
-        # Remove obrigatoriedade de campos fiscais para PF
-        if supplier_type == "IND":
-            for field in ['state_registration', 'municipal_registration']:
-                if field in self.errors:
-                    del self.errors[field]
-
-        # Validação condicional para nome fantasia (obrigatório para PJ)
-        if supplier_type == "CORP" and not cleaned_data.get('preferred_name'):
-            self.add_error('preferred_name', "Nome fantasia é obrigatório para PJ.")
-
-    def save(self, commit=True):
-        supplier = super().save(commit=False)
-        
-        # Atualiza endereço se dados forem fornecidos
-        address_data = {
-            'zip_code': self.cleaned_data.get('zip_code'),
-            'street': self.cleaned_data.get('street'),
-            'number': self.cleaned_data.get('number'),
-            'complement': self.cleaned_data.get('complement'),
-            'neighborhood': self.cleaned_data.get('neighborhood'),
-            'city': self.cleaned_data.get('city'),
-            'state': self.cleaned_data.get('state')
-        }
-        
-        if commit:
-            supplier.save()
-            supplier._update_or_create_address(address_data)
-        
-        return supplier
+        # Validações específicas para PJ
+        if supplier_type == "CORP":
+            if not cleaned_data.get('preferred_name'):
+                self.add_error('preferred_name', "Nome fantasia é obrigatório para PJ.")
+            
+            # Remove erros de campos não obrigatórios para PF
+            if 'state_registration' in self.errors:
+                del self.errors['state_registration']
+            if 'municipal_registration' in self.errors:
+                del self.errors['municipal_registration']

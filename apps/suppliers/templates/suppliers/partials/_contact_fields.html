@@ -2,24 +2,59 @@
     <!-- Telefone -->
     <div class="col-md-4">
         <div class="form-floating">
-            {{ form.phone }}
-            <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
+            <input type="tel" class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                   id="{{ form.phone.id_for_label }}"
+                   name="{{ form.phone.html_name }}"
+                   placeholder=" "
+                   value="{{ form.phone.value|default_if_none:'' }}">
+            <label for="{{ form.phone.id_for_label }}" class="text-navy">
+                {{ form.phone.label }}
+            </label>
         </div>
+        {% if form.phone.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.phone.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
-    
+
     <!-- E-mail -->
-    <div class="col-md-5">
+    <div class="col-md-8">
         <div class="form-floating">
-            {{ form.email }}
-            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+            <input type="email" class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                   id="{{ form.email.id_for_label }}"
+                   name="{{ form.email.html_name }}"
+                   placeholder=" "
+                   value="{{ form.email.value|default_if_none:'' }}">
+            <label for="{{ form.email.id_for_label }}" class="text-navy">
+                {{ form.email.label }}
+            </label>
         </div>
+        {% if form.email.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.email.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
-    
-    <!-- Responsável -->
-    <div class="col-md-3">
+</div>
+
+<div class="row g-3">
+    <!-- Pessoa de Contato -->
+    <div class="col-12">
         <div class="form-floating">
-            {{ form.contact_person }}
-            <label for="{{ form.contact_person.id_for_label }}">{{ form.contact_person.label }}</label>
+            <input type="text" class="form-control {% if form.contact_person.errors %}is-invalid{% endif %}"
+                   id="{{ form.contact_person.id_for_label }}"
+                   name="{{ form.contact_person.html_name }}"
+                   placeholder=" "
+                   value="{{ form.contact_person.value|default_if_none:'' }}">
+            <label for="{{ form.contact_person.id_for_label }}" class="text-navy">
+                {{ form.contact_person.label }}
+            </label>
         </div>
+        {% if form.contact_person.errors %}
+        <div class="invalid-feedback d-block">
+            {{ form.contact_person.errors|join:", " }}
+        </div>
+        {% endif %}
     </div>
 </div>
