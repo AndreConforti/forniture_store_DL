@@ -9,19 +9,57 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Fornecedores Cadastrados</h2>
-        <a href="{% url 'suppliers:create' %}" class="btn btn-primary">
+        <a href="{% url 'suppliers:create' %}" class="btn">
             <i class="bi bi-plus-circle"></i> Novo Fornecedor
         </a>
     </div>
-    
-    <!-- Filtros -->
+    <!-- Campo de Busca com Filtros -->
     <form method="get" class="mb-4">
         <div class="row">
             <div class="col-md-8">
                 <div class="input-group">
-                    <input type="text" name="search" class="form-control" 
-                           placeholder="Buscar por nome, CNPJ ou e-mail..."
-                           value="{{ request.GET.search }}">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        class="form-control" 
+                        placeholder="Buscar por nome, CPF/CNPJ, e-mail ou contato..."
+                        value="{{ request.GET.search }}"
+                    >
+                    <div class="input-group-append ms-2 d-flex align-items-center">
+                        <div class="form-check form-check-inline mx-2">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="filter-all" 
+                                name="supplier_type" 
+                                value="all"
+                                {% if not request.GET.supplier_type or request.GET.supplier_type == 'all' %}checked{% endif %}
+                            >
+                            <label class="form-check-label" for="filter-all">Todos</label>
+                        </div>
+                        <div class="form-check form-check-inline mx-2">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="filter-pf" 
+                                name="supplier_type" 
+                                value="IND"
+                                {% if request.GET.supplier_type == 'IND' %}checked{% endif %}
+                            >
+                            <label class="form-check-label" for="filter-pf">Pessoa Física</label>
+                        </div>
+                        <div class="form-check form-check-inline mx-2">
+                            <input 
+                                class="form-check-input" 
+                                type="radio" 
+                                id="filter-pj" 
+                                name="supplier_type" 
+                                value="CORP"
+                                {% if request.GET.supplier_type == 'CORP' %}checked{% endif %}
+                            >
+                            <label class="form-check-label" for="filter-pj">Pessoa Jurídica</label>
+                        </div>
+                    </div>
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-search"></i> Buscar
                     </button>
@@ -29,37 +67,39 @@
             </div>
         </div>
     </form>
-
-    <!-- Tabela -->
+    <!-- Tabela de Fornecedores -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead class="table-light">
                         <tr>
-                            <th>Razão Social</th>
-                            <th>Nome Fantasia</th>
-                            <th>CNPJ/CPF</th>
-                            <th>Inscrição Estadual</th>
+                            <th>Nome / Razão Social</th>
+                            <th>CPF/CNPJ</th>
+                            <th>Tipo</th>
                             <th>Contato</th>
+                            <th>Telefone</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for supplier in suppliers %}
-                        <tr>
+                        <tr class="align-middle">
                             <td>
-                                <a href="{% url 'suppliers:detail' supplier.pk %}" class="text-decoration-none">
-                                    {{ supplier.full_name }}
+                                <a href="{% url 'suppliers:detail' supplier.pk %}" class="text-decoration-none text-dark">
+                                    {{ supplier.display_name }}
                                 </a>
                             </td>
-                            <td>{{ supplier.preferred_name|default:"-" }}</td>
                             <td>{{ supplier.formatted_tax_id }}</td>
-                            <td>{{ supplier.state_registration|default:"-" }}</td>
+                            <td>{{ supplier.get_supplier_type_display }}</td>
                             <td>
-                                {% if supplier.phone %}{{ supplier.formatted_phone }}<br>{% endif %}
-                                {{ supplier.email|default:"" }}
+                                {% if supplier.contact_person %}
+                                    {{ supplier.contact_person }}
+                                {% else %}
+                                    -
+                                {% endif %}
                             </td>
+                            <td>{{ supplier.formatted_phone }}</td>
                             <td>
                                 <span class="badge {% if supplier.is_active %}bg-success{% else %}bg-secondary{% endif %}">
                                     {% if supplier.is_active %}Ativo{% else %}Inativo{% endif %}

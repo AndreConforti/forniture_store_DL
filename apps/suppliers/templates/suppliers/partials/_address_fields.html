@@ -1,30 +1,60 @@
 <div class="row g-3 mb-4">
     <!-- CEP -->
     <div class="col-md-3">
-        <div class="input-group">
+        <div class="input-group has-validation">
             <div class="form-floating">
-                {{ form.zip_code }}
-                <label for="{{ form.zip_code.id_for_label }}">{{ form.zip_code.label }}</label>
+                <input type="text" 
+                        class="form-control {% if form.zip_code.errors %}is-invalid{% endif %}"
+                        id="{{ form.zip_code.id_for_label }}"
+                        name="{{ form.zip_code.html_name }}"
+                        placeholder=" "
+                        value="{{ form.zip_code.value|default_if_none:'' }}"
+                        data-mask="00000-000"
+                        data-action="cep-lookup">
+                <label for="{{ form.zip_code.id_for_label }}" class="text-brown">
+                    {{ form.zip_code.label }}
+                </label>
             </div>
-            <button class="btn btn-outline-secondary" type="button" id="search-zip-code">
+            <button class="btn btn-brown" 
+                    type="button" 
+                    id="search-zip-code"
+                    data-url="{% url 'suppliers:search_zip_code' %}">
                 <i class="bi bi-search"></i>
             </button>
+            {% if form.zip_code.errors %}
+            <div class="invalid-feedback">
+                {{ form.zip_code.errors|join:", " }}
+            </div>
+            {% endif %}
         </div>
+        <small class="text-muted">Formato: 00000-000</small>
     </div>
-    
+
     <!-- Logradouro -->
     <div class="col-md-6">
         <div class="form-floating">
-            {{ form.street }}
-            <label for="{{ form.street.id_for_label }}">{{ form.street.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.street.id_for_label }}"
+                   name="{{ form.street.html_name }}"
+                   placeholder=" "
+                   value="{{ form.street.value|default_if_none:'' }}">
+            <label for="{{ form.street.id_for_label }}" class="text-brown">
+                {{ form.street.label }}
+            </label>
         </div>
     </div>
-    
+
     <!-- Número -->
     <div class="col-md-3">
         <div class="form-floating">
-            {{ form.number }}
-            <label for="{{ form.number.id_for_label }}">{{ form.number.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.number.id_for_label }}"
+                   name="{{ form.number.html_name }}"
+                   placeholder=" "
+                   value="{{ form.number.value|default_if_none:'' }}">
+            <label for="{{ form.number.id_for_label }}" class="text-brown">
+                {{ form.number.label }}
+            </label>
         </div>
     </div>
 </div>
@@ -33,16 +63,28 @@
     <!-- Complemento -->
     <div class="col-md-4">
         <div class="form-floating">
-            {{ form.complement }}
-            <label for="{{ form.complement.id_for_label }}">{{ form.complement.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.complement.id_for_label }}"
+                   name="{{ form.complement.html_name }}"
+                   placeholder=" "
+                   value="{{ form.complement.value|default_if_none:'' }}">
+            <label for="{{ form.complement.id_for_label }}" class="text-brown">
+                {{ form.complement.label }}
+            </label>
         </div>
     </div>
-    
+
     <!-- Bairro -->
     <div class="col-md-4">
         <div class="form-floating">
-            {{ form.neighborhood }}
-            <label for="{{ form.neighborhood.id_for_label }}">{{ form.neighborhood.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.neighborhood.id_for_label }}"
+                   name="{{ form.neighborhood.html_name }}"
+                   placeholder=" "
+                   value="{{ form.neighborhood.value|default_if_none:'' }}">
+            <label for="{{ form.neighborhood.id_for_label }}" class="text-brown">
+                {{ form.neighborhood.label }}
+            </label>
         </div>
     </div>
 </div>
@@ -51,16 +93,29 @@
     <!-- Cidade -->
     <div class="col-md-4">
         <div class="form-floating">
-            {{ form.city }}
-            <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown"
+                   id="{{ form.city.id_for_label }}"
+                   name="{{ form.city.html_name }}"
+                   placeholder=" "
+                   value="{{ form.city.value|default_if_none:'' }}">
+            <label for="{{ form.city.id_for_label }}" class="text-brown">
+                {{ form.city.label }}
+            </label>
         </div>
     </div>
-    
+
     <!-- UF -->
     <div class="col-md-2">
         <div class="form-floating">
-            {{ form.state }}
-            <label for="{{ form.state.id_for_label }}">{{ form.state.label }}</label>
+            <input type="text" class="form-control border-brown focus-brown text-uppercase"
+                   id="{{ form.state.id_for_label }}"
+                   name="{{ form.state.html_name }}"
+                   placeholder=" "
+                   value="{{ form.state.value|default_if_none:'' }}"
+                   maxlength="2">
+            <label for="{{ form.state.id_for_label }}" class="text-brown">
+                {{ form.state.label }}
+            </label>
         </div>
     </div>
 </div>

@@ -22,6 +22,17 @@
                 </ul>
             </li>
 
+            <!-- Fornecedores -->
+            <li class="nav-item">
+                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#suppliersSubmenu">
+                    <i class="bi bi-truck me-2"></i> Fornecedores
+                </a>
+                <ul class="collapse ms-3" id="suppliersSubmenu">
+                    <li><a class="nav-link text-light" href="{% url 'suppliers:create' %}">Cadastrar Novo</a></li>
+                    <li><a class="nav-link text-light" href="{% url 'suppliers:list' %}">Listar Fornecedores</a></li>
+                </ul>
+            </li>
+
             <!-- Pedidos -->
             <li class="nav-item">
                 <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#ordersSubmenu">
@@ -46,17 +57,6 @@
                 </ul>
             </li>
 
-            <!-- Fornecedores -->
-            <li class="nav-item">
-                <a class="nav-link text-light fw-bold" data-bs-toggle="collapse" href="#suppliersSubmenu">
-                    <i class="bi bi-truck me-2"></i> Fornecedores
-                </a>
-                <ul class="collapse ms-3" id="suppliersSubmenu">
-                    <li><a class="nav-link text-light" href="#">Cadastrar Novo</a></li>
-                    <li><a class="nav-link text-light" href="#">Listar Fornecedores</a></li>
-                    <li><a class="nav-link text-light" href="#">Pedidos Pendentes</a></li>
-                </ul>
-            </li>
 
             <!-- Relatórios -->
             <li class="nav-item">
