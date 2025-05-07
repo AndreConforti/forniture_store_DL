@@ -1,10 +1,6 @@
 {% extends "base/base_home.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'customers/css/customer_form.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="container-fluid mt-3">
     <div class="card customer-form-card">
@@ -61,17 +57,17 @@
                 <div class="tab-content p-3 border-top-0 border-navy rounded-bottom" id="customerTabsContent">
                     <!-- Aba Dados Básicos -->
                     <div class="tab-pane fade show active" id="basic-tab-pane" role="tabpanel" aria-labelledby="basic-tab">
-                        {% include 'customers/partials/basic_fields.html' %}
+                        {% include 'customers/partials/_basic_fields.html' %}
                     </div>
 
                     <!-- Aba Endereço -->
                     <div class="tab-pane fade" id="address-tab-pane" role="tabpanel" aria-labelledby="address-tab">
-                        {% include 'customers/partials/address_fields.html' %}
+                        {% include 'customers/partials/_address_fields.html' %}
                     </div>
 
                     <!-- Aba Adicionais -->
                     <div class="tab-pane fade" id="additional-tab-pane" role="tabpanel" aria-labelledby="additional-tab">
-                        {% include 'customers/partials/additional_fields.html' %}
+                        {% include 'customers/partials/_additional_fields.html' %}
                     </div>
                 </div>
 
