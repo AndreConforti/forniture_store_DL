@@ -18,10 +18,11 @@ class CustomerListView(ListView):
     model = Customer
     template_name = 'customers/list.html'
     context_object_name = 'customers'
-    paginate_by = 10
+    paginate_by = 20
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)  ## Apenas os Ativos
         search_query = self.request.GET.get('search', '').strip()
         customer_type = self.request.GET.get('customer_type', 'all')
         

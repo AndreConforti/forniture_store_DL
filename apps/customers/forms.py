@@ -1,15 +1,26 @@
 from django import forms
-from .models import Customer, Address
+from .models import Customer
 from django.core.validators import RegexValidator
 from validate_docbr import CPF, CNPJ
 
 
 class CustomerForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Ajusta o widget para que o campo só aceite números
-        self.fields['tax_id'].widget.attrs['pattern'] = r'\d*'  # Apenas números
-        self.fields['tax_id'].widget.attrs['inputmode'] = 'numeric'  # Teclado numérico em mobile
+        super().__init__(*args, **kwargs)  # Chamar super() primeiro
+
+        # Ajusta o widget do tax_id
+        if 'tax_id' in self.fields:
+            self.fields['tax_id'].widget.attrs.update({
+                'pattern': r'\d*',
+                'inputmode': 'numeric'
+            })
+
+        # Adicionar autocomplete="off" aos campos de endereço
+        address_fields = ['zip_code', 'street', 'number', 'complement', 'neighborhood', 'city', 'state']
+        for field_name in address_fields:
+            if field_name in self.fields: 
+                self.fields[field_name].widget.attrs['autocomplete'] = 'off'
+
 
     # Campos de endereço
     zip_code = forms.CharField(
@@ -73,7 +84,7 @@ class CustomerForm(forms.ModelForm):
         model = Customer
         fields = [
             'customer_type', 'full_name', 'preferred_name',
-            'tax_id', 'phone', 'email', 'is_active', 'is_vip',
+            'tax_id', 'phone', 'email', 'is_vip',
             'profession', 'interests', 'notes'
         ]
         widgets = {
@@ -96,9 +107,6 @@ class CustomerForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'exemplo@email.com'
             }),
-            'is_active': forms.CheckboxInput(attrs={
-                'class': 'form-check-input'
-            }),
             'is_vip': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
             }),
@@ -111,15 +119,10 @@ class CustomerForm(forms.ModelForm):
         }
         labels = {
             'tax_id': 'CPF/CNPJ',
-            'is_active': 'Cliente ativo',
+            'full_name': 'Nome Completo / Razão Social',
+            'customer_type': 'Tipo de Cliente',
             'is_vip': 'Cliente VIP'
         }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields:
-            if self.fields[field].required:
-                self.fields[field].label += ' *'
 
 
     def clean_tax_id(self):

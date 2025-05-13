@@ -35,8 +35,6 @@ class Customer(models.Model):
     full_name = models.CharField(
         verbose_name='Nome Completo / Razão Social',    
         max_length=100,
-        blank=True,
-        null=True
     )
     
     preferred_name = models.CharField(
@@ -63,8 +61,6 @@ class Customer(models.Model):
     tax_id = models.CharField(
         verbose_name='CPF/CNPJ',
         max_length=18,
-        blank=True,
-        null=True,
         unique=True,
     )
 
@@ -198,7 +194,7 @@ class Customer(models.Model):
         return phone
 
     def __str__(self):
-        return f"{self.display_name} ({self.tax_id})"
+        return f"{self.display_name} ({self.formatted_tax_id()})"
 
     def formatted_tax_id(self):
         if not self.tax_id:

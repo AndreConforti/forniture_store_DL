@@ -9,6 +9,7 @@ urlpatterns = [
     path('', include('apps.showroom.urls')),
     path('customers/', include('apps.customers.urls')),
     path('suppliers/', include('apps.suppliers.urls')),
+    path('products', include('apps.products.urls')),
 ]
 
 if settings.DEBUG:

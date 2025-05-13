@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, RegexValidator
 from decimal import Decimal
 from django.db import transaction
+from django.db.models import ImageField
 
 
 class Category(models.Model):
@@ -87,6 +88,8 @@ class Category(models.Model):
     def save(self, *args, **kwargs):
         """Garante que o clean() seja sempre executado antes do save."""
         self.full_clean()
+        if not self.pk:  # Se for um novo registro
+            self.is_active = True
         super().save(*args, **kwargs)
 
 
@@ -199,6 +202,11 @@ class Subcategory(models.Model):
             raise ValidationError(
                 {'name': 'Já existe uma subcategoria com nome similar nesta categoria.'}
             )
+        
+        if not self.category.is_active:
+            raise ValidationError(
+                {'category': 'Não é possível criar/editar subcategorias para categorias inativas.'}
+            )
 
     def save(self, *args, **kwargs):
         """Garante validação completa antes de salvar."""
@@ -239,40 +247,58 @@ class Product(models.Model):
     )
     
     # Identificação básica
-    name = models.CharField(
-        verbose_name='Nome do Produto',
+    description = models.CharField(
+        verbose_name='Descrição/Nome',
         max_length=100,
-        help_text='Nome completo do produto para exibição.'
+        help_text='Nome principal do produto.'
     )
-    short_name = models.CharField(
-        verbose_name='Nome Curto',
+    model = models.CharField(
+        verbose_name='Modelo',
         max_length=50,
         blank=True,
-        help_text='Nome reduzido para etiquetas e sistemas com espaço limitado.'
+        help_text='Modelo do Prduto.'        
+    )
+    brand = models.CharField(
+        verbose_name='Marca',
+        max_length=50,
+        blank=True,
+        help_text='Marca/fabricante do produto (opcional).'
+    )
+    color = models.CharField(
+        verbose_name='Cor ou Fragrância',
+        max_length=50,
+        blank=True,
+        help_text='Cor principal do produto ou fragrância (opcional).'
     )
     
     # Códigos e identificadores
-    internal_code = models.CharField(
-        verbose_name='Código Interno',
-        max_length=20,
-        unique=True,
-        blank=True,
-        null=True,
-        help_text='Código único para controle interno (gerado automaticamente se vazio).'
-    )
-    barcode = models.CharField(
-        verbose_name='Código de Barras',
-        max_length=13,
+    gtin = models.CharField(
+        verbose_name='GTIN (Código de Barras)',
+        max_length=14,
         blank=True,
         null=True,
         unique=True,
         validators=[
             RegexValidator(
-                regex=r'^\d{8,13}$',
-                message='O código de barras deve conter entre 8 e 13 dígitos.'
+                regex=r'^\d{8,14}$',
+                message='O GTIN deve conter entre 8 e 14 dígitos numéricos.'
             )
         ],
-        help_text='GTIN/EAN/UPC (opcional).'
+        help_text='GTIN (EAN/UPC) do produto (8 a 14 dígitos).'
+    )
+    internal_code = models.CharField(
+        verbose_name='Código Interno',
+        max_length=20,
+        unique=True,
+        editable=False,
+        help_text='Código único para controle interno (gerado automaticamente).'
+    )
+    ncm = models.CharField(
+        verbose_name='Código NCM',
+        max_length=8,
+        blank=True,
+        null=True,
+        help_text='Nomenclatura Comum do Mercosul.'
     )
     sku = models.CharField(
         verbose_name='SKU',
@@ -281,13 +307,6 @@ class Product(models.Model):
         null=True,
         unique=True,
         help_text='Stock Keeping Unit (identificador do fornecedor).'
-    )
-    ncm = models.CharField(
-        verbose_name='NCM',
-        max_length=8,
-        blank=True,
-        null=True,
-        help_text='Nomenclatura Comum do Mercosul (opcional).'
     )
     
     # Informações de preço
@@ -342,10 +361,11 @@ class Product(models.Model):
     )
     
     # Informações adicionais
-    description = models.TextField(
-        verbose_name='Descrição Detalhada',
+    origin = models.CharField(
+        verbose_name='Origem',
+        max_length=30,
         blank=True,
-        help_text='Descrição completa com características e detalhes do produto.'
+        help_text='País de origem/fabricação (opcional).'
     )
     materials = models.CharField(
         verbose_name='Materiais',
@@ -353,23 +373,27 @@ class Product(models.Model):
         blank=True,
         help_text='Materiais principais que compõem o produto (opcional).'
     )
-    color = models.CharField(
-        verbose_name='Cor',
-        max_length=50,
+    full_description = models.CharField(
+        verbose_name='Descrição completa',
+        max_length=255,
         blank=True,
-        help_text='Cor principal do produto (opcional).'
+        null=True,
+        help_text='Descrição completa do produto do código NCM.'
     )
-    brand = models.CharField(
-        verbose_name='Marca',
-        max_length=50,
+
+    # Imagens
+    barcode_image = models.URLField(
+        verbose_name='Imagem do Código de Barras',
+        max_length=255,
         blank=True,
-        help_text='Marca/fabricante do produto (opcional).'
+        null=True,
+        help_text='URL da imagem do código de barras.'
     )
-    origin = models.CharField(
-        verbose_name='Origem',
-        max_length=30,
+    product_image = models.ImageField(
+        verbose_name='Imagem do Produto',
+        upload_to='products/images/%Y/%m/%d/',
         blank=True,
-        help_text='País de origem/fabricação (opcional).'
+        null=True
     )
     
     # Status e controle
@@ -378,18 +402,6 @@ class Product(models.Model):
         default=True,
         help_text='Indica se o produto está ativo para venda.'
     )
-    requires_serial_number = models.BooleanField(
-        verbose_name='Requer Número de Série',
-        default=False,
-        help_text='Produtos de alto valor que exigem registro de série.'
-    )
-    is_fragile = models.BooleanField(
-        verbose_name='Frágil',
-        default=False,
-        help_text='Produto requer cuidados especiais no manuseio.'
-    )
-    
-    # Datas
     created_at = models.DateTimeField(
         verbose_name='Criado em',
         auto_now_add=True,
@@ -399,61 +411,73 @@ class Product(models.Model):
         verbose_name='Atualizado em',
         auto_now=True
     )
-    discontinued_at = models.DateTimeField(
-        verbose_name='Descontinuado em',
-        blank=True,
-        null=True,
-        help_text='Data em que o produto foi descontinuado (opcional).'
-    )
+
 
     class Meta:
         verbose_name = 'Produto'
         verbose_name_plural = 'Produtos'
         app_label = 'products'
-        ordering = ['name']
+        ordering = ['description'] 
         indexes = [
-            models.Index(fields=['name'], name='product_name_idx'),
+            models.Index(fields=['description'], name='product_description_idx'),
             models.Index(fields=['internal_code'], name='product_internal_code_idx'),
-            models.Index(fields=['barcode'], name='product_barcode_idx'),
+            models.Index(fields=['gtin'], name='product_gtin_idx'),  
             models.Index(fields=['category', 'subcategory'], name='product_category_idx'),
             models.Index(fields=['is_active'], name='product_active_idx'),
         ]
         constraints = [
+            # Constraint para garantir que a combinação description+model+brand+color seja única por categoria
             models.UniqueConstraint(
-                fields=['category', 'name'],
-                name='unique_product_name_per_category',
-                violation_error_message='Já existe um produto com este nome nesta categoria.'
+                fields=['category', 'description', 'model', 'brand', 'color'],
+                name='unique_product_combo_per_category',
+                violation_error_message='Já existe um produto com esta combinação de descrição, modelo, marca e cor nesta categoria.'
+            ),
+            
+            # Mantenha a constraint de GTIN único se necessário
+            models.UniqueConstraint(
+                fields=['gtin'],
+                name='unique_product_gtin',
+                violation_error_message='Já existe um produto com este GTIN.',
+                condition=models.Q(gtin__isnull=False)  # Só aplica se GTIN não for nulo
             )
         ]
 
     def __str__(self):
-        """Representação no formato 'CÓDIGO - Nome' ou apenas 'Nome'."""
-        if self.internal_code:
-            return f"{self.internal_code} - {self.name}"
-        return self.name
+        return f"{self.internal_code} - {self.full_name}" if self.internal_code else self.full_name
 
     def clean(self):
         """
         Validações:
         1. Subcategoria pertence à categoria
-        2. Produto descontinuado não pode estar ativo
+        2. Combinação description+model+brand+color é única na categoria
         3. Geração segura de internal_code
         """
         super().clean()
         
-        # Valida relacionamento categoria-subcategoria
+        # 1. Valida relacionamento categoria-subcategoria
         if self.subcategory and self.subcategory.category != self.category:
             raise ValidationError(
                 {'subcategory': 'A subcategoria selecionada não pertence à categoria principal.'}
             )
         
-        # Valida status vs data de descontinuação
-        if self.discontinued_at and self.is_active:
+        # 2. Valida combinação única (case-insensitive)
+        query = Product.objects.filter(
+            category=self.category,
+            description__iexact=self.description,
+            model__iexact=self.model,
+            brand__iexact=self.brand,
+            color__iexact=self.color
+        )
+        
+        if self.pk:  # Se for uma atualização, exclui o próprio registro da verificação
+            query = query.exclude(pk=self.pk)
+        
+        if query.exists():
             raise ValidationError(
-                {'is_active': 'Produto descontinuado não pode estar ativo.'}
+                {'description': 'Já existe um produto com esta combinação de descrição, modelo, marca e cor nesta categoria.'}
             )
         
-        # Geração thread-safe do código interno
+        # 3. Geração do código interno
         if not self.internal_code:
             self._generate_internal_code()
 
@@ -502,3 +526,15 @@ class Product(models.Model):
         if all([self.length, self.width, self.height]):
             return f"{self.length} × {self.width} × {self.height} cm"
         return "Dimensões não disponíveis"
+    
+    @property
+    def full_name(self):
+        """Retorna a descrição completa com modelo, marca e cor"""
+        parts = [self.description]
+        if self.model:
+            parts.append(f"Modelo: {self.model}")
+        if self.brand:
+            parts.append(f"Marca: {self.brand}")
+        if self.color:
+            parts.append(f"Cor: {self.color}")
+        return " - ".join(parts)

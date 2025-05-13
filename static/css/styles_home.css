@@ -70,10 +70,12 @@
 .bg-sidebar .btn-close:hover {
     opacity: 0.8;
 }
-/* Footer */
+/* ===== Footer ===== */
 .footer {
     background-color: var(--primary-dark) !important;
     color: var(--secondary-ultralight) !important;
+    bottom: 0;
+    width: 100%;
     padding: 10px;
     text-align: center;
 }
@@ -202,4 +204,23 @@ button {
     .nav-tabs .nav-link {
         padding: 0.5rem 1rem;
     }
+}
+
+/* ===== Estilos para mensagens ===== */
+.alert {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.1);
+    border-color: var(--bs-success);
+    color: var(--bs-success);
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: var(--bs-warning);
+    color: var(--bs-warning);
 }
