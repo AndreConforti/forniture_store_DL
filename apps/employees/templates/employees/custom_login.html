@@ -1,33 +1,53 @@
-{% extends "base/base_top.html" %}
+{% extends 'base/base_home.html' %}
+{% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-marrom-escuro text-bege">
-                    <h3 class="mb-0"><i class="fas fa-sign-in-alt"></i> Acesso do Funcionário</h3>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 120px);">
+    <div class="card shadow-lg" style="max-width: 800px; width: 100%;">
+        <div class="row g-0">
+            <!-- Parte esquerda - Logo -->
+            <div class="col-md-6 d-flex align-items-center justify-content-center p-4 bg-primary-ultralight">
+                <div class="text-center">
+                    <img src="{% static '/css/img/logo_provisorio.png' %}" alt="">
+                    <h3 class="mt-3 text-primary-dark">Decora by Lu</h3>
                 </div>
-                <div class="card-body">
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="alert alert-danger">{{ message }}</div>
-                        {% endfor %}
-                    {% endif %}
-
-                    <form method="POST">
+            </div>
+            
+            <!-- Parte direita - Formulário de login -->
+            <div class="col-md-6">
+                <div class="card-body p-5">
+                    <h2 class="card-title text-center mb-4">Acessar Sistema</h2>
+                    
+                    <form method="post" action="{% url 'employees:login' %}" class="needs-validation" novalidate>
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuário</label>
-                            <input type="text" class="form-control" id="username" name="username" required>
+                        
+                        {% if form.errors %}
+                        <div class="alert alert-danger">
+                            Usuário ou senha incorretos. Por favor, tente novamente.
                         </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Senha</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                        {% endif %}
+                        
+                        <!-- Campo de usuário -->
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Usuário" required>
+                            <label for="username">Usuário</label>
                         </div>
-                        <button type="submit" class="btn btn-bege w-100">
-                            <i class="fas fa-unlock-alt"></i> Entrar
-                        </button>
+                        
+                        <!-- Campo de senha -->
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Senha" required>
+                            <label for="password">Senha</label>
+                        </div>
+                        
+                        <!-- Botão de submit -->
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
+                        </div>
+                        
+                        <!-- Link "Esqueci minha senha" -->
+                        <div class="text-center">
+                            <a href="#" class="text-decoration-none">Esqueci minha senha</a>
+                        </div>
                     </form>
                 </div>
             </div>

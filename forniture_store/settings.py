@@ -126,6 +126,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'apps/customers/static'),
     os.path.join(BASE_DIR, 'apps/showroom/static'),
     os.path.join(BASE_DIR, 'apps/suppliers/static'),
+    os.path.join(BASE_DIR, 'apps/products/static'),
 ]
 
 MEDIA_URL = '/media/'
@@ -158,5 +159,6 @@ LOGGING = {
     },
 }
 
-LOGIN_URL = 'custom_login'  # Define sua view personalizada como padrão
-LOGIN_REDIRECT_URL = 'home'  # Para onde redirecionar após login
+LOGIN_URL = '/auth/login/'  # Nova URL de login
+LOGIN_REDIRECT_URL = '/'    # Redireciona para a página inicial após login
+LOGOUT_REDIRECT_URL = '/auth/login/'  # Redireciona para a página de login após logout

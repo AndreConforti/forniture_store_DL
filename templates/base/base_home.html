@@ -14,23 +14,28 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-    <!-- 1. Navbar (sempre no topo) -->
-    {% include 'partials/_navbar.html' %}
-    
-    <!-- 2. Container Principal (flexível) -->
-    <div class="container-fluid flex-grow-1 d-flex px-0">    
-        <!-- Sidebar -->
-        {% include 'partials/_sidebar.html' %}
-        
-        <!-- 3. Área de Conteúdo Dinâmico -->
+
+    {% if request.user.is_authenticated %}
+        <!-- Navbar (somente aparece se o usuário estiver logado) -->
+        {% include 'partials/_navbar.html' %}
+    {% endif %}
+
+    <div class="container-fluid flex-grow-1 d-flex px-0">  
+        {% if request.user.is_authenticated %}
+            <!-- Sidebar (somente aparece se o usuário estiver logado) -->
+            {% include 'partials/_sidebar.html' %}
+        {% endif %}
+
+        <!-- Área de Conteúdo Dinâmico -->
         <main class="col flex-grow-1 overflow-auto p-4">
             {% block content %}
             {% endblock %}
         </main>
     </div>
     
-    <!-- 4. Footer -->
+    <!-- Footer  -->
     {% include 'partials/_footer.html' %}
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

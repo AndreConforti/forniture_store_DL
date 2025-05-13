@@ -10,6 +10,9 @@ class CustomerAdmin(admin.ModelAdmin):
 
     def has_change_permission(self, request, obj=None):
         return False  # Desabilita edições
+    
+    def has_delete_permission(self, request, obj=None):
+        return True
 
     # Exibição na lista de clientes
     list_display = (
@@ -18,13 +21,14 @@ class CustomerAdmin(admin.ModelAdmin):
         'customer_type_display',
         'formatted_phone',
         'email_link',
-        'is_active_display',
+        'is_active',
         'is_vip_display'
     )
     
     list_filter = ('customer_type', 'is_active', 'is_vip', 'registration_date')
     search_fields = ('full_name', 'preferred_name', 'tax_id', 'email', 'phone')
     list_per_page = 20
+    list_editable = ('is_active',)
 
     # Campos na página de detalhes
     readonly_fields = (
@@ -100,7 +104,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
     def is_active_display(self, obj):
         return "✅ Ativo" if obj.is_active else "❌ Inativo"
-    is_active_display.short_description = 'Status'
+    is_active_display.short_description = 'Status (Detalhe)'
 
     def is_vip_display(self, obj):
         return "⭐ VIP" if obj.is_vip else "➖ Regular"
@@ -129,3 +133,11 @@ class CustomerAdmin(admin.ModelAdmin):
             )
         return "Nenhum endereço cadastrado"
     address_display.short_description = "Endereço Completo"
+
+    def changelist_view(self, request, extra_context=None):
+        # Temporariamente permite salvar via POST (list_editable envia um POST)
+        self.has_change_permission = lambda r, o=None: True
+        response = super().changelist_view(request, extra_context=extra_context)
+        # Restaura a permissão original para outras views
+        self.has_change_permission = lambda r, o=None: False
+        return response
