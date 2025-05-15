@@ -88,7 +88,7 @@ class CustomerAdmin(admin.ModelAdmin):
     customer_type_display.short_description = 'Tipo de Cliente'
 
     def formatted_tax_id(self, obj):
-        return obj.formatted_tax_id()
+        return obj.formatted_tax_id
     formatted_tax_id.short_description = 'CPF/CNPJ'
 
     def formatted_phone(self, obj):
