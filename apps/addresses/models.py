@@ -5,43 +5,33 @@ from django.core.exceptions import ValidationError
 from django.core.cache import cache
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-import requests
+from core.services import fetch_address_data # Importar o serviço centralizado
 import logging
 
 logger = logging.getLogger(__name__)
 
 
 class Address(models.Model):
+    """
+    Modelo para armazenar informações de endereço.
+
+    Este modelo utiliza um GenericForeignKey para se associar a qualquer outro
+    modelo que necessite de um endereço (ex: Cliente, Fornecedor).
+    Ele também inclui lógica para buscar dados de CEP de APIs públicas
+    e cachear esses resultados.
+    """
     BRAZILIAN_STATES_CHOICES = [
-        ("AC", "Acre"),
-        ("AL", "Alagoas"),
-        ("AP", "Amapá"),
-        ("AM", "Amazonas"),
-        ("BA", "Bahia"),
-        ("CE", "Ceará"),
-        ("DF", "Distrito Federal"),
-        ("ES", "Espírito Santo"),
-        ("GO", "Goiás"),
-        ("MA", "Maranhão"),
-        ("MT", "Mato Grosso"),
-        ("MS", "Mato Grosso do Sul"),
-        ("MG", "Minas Gerais"),
-        ("PA", "Pará"),
-        ("PB", "Paraíba"),
-        ("PR", "Paraná"),
-        ("PE", "Pernambuco"),
-        ("PI", "Piauí"),
-        ("RJ", "Rio de Janeiro"),
-        ("RN", "Rio Grande do Norte"),
-        ("RS", "Rio Grande do Sul"),
-        ("RO", "Rondônia"),
-        ("RR", "Roraima"),
-        ("SC", "Santa Catarina"),
-        ("SP", "São Paulo"),
-        ("SE", "Sergipe"),
+        ("AC", "Acre"), ("AL", "Alagoas"), ("AP", "Amapá"), ("AM", "Amazonas"),
+        ("BA", "Bahia"), ("CE", "Ceará"), ("DF", "Distrito Federal"),
+        ("ES", "Espírito Santo"), ("GO", "Goiás"), ("MA", "Maranhão"),
+        ("MT", "Mato Grosso"), ("MS", "Mato Grosso do Sul"),
+        ("MG", "Minas Gerais"), ("PA", "Pará"), ("PB", "Paraíba"),
+        ("PR", "Paraná"), ("PE", "Pernambuco"), ("PI", "Piauí"),
+        ("RJ", "Rio de Janeiro"), ("RN", "Rio Grande do Norte"),
+        ("RS", "Rio Grande do Sul"), ("RO", "Rondônia"), ("RR", "Roraima"),
+        ("SC", "Santa Catarina"), ("SP", "São Paulo"), ("SE", "Sergipe"),
         ("TO", "Tocantins"),
     ]
-    API_TIMEOUT = 3
     CEP_CACHE_TIMEOUT = 86400  # 24 horas
 
     street = models.CharField(max_length=100, blank=True, verbose_name="Logradouro")
@@ -55,7 +45,7 @@ class Address(models.Model):
         max_length=2,
         blank=True,
         verbose_name="UF",
-        choices=BRAZILIAN_STATES_CHOICES,  # Usar choices para validação e UI
+        choices=BRAZILIAN_STATES_CHOICES,
         validators=[
             RegexValidator(
                 regex="^[A-Z]{2}$", message="UF deve ter 2 letras maiúsculas."
@@ -86,13 +76,18 @@ class Address(models.Model):
             models.Index(fields=["content_type", "object_id"]),
         ]
         ordering = ["state", "city", "street"]
-        # Garante que um objeto só pode ter um endereço (opcional, dependendo da regra de negócio)
-        # unique_together = ('content_type', 'object_id')
 
     def __str__(self):
         return self.formatted_address()
 
     def clean(self):
+        """
+        Realiza validações e limpeza dos dados do endereço.
+
+        Se um CEP for fornecido e os campos de endereço não estiverem
+        preenchidos manualmente, tenta preenchê-los automaticamente
+        usando dados de uma API de CEP. Normaliza campos de texto.
+        """
         super().clean()
 
         if self.zip_code:
@@ -101,14 +96,16 @@ class Address(models.Model):
                 self._fill_address_from_cep_data()
 
         self._normalize_text_fields()
-        # A validação de UF com RegexValidator e choices já é feita pelo Django.
-        # _validate_state_custom desnecessário se choices forem usados.
 
     def save(self, *args, **kwargs):
+        """
+        Salva a instância do endereço após realizar uma limpeza completa dos dados.
+        """
         self.full_clean()
         super().save(*args, **kwargs)
 
     def _clean_zip_code_format(self, zip_code_value):
+        """Limpa o CEP, mantendo apenas dígitos, e valida seu formato."""
         if not zip_code_value:
             return None
         cleaned = "".join(filter(str.isdigit, str(zip_code_value)))
@@ -119,22 +116,28 @@ class Address(models.Model):
         )
 
     def _is_address_manually_filled(self):
+        """Verifica se os principais campos de endereço foram preenchidos manualmente."""
         return all([self.street, self.neighborhood, self.city, self.state])
 
     def _fill_address_from_cep_data(self):
-        cep_data = self.get_cep_data()
+        """
+        Preenche os campos de endereço (rua, bairro, cidade, UF)
+        com base nos dados retornados pela consulta ao CEP,
+        se esses campos já não estiverem preenchidos.
+        """
+        cep_data = self.get_cep_data() # Usa o serviço centralizado agora
         if cep_data:
             self._update_address_fields(cep_data)
-        elif (
-            self.zip_code and not self._is_address_manually_filled()
-        ):  # Se o CEP foi fornecido mas não encontrou dados
-            # Não levanta erro aqui, permite salvar CEP mesmo que API não retorne.
-            # A obrigatoriedade dos campos street, city etc pode ser definida por blank=False se necessário.
+        elif self.zip_code and not self._is_address_manually_filled():
             logger.warning(
                 f"Dados do CEP {self.zip_code} não encontrados ou API falhou, mas o CEP será salvo."
             )
 
     def get_cep_data(self):
+        """
+        Obtém os dados do CEP, utilizando cache.
+        Delega a busca para a função `fetch_address_data` do `core.services`.
+        """
         if not self.zip_code:
             return None
 
@@ -143,62 +146,41 @@ class Address(models.Model):
         if cached_data:
             return cached_data
 
-        data = self._fetch_via_cep() or self._fetch_brasil_api()
+        # Usa o serviço centralizado
+        data = fetch_address_data(self.zip_code)
 
         if data:
+            # O serviço já retorna no formato esperado:
+            # {"zip_code", "street", "neighborhood", "city", "state"}
+            # Precisamos mapear para "logradouro", "bairro", "localidade", "uf"
+            # que _update_address_fields espera, ou ajustar _update_address_fields.
+            # Vamos ajustar _update_address_fields para ser mais flexível ou usar o formato do serviço.
+            # A função fetch_address_data já retorna um dicionário com chaves "street", "neighborhood", "city", "state".
+            # O método _update_address_fields já está preparado para isso devido ao 'or'.
             cache.set(cache_key, data, timeout=self.CEP_CACHE_TIMEOUT)
         return data
 
-    def _fetch_via_cep(self):
-        try:
-            response = requests.get(
-                f"https://viacep.com.br/ws/{self.zip_code}/json/",
-                timeout=self.API_TIMEOUT,
-            )
-            response.raise_for_status()
-            data = response.json()
-            if not data.get("erro"):
-                return {
-                    "logradouro": data.get("logradouro"),
-                    "bairro": data.get("bairro"),
-                    "localidade": data.get("localidade"),
-                    "uf": data.get("uf"),
-                }
-        except (requests.RequestException, ValueError) as e:
-            logger.warning(f"ViaCEP falhou para {self.zip_code}: {e}")
-        return None
-
-    def _fetch_brasil_api(self):
-        try:
-            response = requests.get(
-                f"https://brasilapi.com.br/api/cep/v1/{self.zip_code}",
-                timeout=self.API_TIMEOUT,
-            )
-            response.raise_for_status()
-            data = response.json()
-            return {
-                "logradouro": data.get("street"),
-                "bairro": data.get("neighborhood"),
-                "localidade": data.get("city"),
-                "uf": data.get("state"),
-            }
-        except (requests.RequestException, ValueError, KeyError) as e:
-            logger.warning(f"BrasilAPI falhou para {self.zip_code}: {e}")
-        return None
-
     def _update_address_fields(self, api_data):
+        """
+        Atualiza os campos do modelo com os dados da API.
+        Prioriza os dados já existentes no modelo se não estiverem vazios.
+        """
+        # O serviço `fetch_address_data` retorna:
+        # "street", "neighborhood", "city", "state"
+        # O método original esperava "logradouro", "bairro", "localidade", "uf" de ViaCEP/BrasilAPI.
+        # Ajustamos para o formato do `fetch_address_data`
         field_map = {
-            "street": api_data.get("logradouro"),
-            "neighborhood": api_data.get("bairro"),
-            "city": api_data.get("localidade")
-            or api_data.get("cidade"),  # 'cidade' é redundante se 'localidade' é padrão
-            "state": api_data.get("uf"),
+            "street": api_data.get("street"),
+            "neighborhood": api_data.get("neighborhood"),
+            "city": api_data.get("city"),
+            "state": api_data.get("state"),
         }
         for field, value in field_map.items():
-            if value and not getattr(self, field):
+            if value and not getattr(self, field): # Só preenche se o campo estiver vazio
                 setattr(self, field, value.strip())
 
     def _normalize_text_fields(self):
+        """Normaliza campos de texto para title case e remove espaços extras."""
         for field_name in ["street", "complement", "neighborhood", "city"]:
             value = getattr(self, field_name)
             if value:
@@ -208,13 +190,15 @@ class Address(models.Model):
 
     @property
     def formatted_zip_code(self):
+        """Retorna o CEP formatado (ex: '00000-000')."""
         return (
             f"{self.zip_code[:5]}-{self.zip_code[5:]}"
             if self.zip_code and len(self.zip_code) == 8
-            else ""
+            else self.zip_code or ""
         )
 
     def formatted_address(self):
+        """Retorna uma string representando o endereço completo formatado."""
         parts = [
             f"{self.street}, {self.number or 'S/N'}" if self.street else None,
             f"Compl: {self.complement}" if self.complement else None,
@@ -226,6 +210,7 @@ class Address(models.Model):
 
     @property
     def is_complete(self):
+        """Verifica se os campos essenciais do endereço estão preenchidos."""
         return all(
             [
                 self.zip_code,

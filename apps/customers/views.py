@@ -1,210 +1,169 @@
 from django.contrib import messages
-from django.contrib.contenttypes.models import ContentType
-from django.db import transaction
 from django.db.models import Q
-from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.forms import ValidationError
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
-from core.services import fetch_company_data, fetch_address_data
-from apps.addresses.models import Address
+
 from .models import Customer
 from .forms import CustomerForm
 import logging
-import requests
-
 
 logger = logging.getLogger(__name__)
 
 
 class CustomerListView(ListView):
+    """
+    View para listar clientes ativos com filtros e paginação.
+    Permite buscar por nome, CPF/CNPJ, email e filtrar por tipo de cliente.
+    Exibe apenas clientes com `is_active=True`.
+    """
     model = Customer
     template_name = 'customers/list.html'
     context_object_name = 'customers'
-    paginate_by = 20
-
+    paginate_by = 30 
+    
     def get_queryset(self):
-        queryset = super().get_queryset()
+        """
+        Retorna o queryset de clientes ativos, filtrado conforme os parâmetros da URL.
+        """
+        # Começa com o queryset base do modelo, já filtrando por is_active=True
+        queryset = super().get_queryset().filter(is_active=True)
+
         search_query = self.request.GET.get('search', '').strip()
         customer_type = self.request.GET.get('customer_type', 'all')
-        
-        # Aplica o filtro por tipo de cliente
+
+        # Aplica o filtro por tipo de cliente (IND ou CORP)
         if customer_type in ['IND', 'CORP']:
             queryset = queryset.filter(customer_type=customer_type)
-        
+
         # Aplica a busca geral se houver termo de pesquisa
         if search_query:
-            queryset = queryset.filter(
+            # Limpa o search_query para busca no tax_id (que é armazenado sem máscara)
+            cleaned_search_query_for_tax_id = "".join(filter(str.isdigit, search_query))
+
+            # Constrói as condições de busca
+            query_conditions = (
                 Q(full_name__icontains=search_query) |
-                Q(tax_id__icontains=search_query) |
-                Q(email__icontains=search_query))
-        
-        return queryset
-
-
-class CustomerMixin:
-    """Mixin que contém os métodos comuns para criação e atualização de clientes"""
-    
-    def handle_address(self, customer):
-        """Método comum para processar e salvar endereço"""
-        # Prepara os dados de endereço do formulário
-        address_data = {
-            "zip_code": self.request.POST.get("zip_code", "").strip(),
-            "street": self.request.POST.get("street", "").strip(),
-            "number": self.request.POST.get("number", "").strip(),
-            "complement": self.request.POST.get("complement", "").strip(),
-            "neighborhood": self.request.POST.get("neighborhood", "").strip(),
-            "city": self.request.POST.get("city", "").strip(),
-            "state": self.request.POST.get("state", "").strip().upper(),
-        }
-
-        # Remove campos vazios
-        address_data = {k: v for k, v in address_data.items() if v}
-
-        # Cria/atualiza o endereço apenas se houver dados
-        if address_data:
-            content_type = ContentType.objects.get_for_model(Customer)
-            Address.objects.update_or_create(
-                content_type=content_type,
-                object_id=customer.pk,
-                defaults=address_data
+                Q(email__icontains=search_query) |
+                Q(preferred_name__icontains=search_query) # Adicionado preferred_name aqui para cobrir todos os casos
             )
-            return True
-        return False
+
+            if cleaned_search_query_for_tax_id:
+                query_conditions |= Q(tax_id__icontains=cleaned_search_query_for_tax_id)
+            # Não precisamos de um 'else' aqui para preferred_name, pois ele já está incluído nas condições base.
+
+            queryset = queryset.filter(query_conditions)
+
+        # Aplica otimizações de queryset (prefetch_related para endereços, se necessário na lista)
+        # select_related(None) não é tipicamente usado, a menos que você queira explicitamente
+        # limpar quaisquer select_related definidos anteriormente.
+        # Se você não precisa dos endereços na listagem, pode remover o prefetch_related('addresses').
+        # Se precisar, mantenha-o.
+        return queryset.prefetch_related('addresses')
+
+    def get_context_data(self, **kwargs):
+        """Adiciona os parâmetros de filtro atuais ao contexto para uso no template."""
+        # É uma boa prática chamar o método da superclasse primeiro.
+        context = super().get_context_data(**kwargs)
+        context['search_query'] = self.request.GET.get('search', '')
+        context['selected_customer_type'] = self.request.GET.get('customer_type', 'all')
+        return context
 
 
-class CustomerCreateView(CustomerMixin, CreateView):
+class CustomerCreateView(CreateView):
+    """
+    View para criar um novo cliente.
+    Utiliza CustomerForm para validação e Customer.save() para persistência,
+    incluindo o gerenciamento do endereço.
+    """
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
     success_url = reverse_lazy('customers:list')
 
     def form_valid(self, form):
+        """
+        Processa o formulário válido.
+        O método save do CustomerForm e do Customer model já lidam com
+        a criação do cliente e do seu endereço, incluindo chamadas à API.
+        """
         try:
-            with transaction.atomic():
-                # Salva o cliente primeiro para obter um ID
-                customer = form.save()
-
-                # Processa o endereço
-                self.handle_address(customer)
-
-                messages.success(self.request, "Cliente cadastrado com sucesso!")
-                return super().form_valid(form)
-
+            # O form.save() agora passa 'address_data' para Customer.save()
+            self.object = form.save()
+            messages.success(self.request, "Cliente cadastrado com sucesso!")
+            return super().form_valid(form)
+        except ValidationError as e:
+            # Erros de validação do modelo (incluindo do Address) podem ser capturados aqui
+            # e adicionados ao formulário, se não forem já tratados pelo full_clean do form.
+            # O full_clean do ModelForm já deve adicionar a maioria dos erros de modelo.
+            logger.error(f"Erro de validação ao criar cliente: {e.message_dict if hasattr(e, 'message_dict') else e}", exc_info=True)
+            messages.error(self.request, "Erro de validação. Verifique os campos.")
+            return self.form_invalid(form)
         except Exception as e:
-            logger.error(f"Erro ao criar cliente: {str(e)}", exc_info=True)
-            messages.error(
-                self.request,
-                "Ocorreu um erro ao cadastrar o cliente. "
-                "Por favor, verifique os dados e tente novamente."
-            )
+            logger.error(f"Erro inesperado ao criar cliente: {str(e)}", exc_info=True)
+            messages.error(self.request, "Ocorreu um erro inesperado ao cadastrar o cliente.")
             return self.form_invalid(form)
 
     def get_context_data(self, **kwargs):
+        """Adiciona dados ao contexto do template."""
         context = super().get_context_data(**kwargs)
-        # Adiciona flags para o template controlar os botões de busca
-        context['show_cnpj_button'] = True
-        context['show_cep_button'] = True
+        context['form_title'] = "Cadastrar Novo Cliente"
+        # Flags para controlar botões de busca no template, se necessário.
+        # A lógica de quando mostrar pode ser mais dinâmica no template (JS)
+        # baseado no tipo de cliente selecionado.
+        context['show_cnpj_button_logic'] = True # JS pode esconder/mostrar
+        context['show_cep_button_logic'] = True  # JS pode esconder/mostrar
         return context
 
 
 class CustomerDetailView(DetailView):
+    """View para exibir os detalhes de um cliente."""
     model = Customer
     template_name = 'customers/customer_detail.html'
     context_object_name = 'customer'
 
     def get_context_data(self, **kwargs):
+        """Adiciona o endereço formatado e outros dados ao contexto."""
         context = super().get_context_data(**kwargs)
         customer = self.get_object()
-        
-        # Adiciona o endereço ao contexto se existir
-        context['address'] = customer.addresses.first()
-        
-        # Formatações adicionais
-        context['formatted_tax_id'] = customer.formatted_tax_id
-        context['formatted_phone'] = customer.formatted_phone
-        
+        context['address'] = customer.address # Usa a property do modelo
+        # Campos formatados já são properties no modelo (formatted_tax_id, formatted_phone)
         return context
 
 
-class CustomerUpdateView(CustomerMixin, UpdateView):
+class CustomerUpdateView(UpdateView):
+    """
+    View para atualizar um cliente existente.
+    Similar à CustomerCreateView, utiliza CustomerForm e a lógica de save do modelo.
+    """
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
     success_url = reverse_lazy('customers:list')
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        customer = self.get_object()
-        
-        # Adiciona o endereço ao contexto se existir
-        address = customer.addresses.first()
-        if address:
-            context['address'] = address
-            # Preenche os valores iniciais para os campos de endereço
-            self.initial.update({
-                'zip_code': address.zip_code,
-                'street': address.street,
-                'number': address.number,
-                'complement': address.complement,
-                'neighborhood': address.neighborhood,
-                'city': address.city,
-                'state': address.state,
-            })
-        
-        # Mantém os botões de busca ativos conforme o tipo de cliente
-        context['show_cnpj_button'] = customer.customer_type == 'CORP'
-        context['show_cep_button'] = customer.customer_type == 'IND'
-        
-        return context
-
     def form_valid(self, form):
+        """Processa o formulário válido para atualização."""
         try:
-            with transaction.atomic():
-                # Salva o cliente primeiro para obter um ID
-                customer = form.save()
-
-                # Processa o endereço
-                if not self.handle_address(customer) and self.request.POST.get("remove_address", False):
-                    # Se não houver dados de endereço e o checkbox para remover estiver marcado
-                    customer.addresses.all().delete()
-
-                messages.success(self.request, "Cliente atualizado com sucesso!")
-                return super().form_valid(form)
-
+            # O form.save() passa 'address_data' para Customer.save()
+            self.object = form.save()
+            messages.success(self.request, "Cliente atualizado com sucesso!")
+            return super().form_valid(form)
+        except ValidationError as e:
+            logger.error(f"Erro de validação ao atualizar cliente: {e.message_dict if hasattr(e, 'message_dict') else e}", exc_info=True)
+            messages.error(self.request, "Erro de validação. Verifique os campos.")
+            return self.form_invalid(form)
         except Exception as e:
-            logger.error(f"Erro ao atualizar cliente: {str(e)}", exc_info=True)
-            messages.error(
-                self.request,
-                "Ocorreu um erro ao atualizar o cliente. "
-                "Por favor, verifique os dados e tente novamente."
-            )
+            logger.error(f"Erro inesperado ao atualizar cliente: {str(e)}", exc_info=True)
+            messages.error(self.request, "Ocorreu um erro inesperado ao atualizar o cliente.")
             return self.form_invalid(form)
 
-
-def fetch_company_data_view(request):
-    """Endpoint para buscar dados da empresa via CNPJ"""
-    tax_id = request.GET.get('tax_id', '').replace('.', '').replace('-', '').replace('/', '').strip()
-
-    if not tax_id:
-        return JsonResponse({'error': 'CNPJ não informado'}, status=400)
-
-    data = fetch_company_data(tax_id)
-    if data:
-        return JsonResponse(data)
-
-    return JsonResponse({'error': 'Não foi possível obter os dados'}, status=500)
-
-
-def fetch_address_data_view(request):
-    """Endpoint para buscar dados do CEP"""
-    zip_code = request.GET.get('zip_code', '').strip()
-
-    if not zip_code:
-        return JsonResponse({'error': 'CEP não informado'}, status=400)
-
-    data = fetch_address_data(zip_code)
-    if data:
-        return JsonResponse(data)
-
-    return JsonResponse({'error': 'Não foi possível obter os dados'}, status=500)
+    def get_context_data(self, **kwargs):
+        """Adiciona dados ao contexto, incluindo título e flags para botões."""
+        context = super().get_context_data(**kwargs)
+        context['form_title'] = "Editar Cliente"
+        # O formulário já é inicializado com dados do endereço no seu __init__
+        # Flags para botões de busca (JS pode controlar a visibilidade)
+        customer = self.get_object()
+        context['show_cnpj_button_logic'] = True # Default true, JS ajusta
+        context['show_cep_button_logic'] = True  # Default true, JS ajusta
+        return context
