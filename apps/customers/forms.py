@@ -1,56 +1,45 @@
 from django import forms
-from .models import (
-    Customer,
-)  # Address não precisa ser importado aqui se não for usado diretamente
-from apps.addresses.models import (
-    Address,
-)  # Importar para Address.BRAZILIAN_STATES_CHOICES
-from django.core.validators import RegexValidator
-
+from .models import Customer
+from apps.addresses.models import Address # Para Address.BRAZILIAN_STATES_CHOICES
 
 class CustomerForm(forms.ModelForm):
-    # Campos de endereço definidos no formulário
+    """
+    Formulário para criar e atualizar instâncias de Customer.
+
+    Inclui campos para os dados do cliente e também para o seu endereço,
+    que será gerenciado pelo modelo Customer em seu método save.
+    """
     zip_code = forms.CharField(
         label="CEP",
-        max_length=9,
-        required=False,  # max_length 9 para '00000-000'
+        max_length=9, # Para '00000-000' com máscara
+        required=False,
         widget=forms.TextInput(
             attrs={
                 "class": "form-control cep-mask",
                 "placeholder": "00000-000",
-                "data-action": "cep-lookup",
+                "data-action": "cep-lookup", # Para JavaScript
             }
         ),
     )
     street = forms.CharField(
-        label="Logradouro",
-        max_length=100,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label="Logradouro", max_length=100, required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     number = forms.CharField(
-        label="Número",
-        max_length=10,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label="Número", max_length=10, required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     complement = forms.CharField(
-        label="Complemento",
-        max_length=50,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label="Complemento", max_length=50, required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     neighborhood = forms.CharField(
-        label="Bairro",
-        max_length=50,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label="Bairro", max_length=50, required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     city = forms.CharField(
-        label="Cidade",
-        max_length=50,
-        required=False,
-        widget=forms.TextInput(attrs={"class": "form-control"}),
+        label="Cidade", max_length=50, required=False,
+        widget=forms.TextInput(attrs={"class": "form-control"})
     )
     state = forms.ChoiceField(
         label="UF",
@@ -62,39 +51,16 @@ class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
         fields = [
-            "customer_type",
-            "full_name",
-            "preferred_name",
-            "tax_id",
-            "phone",
-            "email",
-            "is_vip",
-            "profession",
-            "interests",
-            "notes",
+            "customer_type", "full_name", "preferred_name", "tax_id",
+            "phone", "email", "is_vip", "profession", "interests", "notes",
         ]
         widgets = {
-            "customer_type": forms.Select(
-                attrs={"class": "form-select", "data-action": "customer-type-change"}
-            ),
+            "customer_type": forms.Select(attrs={"class": "form-select", "data-action": "customer-type-change"}),
             "full_name": forms.TextInput(attrs={"class": "form-control"}),
             "preferred_name": forms.TextInput(attrs={"class": "form-control"}),
-            "tax_id": forms.TextInput(
-                attrs={  # max_length do widget é herdado do modelo (18)
-                    "class": "form-control tax-id-mask",
-                    "placeholder": "Digite o CPF ou CNPJ com ou sem máscara",
-                    "data-action": "document-input",
-                }
-            ),
-            "phone": forms.TextInput(
-                attrs={
-                    "class": "form-control phone-mask",
-                    "placeholder": "(00) 00000-0000",
-                }
-            ),
-            "email": forms.EmailInput(
-                attrs={"class": "form-control", "placeholder": "exemplo@email.com"}
-            ),
+            "tax_id": forms.TextInput(attrs={"class": "form-control tax-id-mask", "placeholder": "CPF ou CNPJ", "data-action": "document-input"}),
+            "phone": forms.TextInput(attrs={"class": "form-control phone-mask", "placeholder": "(00) 00000-0000"}),
+            "email": forms.EmailInput(attrs={"class": "form-control", "placeholder": "exemplo@email.com"}),
             "is_vip": forms.CheckboxInput(attrs={"class": "form-check-input"}),
             "profession": forms.TextInput(attrs={"class": "form-control"}),
             "interests": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
@@ -109,12 +75,18 @@ class CustomerForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        """
+        Inicializa o formulário.
+
+        Se uma instância de cliente existente é fornecida e possui um endereço,
+        os campos de endereço do formulário são pré-preenchidos.
+        Também configura atributos de widget para os campos de endereço.
+        """
         super().__init__(*args, **kwargs)
 
         if self.instance and self.instance.pk and self.instance.address:
             address = self.instance.address
-            # Usar zip_code limpo para o initial, a máscara JS deve formatar
-            self.fields["zip_code"].initial = address.zip_code
+            self.fields["zip_code"].initial = address.zip_code # CEP já limpo no modelo
             self.fields["street"].initial = address.street
             self.fields["number"].initial = address.number
             self.fields["complement"].initial = address.complement
@@ -122,116 +94,90 @@ class CustomerForm(forms.ModelForm):
             self.fields["city"].initial = address.city
             self.fields["state"].initial = address.state
 
-        if "tax_id" in self.fields:  # Ajustes no widget tax_id
-            self.fields["tax_id"].widget.attrs.update(
-                {"pattern": r"[\d.\-/]*", "inputmode": "text"}
-            )  # Permite máscara
+        if "tax_id" in self.fields:
+            self.fields["tax_id"].widget.attrs.update({"pattern": r"[\d.\-/]*", "inputmode": "text"})
 
-        address_field_names = [
-            "zip_code",
-            "street",
-            "number",
-            "complement",
-            "neighborhood",
-            "city",
-            "state",
-        ]
+        address_field_names = ["zip_code", "street", "number", "complement", "neighborhood", "city", "state"]
         for field_name in address_field_names:
             if field_name in self.fields:
                 self.fields[field_name].widget.attrs["autocomplete"] = "off"
 
     def clean_tax_id(self):
-        tax_id_value_from_input = self.cleaned_data.get("tax_id")
-
-        if not tax_id_value_from_input:
+        """Limpa e valida preliminarmente o campo CPF/CNPJ."""
+        tax_id_value = self.cleaned_data.get("tax_id")
+        if not tax_id_value:
             raise forms.ValidationError("O CPF/CNPJ é obrigatório.")
+        cleaned_tax_id = "".join(filter(str.isdigit, tax_id_value))
 
-        cleaned_tax_id = "".join(filter(str.isdigit, tax_id_value_from_input))
-
-        # A validação de comprimento e algoritmo será feita no `clean()` do modelo.
-        # No entanto, podemos adicionar uma verificação de comprimento mínimo/máximo aqui
-        # para o valor limpo, se quisermos feedback mais rápido.
         if not (11 <= len(cleaned_tax_id) <= 14 and cleaned_tax_id.isdigit()):
-            if len(cleaned_tax_id) < 11:
-                raise forms.ValidationError(
-                    "Documento muito curto. Verifique o CPF/CNPJ."
-                )
-            # O modelo vai pegar comprimentos exatos (11 para CPF, 14 para CNPJ).
-
-        # O `clean()` do modelo Customer fará a validação completa (CPF()/CNPJ().validate())
-        # e a validação de comprimento exato baseado no customer_type.
-        return cleaned_tax_id  # Retorna o valor limpo para o ModelForm
+            if len(cleaned_tax_id) < 11 and len(cleaned_tax_id) > 0 :
+                 raise forms.ValidationError("Documento muito curto. Verifique o CPF/CNPJ.")
+            elif len(cleaned_tax_id) > 14 :
+                 raise forms.ValidationError("Documento muito longo. Verifique o CPF/CNPJ.")
+            # A validação completa (algoritmo, tipo vs tamanho) é feita no modelo.
+        return cleaned_tax_id
 
     def clean_phone(self):
+        """Limpa o campo telefone, mantendo apenas dígitos."""
         phone = self.cleaned_data.get("phone")
         if phone:
             return "".join(filter(str.isdigit, phone))
         return phone
 
     def clean_zip_code(self):
+        """Limpa o campo CEP, mantendo apenas dígitos e validando o tamanho."""
         zip_code = self.cleaned_data.get("zip_code")
         if zip_code:
             cleaned_zip = "".join(filter(str.isdigit, zip_code))
-            if (
-                len(cleaned_zip) != 8 and cleaned_zip
-            ):  # Apenas erro se não for vazio e não tiver 8 dígitos
+            if len(cleaned_zip) != 8 and cleaned_zip: # Erro se não vazio e não tiver 8 dígitos
                 raise forms.ValidationError("CEP deve conter 8 números.")
             return cleaned_zip
-        return zip_code  # Retorna None ou '' se não preenchido
+        return None # Retorna None se vazio, para consistência
 
     def clean(self):
+        """
+        Validações cruzadas entre campos do formulário.
+        Garante que o tipo de cliente seja selecionado se um CPF/CNPJ for fornecido.
+        """
         cleaned_data = super().clean()
-        # Validações cruzadas entre campos do formulário podem ir aqui,
-        # por exemplo, se customer_type e tax_id precisam ser validados juntos
-        # no nível do formulário ANTES de ir para o modelo.
-
-        # Exemplo: garantir que customer_type esteja presente se tax_id foi fornecido
         customer_type = cleaned_data.get("customer_type")
-        tax_id = cleaned_data.get("tax_id")  # já limpo pelo clean_tax_id()
+        tax_id = cleaned_data.get("tax_id") # Já limpo por clean_tax_id()
 
         if tax_id and not customer_type:
-            # Isso geralmente é tratado pela obrigatoriedade do campo customer_type
-            self.add_error(
-                "customer_type", "Selecione o tipo de cliente para validar o CPF/CNPJ."
-            )
-
-        # A validação principal de tax_id (comprimento exato vs tipo, e algoritmo)
-        # ocorrerá no `Customer.clean()` que é chamado por `instance.full_clean()`.
+            self.add_error("customer_type", "Selecione o tipo de cliente para validar o CPF/CNPJ.")
         return cleaned_data
 
     def save(self, commit=True):
-        # A instância do modelo é criada/atualizada com os dados de cleaned_data.
-        # O `tax_id` em `self.cleaned_data` já foi limpo por `self.clean_tax_id()`.
-        # Então, `instance.tax_id` terá o valor limpo antes de `instance.full_clean()` ser chamado.
-        instance = super().save(commit=False)
+        """
+        Salva a instância do cliente.
+
+        Coleta os dados de endereço dos campos do formulário e os passa
+        para o método save da instância do Customer, que é responsável
+        por criar, atualizar ou deletar o objeto Address associado.
+        """
+        instance = super().save(commit=False) # Cria a instância mas não salva no BD ainda
+
+        # Coleta dados de endereço do formulário para passar ao Customer.save()
+        address_data = {
+            "zip_code": self.cleaned_data.get("zip_code"), # Já limpo
+            "street": self.cleaned_data.get("street", "").strip(),
+            "number": self.cleaned_data.get("number", "").strip(),
+            "complement": self.cleaned_data.get("complement", "").strip(),
+            "neighborhood": self.cleaned_data.get("neighborhood", "").strip(),
+            "city": self.cleaned_data.get("city", "").strip(),
+            "state": self.cleaned_data.get("state", "").strip().upper(),
+        }
+
+        # Se todos os campos de endereço estiverem vazios, passa um dicionário vazio
+        # para sinalizar ao Customer.save() que o usuário pode ter limpado o endereço.
+        # Se houver algum dado, passa o dicionário populado.
+        if not any(v for v in address_data.values() if v is not None and v != ""):
+            address_data_to_pass = {}
+        else:
+            address_data_to_pass = address_data
 
         if commit:
-            # Prepara dados de endereço para o método save do modelo Customer.
-            # Customer.save() chamará instance.full_clean() internamente.
-            address_data = {
-                "zip_code": self.cleaned_data.get(
-                    "zip_code"
-                ),  # Já limpo por clean_zip_code
-                "street": self.cleaned_data.get("street"),
-                "number": self.cleaned_data.get("number"),
-                "complement": self.cleaned_data.get("complement"),
-                "neighborhood": self.cleaned_data.get("neighborhood"),
-                "city": self.cleaned_data.get("city"),
-                "state": self.cleaned_data.get("state"),
-            }
-
-            # Passa address_data para o save do Customer.
-            # Se todos os campos de endereço estiverem vazios/None, `address_data`
-            # conterá chaves com valores None ou ''.
-            # O `Customer.save` decide o que fazer com `address_data` (criar, atualizar ou deletar endereço).
-            # Se `any(address_data.values())` for falso, todos os valores são None ou '',
-            # indicando que nenhum dado de endereço foi fornecido ou foi limpo.
-            if any(v for v in address_data.values() if v is not None and v != ""):
-                instance.save(address_data=address_data)
-            else:
-                # Passa um dict vazio para indicar que os campos do form vieram vazios,
-                # ou não passa address_data se preferir que o Customer.save trate None.
-                # Com a lógica atual do Customer.save, passar um dict vazio é um sinal claro.
-                instance.save(address_data={})
-
+            # O método save do modelo Customer agora receberá address_data
+            # e cuidará da lógica de criar/atualizar/deletar o endereço.
+            instance.save(address_data=address_data_to_pass)
         return instance

@@ -60,14 +60,14 @@
                         <div class="col-md-6">
                             <div class="info-item">
                                 <span class="info-label">CPF / CNPJ:</span>
-                                <span class="info-value">{{ formatted_tax_id|default:"-" }}</span>
+                                <span class="info-value">{{ customer.formatted_tax_id|default:"-" }}</span>
                             </div>
                         </div>
                         
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Telefone:</span>
-                                <span class="info-value">{{ formatted_phone|default:"-" }}</span>
+                                <span class="info-value">{{ customer.formatted_phone|default:"-" }}</span>
                             </div>
                         </div>
                         
