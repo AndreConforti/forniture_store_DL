@@ -2,13 +2,16 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, UpdateView, CreateView
+from core.services import fetch_company_data, fetch_address_data
 from apps.addresses.models import Address
 from .models import Customer
 from .forms import CustomerForm
 import logging
+import requests
 
 
 logger = logging.getLogger(__name__)
@@ -22,7 +25,6 @@ class CustomerListView(ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        queryset = queryset.filter(is_active=True)  ## Apenas os Ativos
         search_query = self.request.GET.get('search', '').strip()
         customer_type = self.request.GET.get('customer_type', 'all')
         
@@ -38,9 +40,40 @@ class CustomerListView(ListView):
                 Q(email__icontains=search_query))
         
         return queryset
- 
 
-class CustomerCreateView(CreateView):
+
+class CustomerMixin:
+    """Mixin que contém os métodos comuns para criação e atualização de clientes"""
+    
+    def handle_address(self, customer):
+        """Método comum para processar e salvar endereço"""
+        # Prepara os dados de endereço do formulário
+        address_data = {
+            "zip_code": self.request.POST.get("zip_code", "").strip(),
+            "street": self.request.POST.get("street", "").strip(),
+            "number": self.request.POST.get("number", "").strip(),
+            "complement": self.request.POST.get("complement", "").strip(),
+            "neighborhood": self.request.POST.get("neighborhood", "").strip(),
+            "city": self.request.POST.get("city", "").strip(),
+            "state": self.request.POST.get("state", "").strip().upper(),
+        }
+
+        # Remove campos vazios
+        address_data = {k: v for k, v in address_data.items() if v}
+
+        # Cria/atualiza o endereço apenas se houver dados
+        if address_data:
+            content_type = ContentType.objects.get_for_model(Customer)
+            Address.objects.update_or_create(
+                content_type=content_type,
+                object_id=customer.pk,
+                defaults=address_data
+            )
+            return True
+        return False
+
+
+class CustomerCreateView(CustomerMixin, CreateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
@@ -52,28 +85,8 @@ class CustomerCreateView(CreateView):
                 # Salva o cliente primeiro para obter um ID
                 customer = form.save()
 
-                # Prepara os dados de endereço do formulário
-                address_data = {
-                    "zip_code": self.request.POST.get("zip_code", "").strip(),
-                    "street": self.request.POST.get("street", "").strip(),
-                    "number": self.request.POST.get("number", "").strip(),
-                    "complement": self.request.POST.get("complement", "").strip(),
-                    "neighborhood": self.request.POST.get("neighborhood", "").strip(),
-                    "city": self.request.POST.get("city", "").strip(),
-                    "state": self.request.POST.get("state", "").strip().upper(),
-                }
-
-                # Remove campos vazios
-                address_data = {k: v for k, v in address_data.items() if v}
-
-                # Cria/atualiza o endereço apenas se houver dados
-                if address_data:
-                    content_type = ContentType.objects.get_for_model(Customer)
-                    Address.objects.update_or_create(
-                        content_type=content_type,
-                        object_id=customer.pk,
-                        defaults=address_data
-                    )
+                # Processa o endereço
+                self.handle_address(customer)
 
                 messages.success(self.request, "Cliente cadastrado com sucesso!")
                 return super().form_valid(form)
@@ -108,13 +121,13 @@ class CustomerDetailView(DetailView):
         context['address'] = customer.addresses.first()
         
         # Formatações adicionais
-        context['formatted_tax_id'] = customer.formatted_tax_id()
+        context['formatted_tax_id'] = customer.formatted_tax_id
         context['formatted_phone'] = customer.formatted_phone
         
         return context
 
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(CustomerMixin, UpdateView):
     model = Customer
     form_class = CustomerForm
     template_name = 'customers/customer_form.html'
@@ -151,30 +164,9 @@ class CustomerUpdateView(UpdateView):
                 # Salva o cliente primeiro para obter um ID
                 customer = form.save()
 
-                # Prepara os dados de endereço do formulário
-                address_data = {
-                    "zip_code": self.request.POST.get("zip_code", "").strip(),
-                    "street": self.request.POST.get("street", "").strip(),
-                    "number": self.request.POST.get("number", "").strip(),
-                    "complement": self.request.POST.get("complement", "").strip(),
-                    "neighborhood": self.request.POST.get("neighborhood", "").strip(),
-                    "city": self.request.POST.get("city", "").strip(),
-                    "state": self.request.POST.get("state", "").strip().upper(),
-                }
-
-                # Remove campos vazios
-                address_data = {k: v for k, v in address_data.items() if v}
-
-                # Cria/atualiza o endereço apenas se houver dados
-                if address_data:
-                    content_type = ContentType.objects.get_for_model(Customer)
-                    Address.objects.update_or_create(
-                        content_type=content_type,
-                        object_id=customer.pk,
-                        defaults=address_data
-                    )
-                else:
-                    # Se não houver dados de endereço, remove o existente
+                # Processa o endereço
+                if not self.handle_address(customer) and self.request.POST.get("remove_address", False):
+                    # Se não houver dados de endereço e o checkbox para remover estiver marcado
                     customer.addresses.all().delete()
 
                 messages.success(self.request, "Cliente atualizado com sucesso!")
@@ -188,3 +180,31 @@ class CustomerUpdateView(UpdateView):
                 "Por favor, verifique os dados e tente novamente."
             )
             return self.form_invalid(form)
+
+
+def fetch_company_data_view(request):
+    """Endpoint para buscar dados da empresa via CNPJ"""
+    tax_id = request.GET.get('tax_id', '').replace('.', '').replace('-', '').replace('/', '').strip()
+
+    if not tax_id:
+        return JsonResponse({'error': 'CNPJ não informado'}, status=400)
+
+    data = fetch_company_data(tax_id)
+    if data:
+        return JsonResponse(data)
+
+    return JsonResponse({'error': 'Não foi possível obter os dados'}, status=500)
+
+
+def fetch_address_data_view(request):
+    """Endpoint para buscar dados do CEP"""
+    zip_code = request.GET.get('zip_code', '').strip()
+
+    if not zip_code:
+        return JsonResponse({'error': 'CEP não informado'}, status=400)
+
+    data = fetch_address_data(zip_code)
+    if data:
+        return JsonResponse(data)
+
+    return JsonResponse({'error': 'Não foi possível obter os dados'}, status=500)
