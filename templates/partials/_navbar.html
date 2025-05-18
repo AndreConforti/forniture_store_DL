@@ -1,13 +1,12 @@
 {% load static %}
-<nav class="navbar navbar-expand-lg navbar-dark"> <div class="container-fluid">
-        <!-- 1. Navbar Brand (Opcional, mas bom para logo/nome) -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <!-- 1. Navbar Brand  -->
         <img src="{% static '/css/img/logotipo_provisorio_2.png' %}" alt="Decora by Lu" class="logo">
-
         <!-- 2. Botão Toggler (Hambúrguer) -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavContent" aria-controls="navbarNavContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <!-- 3. Conteúdo Colapsável da Navbar -->
         <div class="collapse navbar-collapse" id="navbarNavContent">
             <!-- Itens de navegação à esquerda/centro -->
@@ -25,7 +24,6 @@
                     <a class="nav-link" href="#">Produtos</a>
                 </li>
             </ul>
-
             <!-- Itens de navegação à direita (usuário, notificações) -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -39,6 +37,24 @@
                         <i class="bi bi-person-circle me-1"></i> Olá, {{ request.user.first_name|default:request.user.username }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownUser">
+                        <!-- INÍCIO: Opções de Tema -->
+                        <li><h6 class="dropdown-header">Escolha seu Tema</h6></li>
+                        {% if THEME_CHOICES_FOR_NAVBAR %}
+                            {% for theme_value, theme_name in THEME_CHOICES_FOR_NAVBAR %}
+                            <li>
+                                <form action="{% url 'employees:change_theme' %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="selected_theme_value" value="{{ theme_value }}">
+                                    <button type="submit" 
+                                            class="dropdown-item {% if request.user.selected_theme == theme_value %}active fw-bold{% endif %}">
+                                        {{ theme_name }}
+                                    </button>
+                                </form>
+                            </li>
+                            {% endfor %}
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <!-- FIM: Opções de Tema -->
                         <li>
                             <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#logoutModal">
                                 <i class="bi bi-box-arrow-right me-2"></i> Sair
@@ -51,7 +67,7 @@
     </div>
 </nav>
 
-<!-- Modal de Confirmação de Logout -->
+<!-- Modal de Confirmação de Logout (mantido como está) -->
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -2,64 +2,7 @@
    1. Definições de Variáveis CSS (:root) e Temas
    ========================================================================== */
 
-:root {
-    /* --- Verde e Cinza ---
-    --primary-darker: #011b0c;
-    --primary-darker-rgb: 1, 27, 12;
-    --primary-dark: #01370d;
-    --primary-dark-rgb: 1, 55, 13;
-    --primary-medium: #115b14;
-    --primary-medium-rgb: 17, 91, 20;
-    --primary-soft: #149714b6; 
-    --primary-soft-rgb: 20, 151, 20;
-    --primary-light: #307232;
-    --primary-light-rgb: 48, 114, 50;
-    --primary-ultralight: #6aa174;
-    --primary-ultralight-rgb: 106, 161, 116;
-
-    --secondary-darker: #080808;
-    --secondary-darker-rgb: 8, 8, 8;
-    --secondary-dark: #101010;
-    --secondary-dark-rgb: 16, 16, 16;
-    --secondary-medium: #2a2a2a;
-    --secondary-medium-rgb: 42, 42, 42;
-    --secondary-soft: #3d3d3d;
-    --secondary-soft-rgb: 61, 61, 61;
-    --secondary-light: #a3a3a3;
-    --secondary-light-rgb: 163, 163, 163;
-    --secondary-ultralight: #f0f0f0;
-    --secondary-ultralight-rgb: 240, 240, 240;
-    */
- 
-    /* --- Marrom e Areia ---
-    --primary-darker: #301808;
-    --primary-darker-rgb: 48, 24, 8;
-    --primary-dark: #4A2A0F;
-    --primary-dark-rgb: 74, 42, 15;
-    --primary-medium: #653C1B;
-    --primary-medium-rgb: 101, 60, 27;
-    --primary-soft: #80522Ab6;
-    --primary-soft-rgb: 128, 82, 42;
-    --primary-light: #9B6E41;
-    --primary-light-rgb: 155, 110, 65;
-    --primary-ultralight: #B68F5F;
-    --primary-ultralight-rgb: 182, 143, 95;
-
-    --secondary-darker: #A8987E;
-    --secondary-darker-rgb: 168, 152, 126;
-    --secondary-dark: #C4B49A;
-    --secondary-dark-rgb: 196, 180, 154;
-    --secondary-medium: #E0D0B6;
-    --secondary-medium-rgb: 224, 208, 182;
-    --secondary-soft: #E8DACFB6;
-    --secondary-soft-rgb: 232, 218, 207;
-    --secondary-light: #F2E8DA;
-    --secondary-light-rgb: 242, 232, 218;
-    --secondary-ultralight: #FAF5EF;
-    --secondary-ultralight-rgb: 250, 245, 239;
-    */
-
-    /* --- Azul e Cinza --- 
+:root, .theme-blue-gray {
     --primary-darker: #0A2A4D;
     --primary-darker-rgb: 10, 42, 77;
     --primary-dark: #0E3B6B;
@@ -85,9 +28,95 @@
     --secondary-light-rgb: 220, 220, 220;
     --secondary-ultralight: #F5F5F5;
     --secondary-ultralight-rgb: 245, 245, 245;
-    */
 
-    /* --- Roxo e Cinza ---*/
+    --input-focus-border-color: var(--secondary-darker);
+    --input-focus-box-shadow: 0 0 0 0.25rem rgba(var(--primary-soft-rgb), 0.35);
+
+    /* Fontes, Bordas, Sombras (geralmente não mudam drasticamente com o tema de cor) */
+    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --border-radius: 0.375rem;
+    --box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.theme-green-gray {
+    --primary-darker: #011b0c;
+    --primary-darker-rgb: 1, 27, 12;
+    --primary-dark: #01370d;
+    --primary-dark-rgb: 1, 55, 13;
+    --primary-medium: #115b14;
+    --primary-medium-rgb: 17, 91, 20;
+    --primary-soft: #149714b6; 
+    --primary-soft-rgb: 20, 151, 20;
+    --primary-light: #307232;
+    --primary-light-rgb: 48, 114, 50;
+    --primary-ultralight: #6aa174;
+    --primary-ultralight-rgb: 106, 161, 116;
+
+    --secondary-darker: #080808;
+    --secondary-darker-rgb: 8, 8, 8;
+    --secondary-dark: #101010;
+    --secondary-dark-rgb: 16, 16, 16;
+    --secondary-medium: #2a2a2a;
+    --secondary-medium-rgb: 42, 42, 42;
+    --secondary-soft: #3d3d3d;
+    --secondary-soft-rgb: 61, 61, 61;
+    --secondary-light: #a3a3a3;
+    --secondary-light-rgb: 163, 163, 163;
+    --secondary-ultralight: #f0f0f0;
+    --secondary-ultralight-rgb: 240, 240, 240;
+    
+    --input-focus-border-color: var(--secondary-darker);
+    --input-focus-box-shadow: 0 0 0 0.25rem rgba(var(--primary-soft-rgb), 0.35);
+
+    /* Fontes, Bordas, Sombras (geralmente não mudam drasticamente com o tema de cor) */
+    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --border-radius: 0.375rem;
+    --box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.theme-brown-sand {
+    --primary-darker: #301808;
+    --primary-darker-rgb: 48, 24, 8;
+    --primary-dark: #4A2A0F;
+    --primary-dark-rgb: 74, 42, 15;
+    --primary-medium: #653C1B;
+    --primary-medium-rgb: 101, 60, 27;
+    --primary-soft: #80522Ab6;
+    --primary-soft-rgb: 128, 82, 42;
+    --primary-light: #9B6E41;
+    --primary-light-rgb: 155, 110, 65;
+    --primary-ultralight: #B68F5F;
+    --primary-ultralight-rgb: 182, 143, 95;
+
+    --secondary-darker: #A8987E;
+    --secondary-darker-rgb: 168, 152, 126;
+    --secondary-dark: #C4B49A;
+    --secondary-dark-rgb: 196, 180, 154;
+    --secondary-medium: #E0D0B6;
+    --secondary-medium-rgb: 224, 208, 182;
+    --secondary-soft: #E8DACFB6;
+    --secondary-soft-rgb: 232, 218, 207;
+    --secondary-light: #F2E8DA;
+    --secondary-light-rgb: 242, 232, 218;
+    --secondary-ultralight: #FAF5EF;
+    --secondary-ultralight-rgb: 250, 245, 239;
+    
+    --input-focus-border-color: var(--secondary-darker);
+    --input-focus-box-shadow: 0 0 0 0.25rem rgba(var(--primary-soft-rgb), 0.35);
+
+    /* Fontes, Bordas, Sombras (geralmente não mudam drasticamente com o tema de cor) */
+    --font-family-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --border-radius: 0.375rem;
+    --box-shadow-sm: 0 .125rem .25rem rgba(0, 0, 0, .075);
+    --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15);
+}
+
+.theme-purple-gray {
     --primary-darker: #3B1F5D;
     --primary-darker-rgb: 59, 31, 93;
     --primary-dark: #482873;
