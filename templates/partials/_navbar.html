@@ -55,7 +55,7 @@
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" action="{% url 'employees:logout' %}">
+            <form method="post" action="{% url 'employees:logout_page' %}">
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="logoutModalLabel">Confirmar Saída</h5>
