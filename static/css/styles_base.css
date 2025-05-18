@@ -170,6 +170,28 @@ img {
     box-shadow: 0 0 0 0.25rem rgba(var(--primary-medium-rgb), 0.25);
 }
 
+/* --- Componentes do form --- */
+.form-check-input {
+  border-color: var(--primary-dark);
+}
+.form-check-input:not(:checked)::before {
+  background-color: var(--secondary) !important;
+}
+.form-check-input:checked {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: none;
+}
+.form-check-input:checked:focus {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 0.15rem rgba(var(--primary-medium-rgb), 0.5);
+}
+.form-check-input:focus {
+  border-color: var(--primary-dark);
+  box-shadow: 0 0 0 0.15rem rgba(var(--primary-medium-rgb), 0.5);
+}
+
 /* --- btn-primary ---*/
 .btn-primary {
     color: #fff;
@@ -249,7 +271,7 @@ img {
 }
 
 /* ==========================================================================
-   2. Componentes utilizados no sistema (Navbar / Sidebar / Footer / Logo)
+   3. Componentes utilizados no sistema (Navbar / Sidebar / Footer / Logo)
    ========================================================================== */
 /* --- logo --- */
 .logo {
@@ -319,4 +341,21 @@ img {
 }
 .offcanvas-body .nav-link:hover {
     color: var(--primary-soft);
+}
+
+/* ==========================================================================
+   4. Responsividade em telas menores
+   ========================================================================== */
+
+   @media (min-width: 992px) { /* Breakpoint lg do Bootstrap */
+    .form-check-inline-lg {
+        display: inline-block;
+    }
+    .form-check-inline-lg + .form-check-inline-lg { /* Adiciona margem apenas entre os itens inline */
+        margin-left: .5rem; 
+    }
+    /* Se você quiser que os labels fiquem mais próximos dos inputs em linha */
+    .form-check-inline-lg .form-check-label {
+        padding-left: 0.25rem; 
+    }
 }
