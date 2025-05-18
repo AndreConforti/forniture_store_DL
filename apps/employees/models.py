@@ -1,3 +1,4 @@
+# employees/models.py
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.core.validators import RegexValidator
@@ -8,6 +9,20 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Employee(AbstractUser):
+    THEME_CHOICES = [
+        ('theme-blue-gray', 'Azul (Padrão)'),
+        ('theme-green-gray', 'Verde'),
+        ('theme-brown-sand', 'Marrom'),
+        ('theme-purple-gray', 'Roxo'),
+    ]
+    selected_theme = models.CharField(
+        max_length=50,
+        choices=THEME_CHOICES,
+        default='theme-blue-gray',
+        verbose_name='Tema Preferido',
+        blank=True
+    )
+    
     phone = models.CharField(
         max_length=15,
         validators=[
@@ -40,7 +55,6 @@ class Employee(AbstractUser):
         null=True
     )
     
-    # Relacionamento genérico com Address
     addresses = GenericRelation(
         'addresses.Address',
         related_query_name='employee',
@@ -55,20 +69,15 @@ class Employee(AbstractUser):
     
     @property
     def address(self):
-        """Propriedade para compatibilidade com código existente."""
         return self.addresses.first()
     
     def save(self, *args, **kwargs):
-        """Garante a validação completa antes de salvar."""
         with transaction.atomic():
             super().save(*args, **kwargs)
-            
-            # Processa o endereço se existir
             if address := self.address:
                 self._complete_address_data(address)
     
     def _complete_address_data(self, address):
-        """Preenche automaticamente os dados do endereço via API se necessário"""
         try:
             if address.zip_code and not all([
                 address.street,
@@ -76,7 +85,7 @@ class Employee(AbstractUser):
                 address.city,
                 address.state
             ]):
-                address.full_clean()  # Dispara a busca na API
+                address.full_clean()
                 address.save()
         except Exception as e:
             logger.error(f"Erro ao completar endereço: {str(e)}")

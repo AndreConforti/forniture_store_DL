@@ -1,6 +1,6 @@
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
-from .views import custom_login, custom_logout
+from .views import custom_login, custom_logout, change_employee_theme
 
 
 app_name = 'employees'
@@ -8,6 +8,7 @@ app_name = 'employees'
 urlpatterns = [
     path('login/', custom_login, name='login'),
     path('logout/', custom_logout, name='logout_page'),
+   path('change-theme/', change_employee_theme, name='change_theme'),
     path('password_reset/', 
          auth_views.PasswordResetView.as_view(
             template_name='employees/password_reset_form.html',

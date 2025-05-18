@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 from .forms import EmployeeLoginForm
+from .models import Employee
 
 
 @require_http_methods(["GET", "POST"])
@@ -33,3 +34,22 @@ def custom_login(request):
 def custom_logout(request):
     auth_logout(request)
     return render(request, 'employees/custom_logout.html')
+
+
+@login_required
+@require_POST
+def change_employee_theme(request):
+    theme_value = request.POST.get('selected_theme_value')    
+    # Valida se o tema escolhido está entre as opções válidas
+    valid_theme_values = [choice[0] for choice in Employee.THEME_CHOICES]
+    if theme_value in valid_theme_values:
+        employee = request.user
+        if isinstance(employee, Employee): 
+            employee.selected_theme = theme_value
+            employee.save(update_fields=['selected_theme'])
+        else:
+            messages.error(request, "Não foi possível atualizar o tema para este usuário.")
+    else:
+        messages.error(request, "Tema inválido selecionado.")
+        
+    return redirect(request.META.get('HTTP_REFERER', 'showroom:dashboard'))
