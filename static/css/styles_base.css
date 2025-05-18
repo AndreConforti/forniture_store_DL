@@ -59,7 +59,7 @@
     --secondary-ultralight-rgb: 250, 245, 239;
     */
 
-    /* --- Azul e Cinza --- */
+    /* --- Azul e Cinza --- 
     --primary-darker: #0A2A4D;
     --primary-darker-rgb: 10, 42, 77;
     --primary-dark: #0E3B6B;
@@ -74,6 +74,34 @@
     --primary-ultralight-rgb: 112, 174, 226;
 
     --secondary-darker: #4A4A4A
+    --secondary-darker-rgb: 74, 74, 74;
+    --secondary-dark: #737373;
+    --secondary-dark-rgb: 115, 115, 115;
+    --secondary-medium: #A0A0A0;
+    --secondary-medium-rgb: 160, 160, 160;
+    --secondary-soft: #BEBEBEB6;
+    --secondary-soft-rgb: 190, 190, 190;
+    --secondary-light: #DCDCDC;
+    --secondary-light-rgb: 220, 220, 220;
+    --secondary-ultralight: #F5F5F5;
+    --secondary-ultralight-rgb: 245, 245, 245;
+    */
+
+    /* --- Roxo e Cinza ---*/
+    --primary-darker: #3B1F5D;
+    --primary-darker-rgb: 59, 31, 93;
+    --primary-dark: #482873;
+    --primary-dark-rgb: 72, 40, 115;
+    --primary-medium: #5A308D;
+    --primary-medium-rgb: 90, 48, 141;
+    --primary-soft: #7048A3B6;
+    --primary-soft-rgb: 112, 72, 163;
+    --primary-light: #8C6BBF;
+    --primary-light-rgb: 140, 107, 191;
+    --primary-ultralight: #AE95D9;
+    --primary-ultralight-rgb: 174, 149, 217;
+
+    --secondary-darker: #4A4A4A;
     --secondary-darker-rgb: 74, 74, 74;
     --secondary-dark: #737373;
     --secondary-dark-rgb: 115, 115, 115;
@@ -114,6 +142,10 @@ a:hover {
 img {
     max-width: 100%;
     height: auto;
+}
+
+.card-title {
+    color: var(--primary-dark);
 }
 
 /* --- form.floating ---*/
