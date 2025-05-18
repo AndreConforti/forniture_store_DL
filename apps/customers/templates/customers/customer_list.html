@@ -5,65 +5,48 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Clientes</h2>
-        <a href="{% url 'customers:create' %}" class="btn">
+        <a href="{% url 'customers:create' %}" class="btn btn-primary p-3 d-none d-lg-block">
             <i class="bi bi-plus-circle"></i> Novo Cliente
         </a>
     </div>
-    <!-- Campo de Busca com Filtros -->
+
     <form method="get" class="mb-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        class="form-control" 
-                        placeholder="Buscar por nome, CPF/CNPJ ou e-mail..."
-                        value="{{ request.GET.search }}"
-                    >
-                    <div class="input-group-append ms-2 d-flex align-items-center">
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-all" 
-                                name="customer_type" 
-                                value="all"
-                                {% if not request.GET.customer_type or request.GET.customer_type == 'all' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-all">Todos</label>
-                        </div>
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-pf" 
-                                name="customer_type" 
-                                value="IND"
-                                {% if request.GET.customer_type == 'IND' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-pf">Pessoa Física</label>
-                        </div>
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-pj" 
-                                name="customer_type" 
-                                value="CORP"
-                                {% if request.GET.customer_type == 'CORP' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-pj">Pessoa Jurídica</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                </div>
+        <div class="row g-2 align-items-end">            
+            <!-- Campo de Busca por Texto -->
+            <div class="col-12 col-lg-6">
+                <label for="search-input" class="form-label visually-hidden">Termo de Busca</label>
+                <input 
+                    type="text" 
+                    id="search-input"
+                    name="search" 
+                    class="form-control form-control-lg"
+                    placeholder="Buscar por nome, CPF/CNPJ ou e-mail..."
+                    value="{{ request.GET.search }}"
+                >
+            </div>
+            <!-- Filtro por Tipo de Cliente (Dropdown) -->
+            <div class="col-12 col-lg-auto">
+                <label for="customer-type-select" class="form-label visually-hidden">Tipo de Cliente</label>
+                <select 
+                    name="customer_type" 
+                    id="customer-type-select"
+                    class="form-select form-select-lg"
+                >
+                    <option value="all" {% if not request.GET.customer_type or request.GET.customer_type == 'all' %}selected{% endif %}>Todos os Tipos</option>
+                    <option value="IND" {% if request.GET.customer_type == 'IND' %}selected{% endif %}>Pessoa Física</option>
+                    <option value="CORP" {% if request.GET.customer_type == 'CORP' %}selected{% endif %}>Pessoa Jurídica</option>
+                </select>
+            </div>
+            <!-- Botão de Submissão -->
+            <div class="col-12 col-lg-auto">
+                <button type="submit" class="btn btn-primary btn-lg w-100 w-lg-auto">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
             </div>
         </div>
     </form>
-    <!-- Tabela de Clientes -->
+
+<!-- Tabela -->
     <div class="card shadow-sm">
         <div class="card-body">
             <div class="table-responsive">
@@ -92,7 +75,7 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center">Nenhum cliente cadastrado.</td>
+                            <td colspan="5" class="text-center">Nenhum cliente cadastrado.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
