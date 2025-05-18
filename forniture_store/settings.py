@@ -162,3 +162,15 @@ LOGGING = {
 LOGIN_URL = '/auth/login/'  # Nova URL de login
 LOGIN_REDIRECT_URL = '/'    # Redireciona para a página inicial após login
 LOGOUT_REDIRECT_URL = '/auth/login/'  # Redireciona para a página de login após logout
+
+## Configuração de e-mmail
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Para produção, você usaria um serviço de e-mail real (ex: Gmail, SendGrid, Mailgun):
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'seu_email@gmail.com'  # Seu e-mail
+# EMAIL_HOST_PASSWORD = 'sua_senha_de_app' # Sua senha de app do Gmail ou senha do provedor
+# DEFAULT_FROM_EMAIL = 'seu_email@gmail.com' # E-mail que aparecerá como remetente
