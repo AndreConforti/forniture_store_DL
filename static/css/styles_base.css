@@ -388,3 +388,41 @@ img {
         padding-left: 0.25rem; 
     }
 }
+
+/* ==========================================================================
+   5. Estilos Adicionais (Ex: Preview de Tema na Navbar)
+   ========================================================================== */
+
+.theme-preview-circle {
+    display: inline-block;
+    width: 16px;           /* Tamanho do círculo */
+    height: 16px;          /* Tamanho do círculo */
+    border-radius: 50%;    /* Torna o span um círculo */
+    flex-shrink: 0;        /* Impede que o círculo encolha em layouts flex com texto longo */
+    box-sizing: border-box; /* Garante que a borda ('border: 2px solid ...') não aumente o tamanho total além de 16x16 */
+}
+
+/* Ajustes para o formulário e botão dentro do item do dropdown de temas */
+.dropdown-menu li form.d-block {
+    margin: 0; /* Remove margens padrão do formulário */
+    padding: 0; /* Remove paddings padrão do formulário */
+}
+
+.dropdown-menu li form.d-block .dropdown-item {
+    width: 100%; /* Faz o botão (que é o dropdown-item) ocupar toda a largura do <li> */
+    text-align: left; /* Alinha o texto do botão à esquerda */
+    /* O padding padrão do .dropdown-item (.25rem 1rem) deve funcionar bem aqui.
+       Se precisar ajustar, pode fazer aqui. */
+}
+
+/* Opcional: Melhorar o contraste do círculo de preview quando o item está ativo/hover,
+   se a cor de fundo do .dropdown-item.active cobrir a borda do círculo.
+   Por padrão, o Bootstrap usa uma cor de fundo para .active que pode funcionar bem.
+   Mas se você tiver um tema onde isso não acontece, pode precisar disto:
+*/
+/*
+.dropdown-menu .dropdown-item.active .theme-preview-circle,
+.dropdown-menu .dropdown-item:active .theme-preview-circle {
+    border-color: var(--bs-dropdown-link-active-color, #fff);  Use a cor do texto ativo do dropdown ou branco
+}
+*/
