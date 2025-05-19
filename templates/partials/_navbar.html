@@ -40,14 +40,17 @@
                         <!-- INÍCIO: Opções de Tema -->
                         <li><h6 class="dropdown-header">Escolha seu Tema</h6></li>
                         {% if THEME_CHOICES_FOR_NAVBAR %}
-                            {% for theme_value, theme_name in THEME_CHOICES_FOR_NAVBAR %}
+                            {% for theme in THEME_CHOICES_FOR_NAVBAR %}
                             <li>
-                                <form action="{% url 'employees:change_theme' %}" method="post" class="d-inline">
+                                <form action="{% url 'employees:change_theme' %}" method="post" class="d-block">
                                     {% csrf_token %}
-                                    <input type="hidden" name="selected_theme_value" value="{{ theme_value }}">
-                                    <button type="submit" 
-                                            class="dropdown-item {% if request.user.selected_theme == theme_value %}active fw-bold{% endif %}">
-                                        {{ theme_name }}
+                                    <input type="hidden" name="selected_theme_value" value="{{ theme.value }}">
+                                    <button type="submit"
+                                            class="dropdown-item d-flex align-items-center {% if request.user.selected_theme == theme.value %}active fw-bold{% endif %}">
+                                        <span class="theme-preview-circle me-2"
+                                              style="background-color: {{ theme.bg_color }}; border: 2px solid {{ theme.border_color }};">
+                                        </span>
+                                        {{ theme.name }}
                                     </button>
                                 </form>
                             </li>
