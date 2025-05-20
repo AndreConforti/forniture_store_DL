@@ -2,28 +2,30 @@
     <!-- Profissão -->
     <div class="col-md-6">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text" class="form-control {% if form.profession.errors %}is-invalid{% endif %}" {# Removidas border-brown focus-brown #}
                    id="{{ form.profession.id_for_label }}"
                    name="{{ form.profession.html_name }}"
                    placeholder=" "
                    value="{{ form.profession.value|default_if_none:'' }}">
-            <label for="{{ form.profession.id_for_label }}" class="text-brown">
+            <label for="{{ form.profession.id_for_label }}"> {# Removida text-brown #}
                 {{ form.profession.label }}
             </label>
         </div>
+        {% if form.profession.errors %}<div class="invalid-feedback d-block">{{ form.profession.errors|join:", " }}</div>{% endif %}
     </div>
 
     <!-- VIP -->
-    <div class="col-md-6">
-        <div class="form-check form-switch mt-3 pt-1">
-            <input class="form-check-input" type="checkbox" 
+    <div class="col-md-6 align-self-center"> {# align-self-center para alinhar verticalmente com o input #}
+        <div class="form-check form-switch mt-3 pt-1"> {# Mantido mt-3 pt-1 para espaçamento, pode ajustar #}
+            <input class="form-check-input" type="checkbox"
                    id="{{ form.is_vip.id_for_label }}"
                    name="{{ form.is_vip.html_name }}"
                    {% if form.is_vip.value %}checked{% endif %}>
-            <label class="form-check-label text-brown" for="{{ form.is_vip.id_for_label }}">
+            <label class="form-check-label" for="{{ form.is_vip.id_for_label }}"> {# Removida text-brown #}
                 {{ form.is_vip.label }}
             </label>
         </div>
+        {% if form.is_vip.errors %}<div class="invalid-feedback d-block">{{ form.is_vip.errors|join:", " }}</div>{% endif %}
     </div>
 </div>
 
@@ -31,16 +33,17 @@
 <div class="row g-3 mb-4">
     <div class="col-12">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text" class="form-control {% if form.interests.errors %}is-invalid{% endif %}" {# Removidas border-brown focus-brown #}
                    id="{{ form.interests.id_for_label }}"
                    name="{{ form.interests.html_name }}"
                    placeholder=" "
                    value="{{ form.interests.value|default_if_none:'' }}">
-            <label for="{{ form.interests.id_for_label }}" class="text-brown">
+            <label for="{{ form.interests.id_for_label }}"> {# Removida text-brown #}
                 {{ form.interests.label }}
             </label>
-            <small class="text-brown mt-1 d-block">Produtos ou serviços de interesse</small>
         </div>
+        {% if form.interests.errors %}<div class="invalid-feedback d-block">{{ form.interests.errors|join:", " }}</div>{% endif %}
+        <small class="form-text mt-1 d-block">Produtos ou serviços de interesse</small> {# Removida text-brown #}
     </div>
 </div>
 
@@ -48,14 +51,15 @@
 <div class="row g-3">
     <div class="col-12">
         <div class="form-floating">
-            <textarea class="form-control border-brown focus-brown" 
+            <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}" {# Removidas border-brown focus-brown #}
                       id="{{ form.notes.id_for_label }}"
                       name="{{ form.notes.html_name }}"
                       placeholder=" "
                       style="height: 100px">{{ form.notes.value|default_if_none:'' }}</textarea>
-            <label for="{{ form.notes.id_for_label }}" class="text-brown">
+            <label for="{{ form.notes.id_for_label }}"> {# Removida text-brown #}
                 {{ form.notes.label }}
             </label>
         </div>
+        {% if form.notes.errors %}<div class="invalid-feedback d-block">{{ form.notes.errors|join:", " }}</div>{% endif %}
     </div>
 </div>
