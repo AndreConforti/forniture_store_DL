@@ -2,7 +2,7 @@
     <!-- Tipo de Cliente -->
     <div class="col-md-3">
         <div class="form-floating">
-            <select class="form-select customer-type-select" id="{{ form.customer_type.id_for_label }}"
+            <select class="form-select customer-type-select {% if form.customer_type.errors %}is-invalid{% endif %}" id="{{ form.customer_type.id_for_label }}"
                     name="{{ form.customer_type.html_name }}"
                     data-action="customer-type-change">
                 {% for value, label in form.customer_type.field.choices %}
@@ -11,7 +11,7 @@
                     </option>
                 {% endfor %}
             </select>
-            <label for="{{ form.customer_type.id_for_label }}" class="text-navy">
+            <label for="{{ form.customer_type.id_for_label }}">
                 {{ form.customer_type.label }}
                 {% if form.customer_type.field.required %}<span class="text-danger">*</span>{% endif %}
             </label>
@@ -26,12 +26,12 @@
     <!-- Nome Completo -->
     <div class="col-md-5">
         <div class="form-floating">
-            <input type="text" class="form-control {% if form.full_name.errors %}is-invalid{% endif %}" 
+            <input type="text" class="form-control {% if form.full_name.errors %}is-invalid{% endif %}"
                    id="{{ form.full_name.id_for_label }}"
                    name="{{ form.full_name.html_name }}"
                    placeholder=" "
                    value="{{ form.full_name.value|default_if_none:'' }}">
-            <label for="{{ form.full_name.id_for_label }}" class="text-navy">
+            <label for="{{ form.full_name.id_for_label }}">
                 {{ form.full_name.label }}
                 {% if form.full_name.field.required %}<span class="text-danger">*</span>{% endif %}
             </label>
@@ -51,7 +51,7 @@
                    name="{{ form.preferred_name.html_name }}"
                    placeholder=" "
                    value="{{ form.preferred_name.value|default_if_none:'' }}">
-            <label for="{{ form.preferred_name.id_for_label }}" class="text-navy">
+            <label for="{{ form.preferred_name.id_for_label }}">
                 {{ form.preferred_name.label }}
             </label>
         </div>
@@ -66,7 +66,7 @@
 <div class="row g-3 mb-4">
     <!-- CPF/CNPJ -->
     <div class="col-md-4">
-        <div class="input-group">
+        <div class="input-group {% if form.tax_id.errors %}is-invalid{% endif %}">
             <div class="form-floating">
                 <input type="text" class="form-control {% if form.tax_id.errors %}is-invalid{% endif %}"
                     id="{{ form.tax_id.id_for_label }}"
@@ -76,20 +76,20 @@
                     data-action="document-input"
                     pattern="\d*"
                     inputmode="numeric">
-                <label for="{{ form.tax_id.id_for_label }}" class="text-navy">
-                    {{ form.tax_id.label }} <span class="text-danger">*</span>
+                <label for="{{ form.tax_id.id_for_label }}">
+                    {{ form.tax_id.label }} {% if form.tax_id.field.required %}<span class="text-danger">*</span>{% endif %}
                 </label>
             </div>
-            <button class="btn btn-brown" type="button" id="search-tax-id" disabled>
+            <button class="btn btn-outline-secondary" type="button" id="search-tax-id" disabled>
                 <i class="bi bi-search"></i>
             </button>
         </div>
-        {% if form.tax_id.errors %}
+         {% if form.tax_id.errors %}
         <div class="invalid-feedback d-block">
             {{ form.tax_id.errors|join:", " }}
         </div>
         {% endif %}
-        <small class="form-text text-muted">Somente números</small>
+        <small class="form-text">Somente números</small>
     </div>
 
     <!-- Telefone -->
@@ -100,7 +100,7 @@
                    name="{{ form.phone.html_name }}"
                    placeholder=" "
                    value="{{ form.phone.value|default_if_none:'' }}">
-            <label for="{{ form.phone.id_for_label }}" class="text-navy">
+            <label for="{{ form.phone.id_for_label }}">
                 {{ form.phone.label }}
             </label>
         </div>
@@ -119,7 +119,7 @@
                    name="{{ form.email.html_name }}"
                    placeholder=" "
                    value="{{ form.email.value|default_if_none:'' }}">
-            <label for="{{ form.email.id_for_label }}" class="text-navy">
+            <label for="{{ form.email.id_for_label }}">
                 {{ form.email.label }}
             </label>
         </div>
