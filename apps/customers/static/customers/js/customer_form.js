@@ -19,7 +19,7 @@ $(document).ready(function() {
         }
 
         $.ajax({
-            url: '/customers/search-cnpj/',  // Certifique-se de que essa é a URL correta
+            url: '/customers/search-cnpj/', 
             type: 'GET',
             data: { tax_id: taxId },
             dataType: 'json',

@@ -17,8 +17,8 @@ class AddressForm(forms.ModelForm):
 class AddressInline(GenericStackedInline):
     model = Address
     form = AddressForm
-    extra = 0  # Não mostra forms extras
-    max_num = 1  # Limita a 1 endereço
+    extra = 0 
+    max_num = 1 
     can_delete = False
     verbose_name = 'Endereço'
     

@@ -1,0 +1,59 @@
+{% extends "base/base_home.html" %}
+{% load static %}
+
+{% block title %}Tutorial do Sistema - {{ block.super }}{% endblock %}
+{% block styles_extra %}
+    <link rel="stylesheet" href="{% static 'docs/css/style_docs_base.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <div class="row">
+        <!-- Tutorial Sidebar Navigation -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse p-3" id="tutorialSidebar">
+            <div class="position-sticky">
+                <h5 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Menu do Tutorial</span>
+                </h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_page == 'index' %}active{% endif %}" href="{% url 'docs:index' %}">
+                            <i class="bi bi-house-door me-2"></i> Início do Tutorial
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_page == 'authentication' %}active{% endif %}" href="{% url 'docs:authentication' %}">
+                            <i class="bi bi-box-arrow-in-right me-2"></i> Acesso e Personalização
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if current_page == 'password_recovery' %}active{% endif %}" href="{% url 'docs:password_recovery' %}">
+                            <i class="bi bi-key me-2"></i> Recuperação de Senha
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        {% with customers_pages="customers_overview customers_create customers_manage" %}
+                        <a class="nav-link {% if current_page in customers_pages.split %}active{% endif %}" data-bs-toggle="collapse" href="#customersSubmenuTutorial" role="button" aria-expanded="{% if current_page in customers_pages.split %}true{% else %}false{% endif %}" aria-controls="customersSubmenuTutorial">
+                            <i class="bi bi-people me-2"></i> Gerenciando Clientes
+                        </a>
+                        <ul class="collapse list-unstyled ms-3 {% if current_page in customers_pages.split %}show{% endif %}" id="customersSubmenuTutorial">
+                            <li><a class="nav-link {% if current_page == 'customers_overview' %}active{% endif %}" href="{% url 'docs:customers_overview' %}">Visão Geral</a></li>
+                            <li><a class="nav-link {% if current_page == 'customers_create' %}active{% endif %}" href="{% url 'docs:customers_create' %}">Cadastrar Cliente</a></li>
+                            <li><a class="nav-link {% if current_page == 'customers_manage' %}active{% endif %}" href="{% url 'docs:customers_manage' %}">Consultar e Editar</a></li>
+                        </ul>
+                        {% endwith %}
+                    </li>
+                    <!-- Add more tutorial sections here -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Tutorial Page Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 tutorial-content">
+            {% block tutorial_page_content %}
+            <!-- Specific tutorial page content will go here -->
+            {% endblock tutorial_page_content %}
+        </main>
+    </div>
+</div>
+{% endblock %}
