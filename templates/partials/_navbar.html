@@ -23,6 +23,11 @@
                 <li class="nav-item mx-4">
                     <a class="nav-link" href="#">Produtos</a>
                 </li>
+                <li class="nav-item mx-4">
+                    <a class="nav-link" href="{% url 'docs:index' %}">
+                        <i class="bi bi-question-circle me-1"></i> Ajuda
+                    </a>
+                </li>
             </ul>
             <!-- Itens de navegação à direita (usuário, notificações) -->
             <ul class="navbar-nav">
@@ -40,17 +45,17 @@
                         <!-- INÍCIO: Opções de Tema -->
                         <li><h6 class="dropdown-header">Escolha seu Tema</h6></li>
                         {% if THEME_CHOICES_FOR_NAVBAR %}
-                            {% for theme in THEME_CHOICES_FOR_NAVBAR %}
+                            {% for theme_choice in THEME_CHOICES_FOR_NAVBAR %} 
                             <li>
                                 <form action="{% url 'employees:change_theme' %}" method="post" class="d-block">
                                     {% csrf_token %}
-                                    <input type="hidden" name="selected_theme_value" value="{{ theme.value }}">
+                                    <input type="hidden" name="selected_theme_value" value="{{ theme_choice.value }}">
                                     <button type="submit"
-                                            class="dropdown-item d-flex align-items-center {% if request.user.selected_theme == theme.value %}active fw-bold{% endif %}">
+                                            class="dropdown-item d-flex align-items-center {% if request.user.selected_theme == theme_choice.value %}active fw-bold{% endif %}">
                                         <span class="theme-preview-circle me-2"
-                                              style="background-color: {{ theme.bg_color }}; border: 2px solid {{ theme.border_color }};">
+                                              style="background-color: {{ theme_choice.bg_color }}; border: 2px solid {{ theme_choice.border_color }};">
                                         </span>
-                                        {{ theme.name }}
+                                        {{ theme_choice.name }}
                                     </button>
                                 </form>
                             </li>
@@ -74,7 +79,7 @@
 <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form method="post" action="{% url 'employees:logout_page' %}">
+            <form method="post" action="{% url 'employees:logout_page' %}"> 
                 {% csrf_token %}
                 <div class="modal-header">
                     <h5 class="modal-title" id="logoutModalLabel">Confirmar Saída</h5>

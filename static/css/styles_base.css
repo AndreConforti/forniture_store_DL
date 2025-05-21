@@ -3,20 +3,20 @@
    ========================================================================== */
 
 :root, .theme-blue-gray {
-    --primary-darker: #0A2A4D;
+    --primary-darker: #021223;
     --primary-darker-rgb: 10, 42, 77;
-    --primary-dark: #0E3B6B;
+    --primary-dark: #042345;
     --primary-dark-rgb: 14, 59, 107;
-    --primary-medium: #185A9D;
+    --primary-medium: #093a6a;
     --primary-medium-rgb: 24, 90, 157;
-    --primary-soft: #2B74B9B6;
+    --primary-soft: #1e5e9ab6;
     --primary-soft-rgb: 43, 116, 185;
-    --primary-light: #4A8DCE;
+    --primary-light: #5b96d0;
     --primary-light-rgb: 74, 141, 206;
-    --primary-ultralight: #70AEE2;
+    --primary-ultralight: #89b8dd;
     --primary-ultralight-rgb: 112, 174, 226;
 
-    --secondary-darker: #4A4A4A
+    --secondary-darker: #4A4A4A;
     --secondary-darker-rgb: 74, 74, 74;
     --secondary-dark: #737373;
     --secondary-dark-rgb: 115, 115, 115;
@@ -78,9 +78,9 @@
 }
 
 .theme-brown-sand {
-    --primary-darker: #301808;
+    --primary-darker: #180b01;
     --primary-darker-rgb: 48, 24, 8;
-    --primary-dark: #4A2A0F;
+    --primary-dark: #2f1703;
     --primary-dark-rgb: 74, 42, 15;
     --primary-medium: #653C1B;
     --primary-medium-rgb: 101, 60, 27;
@@ -115,9 +115,9 @@
 }
 
 .theme-purple-gray {
-    --primary-darker: #3B1F5D;
+    --primary-darker: #14032a;
     --primary-darker-rgb: 59, 31, 93;
-    --primary-dark: #482873;
+    --primary-dark: #2f0a60;
     --primary-dark-rgb: 72, 40, 115;
     --primary-medium: #5A308D;
     --primary-medium-rgb: 90, 48, 141;
@@ -168,10 +168,6 @@ a:hover {
 img {
     max-width: 100%;
     height: auto;
-}
-
-.card-title {
-    color: var(--primary-dark);
 }
 
 /* --- form.floating ---*/
@@ -322,6 +318,17 @@ img {
     border-color: var(--primary-dark);
     box-shadow: 0 0 0 0.25rem rgba(var(--primary-medium-rgb), 0.3);
 }
+
+/* --- table --- */
+.table > thead.table-light th {
+    background-color: var(--primary-ultralight);
+    color: var(--primary-darker);
+    border-color: var(--primary-light);
+}
+.table > tbody > tr:nth-child(odd) > * {
+    background-color: var(--secondary-ultralight);
+}
+
 
 /* ==========================================================================
    3. Componentes utilizados no sistema (Navbar / Sidebar / Footer / Logo)

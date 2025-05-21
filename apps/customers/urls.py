@@ -7,7 +7,7 @@ from .views import (
     CustomerCreateView,
 )
 
-app_name = 'customers'  # Namespace para URLs (opcional, mas recomendado)
+app_name = 'customers'
 
 urlpatterns = [
     path('', CustomerListView.as_view(), name='list'),

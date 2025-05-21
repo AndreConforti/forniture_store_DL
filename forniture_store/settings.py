@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     ## My Apps
     'apps.addresses',
     'apps.customers',
+    'apps.docs',
     'apps.employees',
     'apps.orders',
     'apps.products',
