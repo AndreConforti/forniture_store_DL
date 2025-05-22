@@ -15,7 +15,6 @@
             <li>No menu lateral (sidebar), expanda a seção "Clientes" e clique em <strong>"Cadastrar Cliente"</strong>.</li>
         </ul>
         <p>Ambas as opções levarão você ao formulário de cadastro de cliente.</p>
-        <!-- COMENTÁRIO PARA IMAGEM: Captura de tela do formulário de cadastro de cliente (customer_form.html) vazio, mostrando as abas. -->
         <img src="{% static 'docs/img/placeholder_customer_form_empty.png' %}" alt="Formulário de Cadastro de Cliente" class="img-fluid screenshot my-2">
         <p>O formulário é dividido em três abas para melhor organização: <strong>Dados Básicos</strong>, <strong>Endereço</strong> e <strong>Adicionais</strong>.</p>
     </section>
@@ -23,7 +22,6 @@
     <section>
         <h2><i class="bi bi-person-vcard me-2"></i>Aba "Dados Básicos"</h2>
         <p>Esta aba contém as informações principais de identificação e contato do cliente.</p>
-        <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da aba "Dados Básicos" do formulário. -->
         <img src="{% static 'docs/img/placeholder_customer_form_basic.png' %}" alt="Aba Dados Básicos" class="img-fluid screenshot my-2">
         
         <ul class="list-group list-group-flush mb-3">
@@ -41,7 +39,6 @@
                     <li>Para <strong>Pessoa Física</strong>, o sistema validará o CPF.</li>
                     <li>Para <strong>Pessoa Jurídica</strong>, o sistema validará o CNPJ. Além disso, um botão de busca (<i class="bi bi-search"></i>) ao lado do campo será habilitado. Ao clicar nele, o sistema tentará buscar automaticamente os dados da empresa (Razão Social, Nome Fantasia, Endereço) e preencher os campos correspondentes no formulário.</li>
                 </ul>
-                <!-- COMENTÁRIO PARA IMAGEM: Detalhe do campo CPF/CNPJ e o botão de busca para CNPJ. -->
                 <img src="{% static 'docs/img/placeholder_customer_form_taxid_search.png' %}" alt="Busca CNPJ" class="img-fluid screenshot my-1" style="max-width: 400px;">
             </li>
             <li class="list-group-item"><strong>Telefone:</strong> Digite o número de telefone do cliente. O sistema aplicará uma máscara automaticamente.</li>
@@ -53,7 +50,6 @@
     <section>
         <h2><i class="bi bi-geo-alt me-2"></i>Aba "Endereço"</h2>
         <p>Informações sobre a localização do cliente.</p>
-        <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da aba "Endereço" do formulário. -->
         <img src="{% static 'docs/img/placeholder_customer_form_address.png' %}" alt="Aba Endereço" class="img-fluid screenshot my-2">
         
         <ul class="list-group list-group-flush mb-3">
@@ -63,7 +59,6 @@
                     <li>Se o "Tipo de Cliente" for <strong>Pessoa Física</strong>, um botão de busca (<i class="bi bi-search"></i>) ao lado do campo será habilitado. Ao clicar nele, o sistema tentará buscar automaticamente o Logradouro, Bairro, Cidade e UF correspondentes ao CEP.</li>
                     <li>Se os dados do CNPJ foram buscados na aba anterior, o CEP e outros campos de endereço podem já estar preenchidos.</li>
                 </ul>
-                 <!-- COMENTÁRIO PARA IMAGEM: Detalhe do campo CEP e o botão de busca. -->
                 <img src="{% static 'docs/img/placeholder_customer_form_zip_search.png' %}" alt="Busca CEP" class="img-fluid screenshot my-1" style="max-width: 300px;">
             </li>
             <li class="list-group-item"><strong>Logradouro:</strong> Nome da rua, avenida, etc.</li>
@@ -81,7 +76,6 @@
     <section>
         <h2><i class="bi bi-info-circle me-2"></i>Aba "Adicionais"</h2>
         <p>Informações complementares sobre o cliente.</p>
-        <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da aba "Adicionais" do formulário. -->
         <img src="{% static 'docs/img/placeholder_customer_form_additional.png' %}" alt="Aba Adicionais" class="img-fluid screenshot my-2">
 
         <ul class="list-group list-group-flush mb-3">
@@ -97,11 +91,9 @@
         <p>Após preencher todas as informações desejadas, revise os dados.</p>
         <ol>
             <li>Clique no botão <strong>"Salvar Cliente"</strong> no final do formulário.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela dos botões "Salvar Cliente" e "Cancelar". -->
             <img src="{% static 'docs/img/placeholder_customer_form_buttons.png' %}" alt="Botões Salvar e Cancelar" class="img-fluid screenshot my-2" style="max-width: 300px;">
 
             <li>Se houver algum erro de preenchimento (ex: campo obrigatório não preenchido, CPF/CNPJ inválido), mensagens de erro aparecerão indicando o que precisa ser corrigido. Corrija e tente salvar novamente.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Exemplo de mensagem de erro no formulário. -->
             <img src="{% static 'docs/img/placeholder_customer_form_error_example.png' %}" alt="Erro no Formulário" class="img-fluid screenshot my-2">
 
             <li>Se tudo estiver correto, o cliente será salvo e você será redirecionado para a <a href="{% url 'docs:customers_manage' %}#consultar">Lista de Clientes</a>, com uma mensagem de sucesso.</li>
