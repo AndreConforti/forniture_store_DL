@@ -11,7 +11,6 @@
         <p>Para acessar o sistema, você precisará de um nome de usuário e senha fornecidos pelo administrador.</p>
         <ol>
             <li>Abra o sistema no seu navegador. Você verá a tela de login.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Coloque aqui uma captura de tela da página de login (custom_login.html) -->
             <img src="{% static 'docs/img/placeholder_login_screen.png' %}" alt="Tela de Login" class="img-fluid screenshot my-2">
             
             <li>No campo "Usuário", digite seu nome de usuário.</li>
@@ -20,7 +19,6 @@
         </ol>
         <p><strong>Se os dados estiverem corretos:</strong> Você será redirecionado para o Painel Principal (Dashboard) do sistema.</p>
         <p><strong>Se os dados estiverem incorretos:</strong> Uma mensagem de erro aparecerá na tela de login, como "Usuário ou senha incorretos!". Verifique seus dados e tente novamente. Se o problema persistir, consulte a seção <a href="{% url 'docs:password_recovery' %}">Recuperação de Senha</a> ou contate o administrador.</p>
-        <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da mensagem de erro no login -->
         <img src="{% static 'docs/img/placeholder_login_error.png' %}" alt="Erro no Login" class="img-fluid screenshot my-2">
     </section>
 
@@ -30,11 +28,9 @@
         <ol>
             <li>Após fazer login, localize seu nome de usuário no canto superior direito da tela (na barra de navegação).</li>
             <li>Clique no seu nome para abrir um menu suspenso.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da navbar com o menu de usuário destacado -->
             <img src="{% static 'docs/img/placeholder_navbar_user_menu.png' %}" alt="Menu de Usuário na Navbar" class="img-fluid screenshot my-2">
 
             <li>Na seção "Escolha seu Tema", você verá uma lista de temas disponíveis, cada um com uma pequena amostra de cor.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela do dropdown com as opções de tema -->
             <img src="{% static 'docs/img/placeholder_theme_options.png' %}" alt="Opções de Tema" class="img-fluid screenshot my-2">
 
             <li>Clique no nome do tema que deseja aplicar. O sistema irá recarregar e aplicar o novo tema instantaneamente.</li>
@@ -48,16 +44,13 @@
         <ol>
             <li>Clique no seu nome de usuário no canto superior direito da tela para abrir o menu suspenso.</li>
             <li>Clique na opção <strong>"Sair"</strong>.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela do menu de usuário com o botão "Sair" destacado -->
             <img src="{% static 'docs/img/placeholder_logout_button.png' %}" alt="Botão Sair" class="img-fluid screenshot my-2">
 
             <li>Uma janela de confirmação aparecerá perguntando "Tem certeza que deseja sair do sistema?".</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela do modal de confirmação de logout -->
             <img src="{% static 'docs/img/placeholder_logout_modal.png' %}" alt="Modal de Confirmação de Logout" class="img-fluid screenshot my-2">
             
             <li>Clique em <strong>"Confirmar"</strong>.</li>
             <li>Você será desconectado e verá uma mensagem de confirmação. Para acessar o sistema novamente, você precisará fazer login.</li>
-            <!-- COMENTÁRIO PARA IMAGEM: Captura de tela da página custom_logout.html -->
             <img src="{% static 'docs/img/placeholder_logout_confirmation_page.png' %}" alt="Página de Logout Efetuado" class="img-fluid screenshot my-2">
         </ol>
     </section>
