@@ -1,101 +1,80 @@
 {% extends "base/base_home.html" %}
 {% load static %}
 
+{% block title %}Lista de Fornecedores - {{ block.super }}{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Fornecedores</h2>
-        <a href="{% url 'suppliers:create' %}" class="btn">
-            <i class="bi bi-plus-circle"></i> Novo Fornecedor
+<div class="container-fluid mt-4"> {# Usando container-fluid para ocupar mais espaço se desejado, ou container para centralizar #}
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-truck fs-2 me-2"></i> {# Ícone para fornecedores #}
+            <h1 class="h2 mb-0">Fornecedores</h1>
+        </div>
+        <a href="{% url 'suppliers:create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Novo Fornecedor
         </a>
     </div>
-    <!-- Campo de Busca com Filtros -->
-    <form method="get" class="mb-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="input-group">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        class="form-control" 
-                        placeholder="Buscar por nome, CPF/CNPJ, e-mail ou contato..."
-                        value="{{ request.GET.search }}"
-                    >
-                    <div class="input-group-append ms-2 d-flex align-items-center">
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-all" 
-                                name="supplier_type" 
-                                value="all"
-                                {% if not request.GET.supplier_type or request.GET.supplier_type == 'all' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-all">Todos</label>
-                        </div>
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-pf" 
-                                name="supplier_type" 
-                                value="IND"
-                                {% if request.GET.supplier_type == 'IND' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-pf">Pessoa Física</label>
-                        </div>
-                        <div class="form-check form-check-inline mx-2">
-                            <input 
-                                class="form-check-input" 
-                                type="radio" 
-                                id="filter-pj" 
-                                name="supplier_type" 
-                                value="CORP"
-                                {% if request.GET.supplier_type == 'CORP' %}checked{% endif %}
-                            >
-                            <label class="form-check-label" for="filter-pj">Pessoa Jurídica</label>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i> Buscar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-    <!-- Tabela de Fornecedores -->
-    <div class="card shadow-sm">
+
+    <div class="card shadow-sm mb-4">
         <div class="card-body">
+            <form method="get" class="mb-0">
+                <div class="row g-3 align-items-end">
+                    <div class="col-12 col-lg-6">
+                        <label for="search-input" class="form-label visually-hidden">Buscar Fornecedor</label>
+                        <input 
+                            type="text" 
+                            id="search-input"
+                            name="search" 
+                            class="form-control form-control-lg"
+                            placeholder="Buscar por nome, CNPJ/CPF, e-mail ou contato..."
+                            value="{{ search_query }}"
+                        >
+                    </div>
+                    <div class="col-12 col-lg">
+                        <label for="supplier-type-select" class="form-label visually-hidden">Tipo de Fornecedor</label>
+                        <select name="supplier_type" id="supplier-type-select" class="form-select form-select-lg">
+                            <option value="all" {% if selected_supplier_type == 'all' %}selected{% endif %}>Todos os Tipos</option>
+                            <option value="IND" {% if selected_supplier_type == 'IND' %}selected{% endif %}>Pessoa Física</option>
+                            <option value="CORP" {% if selected_supplier_type == 'CORP' %}selected{% endif %}>Pessoa Jurídica</option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-lg-auto">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="bi bi-search me-1"></i> Buscar
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0"> {# p-0 para a tabela encostar nas bordas do card #}
             <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead class="table-light">
+                <table class="table table-hover mb-0"> {# mb-0 para remover margem inferior da tabela #}
+                    <thead class="table-light"> {# Usando sua classe de CSS para o header da tabela #}
                         <tr>
-                            <th>Nome / Razão Social</th>
-                            <th>CPF/CNPJ</th>
-                            <th>Tipo</th>
-                            <th>Contato</th>
-                            <th>Telefone</th>
-                            <th>Status</th>
+                            <th scope="col">Nome / Razão Social</th>
+                            <th scope="col">CNPJ/CPF</th>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Telefone</th>
+                            <th scope="col">Contato Principal</th>
+                            <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for supplier in suppliers %}
                         <tr class="align-middle">
                             <td>
-                                <a href="{% url 'suppliers:detail' supplier.pk %}" class="text-decoration-none text-dark">
+                                <a href="{% url 'suppliers:detail' supplier.pk %}" class="fw-bold">
                                     {{ supplier.display_name }}
                                 </a>
                             </td>
                             <td>{{ supplier.formatted_tax_id }}</td>
                             <td>{{ supplier.get_supplier_type_display }}</td>
-                            <td>
-                                {% if supplier.contact_person %}
-                                    {{ supplier.contact_person }}
-                                {% else %}
-                                    -
-                                {% endif %}
-                            </td>
-                            <td>{{ supplier.formatted_phone }}</td>
+                            <td>{{ supplier.formatted_phone|default:"-" }}</td>
+                            <td>{{ supplier.contact_person|default:"-" }}</td>
                             <td>
                                 <span class="badge {% if supplier.is_active %}bg-success{% else %}bg-secondary{% endif %}">
                                     {% if supplier.is_active %}Ativo{% else %}Inativo{% endif %}
@@ -104,13 +83,68 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center">Nenhum fornecedor cadastrado.</td>
+                            <td colspan="7" class="text-center py-4">
+                                <i class="bi bi-exclamation-circle fs-3 d-block mb-2"></i>
+                                Nenhum fornecedor encontrado com os filtros atuais.
+                                {% if search_query or selected_supplier_type != 'all' %}
+                                    <a href="{% url 'suppliers:list' %}" class="d-block mt-2">Limpar filtros</a>
+                                {% else %}
+                                     <a href="{% url 'suppliers:create' %}" class="d-block mt-2">Cadastrar novo fornecedor</a>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
         </div>
+        {% if is_paginated %}
+        <div class="card-footer bg-light border-top-0">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page=1&search={{ search_query }}&supplier_type={{ selected_supplier_type }}" aria-label="Primeira">
+                                <span aria-hidden="true">««</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&supplier_type={{ selected_supplier_type }}" aria-label="Anterior">
+                                <span aria-hidden="true">«</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}
+                            <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ search_query }}&supplier_type={{ selected_supplier_type }}">{{ num }}</a></li>
+                        {% elif num == page_obj.number|add:'-3' or num == page_obj.number|add:'3' %}
+                             <li class="page-item disabled"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&supplier_type={{ selected_supplier_type }}" aria-label="Próxima">
+                                <span aria-hidden="true">»</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&supplier_type={{ selected_supplier_type }}" aria-label="Última">
+                                <span aria-hidden="true">»»</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+
 {% endblock %}

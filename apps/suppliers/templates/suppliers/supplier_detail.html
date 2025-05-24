@@ -1,85 +1,76 @@
 {% extends "base/base_home.html" %}
 {% load static %}
 
-{% block head %}
-    <link rel="stylesheet" href="{% static 'suppliers/css/supplier_detail.css' %}">
-{% endblock %}
+{% block title %}Detalhes do Fornecedor: {{ supplier.display_name }} - {{ block.super }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
-    <article class="card border-0 shadow-sm">
-        <header class="card-header bg-primary-dark text-white">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center header">
-                    <i class="bi bi-truck fs-4 me-2"></i>
-                    <h1 class="m-0 h4">Detalhes do Fornecedor</h1>
+    <article class="card shadow-sm">
+        <header class="card-header detail-page-header py-3"> 
+            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-truck fs-2 me-2"></i> {# Ícone para fornecedores #}
+                    <h1 class="h3 mb-0">Detalhes do Fornecedor</h1>
                 </div>
-                <a href="{% url 'suppliers:list' %}" class="btn btn-sm">
-                    <i class="bi bi-arrow-left me-1"></i> Voltar
-                </a>
+                <div>
+                    <a href="{% url 'suppliers:edit' supplier.pk %}" class="btn btn-sm btn-light me-2">
+                        <i class="bi bi-pencil-square me-1"></i> Editar
+                    </a>
+                    <a href="{% url 'suppliers:list' %}" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-arrow-left me-1"></i> Voltar para Lista
+                    </a>
+                </div>
             </div>
         </header>
         
-        <div class="card-body p-3">
-            <!-- Seção de Informações Básicas -->
-            <section class="section-card m-2" aria-labelledby="dados-basicos-heading">
-                <header class="section-header my-3">
-                    <h2 id="dados-basicos-heading" class="m-0 h5">
-                        <i class="bi bi-card-checklist me-2"></i>Dados Básicos
+        <div class="card-body p-lg-4 p-3">
+            <!-- Seção de Dados Básicos -->
+            <section class="detail-section" aria-labelledby="dados-basicos-heading">
+                <header class="detail-section-header">
+                    <h2 id="dados-basicos-heading" class="h5">
+                        <i class="bi bi-card-checklist me-2"></i>Dados Básicos e Fiscais
                     </h2>
                 </header>
-                <div class="section-body">
+                <div class="detail-section-body">
                     <div class="row g-3">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Tipo:</span>
-                                <span class="info-value">
-                                    {% if supplier.supplier_type == 'IND' %}
-                                        Pessoa Física
-                                    {% else %}
-                                        Pessoa Jurídica
-                                    {% endif %}
-                                </span>
+                                <span class="info-value">{{ supplier.get_supplier_type_display }}</span>
                             </div>
                         </div>
-                        
-                        <div class="col-md-9">
+                        <div class="col-md-8">
                             <div class="info-item">
-                                <span class="info-label">Razão Social / Nome:</span>
+                                <span class="info-label">Nome Completo / Razão Social:</span>
                                 <span class="info-value">{{ supplier.full_name|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-6">
                             <div class="info-item">
-                                <span class="info-label">Nome Fantasia / Apelido:</span>
+                                <span class="info-label">Apelido / Nome Fantasia:</span>
                                 <span class="info-value">{{ supplier.preferred_name|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-6">
                             <div class="info-item">
-                                <span class="info-label">CPF / CNPJ:</span>
-                                <span class="info-value">{{ formatted_tax_id|default:"-" }}</span>
+                                <span class="info-label">CNPJ / CPF:</span>
+                                <span class="info-value">{{ supplier.formatted_tax_id|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         {% if supplier.supplier_type == 'CORP' %}
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="info-item">
                                 <span class="info-label">Inscrição Estadual:</span>
                                 <span class="info-value">{{ supplier.state_registration|default:"-" }}</span>
                             </div>
                         </div>
-                        
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="info-item">
                                 <span class="info-label">Inscrição Municipal:</span>
                                 <span class="info-value">{{ supplier.municipal_registration|default:"-" }}</span>
                             </div>
                         </div>
                         {% endif %}
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Status:</span>
@@ -88,11 +79,16 @@
                                 </span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Data Cadastro:</span>
                                 <span class="info-value">{{ supplier.registration_date|date:"d/m/Y H:i" }}</span>
+                            </div>
+                        </div>
+                         <div class="col-md-4">
+                            <div class="info-item">
+                                <span class="info-label">Última Atualização:</span>
+                                <span class="info-value">{{ supplier.updated_at|date:"d/m/Y H:i" }}</span>
                             </div>
                         </div>
                     </div>
@@ -101,45 +97,41 @@
             
             <!-- Seção de Endereço -->
             {% if address %}
-            <section class="section-card m-2" aria-labelledby="endereco-heading">
-                <header class="section-header my-3">
-                    <h2 id="endereco-heading" class="m-0 h5">
+            <section class="detail-section" aria-labelledby="endereco-heading">
+                <header class="detail-section-header">
+                    <h2 id="endereco-heading" class="h5">
                         <i class="bi bi-geo-alt-fill me-2"></i>Endereço
                     </h2>
                 </header>
-                <div class="section-body">
+                <div class="detail-section-body">
                     <div class="row g-3">
                         <div class="col-md-8">
                             <div class="info-item">
                                 <span class="info-label">Logradouro:</span>
                                 <span class="info-value">
-                                    {{ address.street|default:"-" }}, {{ address.number|default:"SN" }}
-                                    {% if address.complement %}- {{ address.complement }}{% endif %}
+                                    {{ address.street|default:"-" }}{% if address.number %}, {{ address.number }}{% else %}, S/N{% endif %}
+                                    {% if address.complement %} - {{ address.complement }}{% endif %}
                                 </span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">CEP:</span>
                                 <span class="info-value">{{ address.formatted_zip_code|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Bairro:</span>
                                 <span class="info-value">{{ address.neighborhood|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Cidade:</span>
                                 <span class="info-value">{{ address.city|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">UF:</span>
@@ -149,31 +141,40 @@
                     </div>
                 </div>
             </section>
+            {% else %}
+            <section class="detail-section" aria-labelledby="endereco-heading-empty">
+                 <header class="detail-section-header">
+                    <h2 id="endereco-heading-empty" class="h5">
+                        <i class="bi bi-geo-alt-fill me-2"></i>Endereço
+                    </h2>
+                </header>
+                <div class="detail-section-body text-muted">
+                    Nenhum endereço cadastrado para este fornecedor.
+                </div>
+            </section>
             {% endif %}
             
             <!-- Seção de Contato -->
-            <section class="section-card m-2" aria-labelledby="contato-heading">
-                <header class="section-header my-3">
-                    <h2 id="contato-heading" class="m-0 h5">
+            <section class="detail-section" aria-labelledby="contato-heading">
+                <header class="detail-section-header">
+                    <h2 id="contato-heading" class="h5">
                         <i class="bi bi-person-lines-fill me-2"></i>Contato
                     </h2>
                 </header>
-                <div class="section-body">
+                <div class="detail-section-body">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Telefone:</span>
-                                <span class="info-value">{{ formatted_phone|default:"-" }}</span>
+                                <span class="info-value">{{ supplier.formatted_phone|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-8">
                             <div class="info-item">
                                 <span class="info-label">E-mail:</span>
                                 <span class="info-value">{{ supplier.email|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-12">
                             <div class="info-item">
                                 <span class="info-label">Pessoa de Contato:</span>
@@ -183,15 +184,16 @@
                     </div>
                 </div>
             </section>
-            
+
             <!-- Seção de Dados Bancários -->
-            <section class="section-card m-2" aria-labelledby="bancarios-heading">
-                <header class="section-header my-3">
-                    <h2 id="bancarios-heading" class="m-0 h5">
-                        <i class="bi bi-bank me-2"></i>Dados Bancários
+            {% if supplier.bank_name or supplier.bank_agency or supplier.bank_account or supplier.pix_key %}
+            <section class="detail-section" aria-labelledby="bancarios-heading">
+                <header class="detail-section-header">
+                    <h2 id="bancarios-heading" class="h5">
+                        <i class="bi bi-bank2 me-2"></i>Dados Bancários
                     </h2>
                 </header>
-                <div class="section-body">
+                <div class="detail-section-body">
                     <div class="row g-3">
                         <div class="col-md-4">
                             <div class="info-item">
@@ -199,21 +201,18 @@
                                 <span class="info-value">{{ supplier.bank_name|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Agência:</span>
                                 <span class="info-value">{{ supplier.bank_agency|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-md-4">
                             <div class="info-item">
                                 <span class="info-label">Conta:</span>
                                 <span class="info-value">{{ supplier.bank_account|default:"-" }}</span>
                             </div>
                         </div>
-                        
                         <div class="col-12">
                             <div class="info-item">
                                 <span class="info-label">Chave PIX:</span>
@@ -223,37 +222,30 @@
                     </div>
                 </div>
             </section>
+            {% endif %}
             
             <!-- Seção de Observações -->
             {% if supplier.notes %}
-            <section class="section-card m-2" aria-labelledby="observacoes-heading">
-                <header class="section-header my-3">
-                    <h2 id="observacoes-heading" class="m-0 h5">
+            <section class="detail-section" aria-labelledby="observacoes-heading">
+                <header class="detail-section-header">
+                    <h2 id="observacoes-heading" class="h5">
                         <i class="bi bi-info-circle-fill me-2"></i>Observações
                     </h2>
                 </header>
-                <div class="section-body">
+                <div class="detail-section-body">
                     <div class="info-item">
-                        <span class="info-value">{{ supplier.notes|linebreaks }}</span>
+                        <span class="info-value">{{ supplier.notes|default:"-"|linebreaksbr }}</span>
                     </div>
                 </div>
             </section>
             {% endif %}
         </div>
         
-        <footer class="card-footer bg-light">
-            <div class="d-flex justify-content-end">
-                <a href="{% url 'suppliers:edit' supplier.pk %}" class="btn btn-primary me-2">
-                    <i class="bi bi-pencil-square me-1"></i> Editar
-                </a>
-                <a href="{% url 'suppliers:list' %}" class="btn btn-outline-secondary">
-                    <i class="bi bi-list-ul me-1"></i> Ver Todos
-                </a>
-            </div>
-        </footer>
+        {# O rodapé do card com botões já está no header para economizar espaço vertical #}
     </article>
 </div>
 {% endblock %}
 
 {% block scripts %}
+{{ block.super }}
 {% endblock %}

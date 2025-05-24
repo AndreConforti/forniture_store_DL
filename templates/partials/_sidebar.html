@@ -32,8 +32,10 @@
                     <i class="bi bi-truck me-2"></i> Fornecedores
                 </a>
                 <ul class="collapse list-unstyled ms-3" id="suppliersSubmenu">
-                    <li><a class="nav-link" href="{% url 'suppliers:create' %}">Cadastrar Novo</a></li>
-                    <li><a class="nav-link" href="{% url 'suppliers:list' %}">Listar Fornecedores</a></li>
+                    {% comment %} <li><a class="nav-link" href="{% url 'suppliers:create' %}">Cadastrar Novo</a></li>
+                    <li><a class="nav-link" href="{% url 'suppliers:list' %}">Listar Fornecedores</a></li> {% endcomment %}
+                    <li><a class="nav-link" href="#">Cadastrar Novo</a></li>
+                    <li><a class="nav-link" href="#">Listar Fornecedores</a></li>
                 </ul>
             </li>
 
@@ -43,8 +45,10 @@
                     <i class="bi bi-box-seam me-2"></i> Produtos
                 </a>
                 <ul class="collapse list-unstyled ms-3" id="productsSubmenu">
-                    <li><a class="nav-link" href="{% url 'products:category_list' %}">Categorias</a></li>
-                    <li><a class="nav-link" href="{% url 'products:subcategory_list' %}">Subcategorias</a></li>
+                    {% comment %} <li><a class="nav-link" href="{% url 'products:category_list' %}">Categorias</a></li>
+                    <li><a class="nav-link" href="{% url 'products:subcategory_list' %}">Subcategorias</a></li> {% endcomment %}
+                    <li><a class="nav-link" href="#">Categorias</a></li>
+                    <li><a class="nav-link" href="#">Subcategorias</a></li>
                     <li><a class="nav-link" href="#">Cadastrar Produto</a></li>
                 </ul>
             </li>
@@ -58,19 +62,6 @@
                     <li><a class="nav-link" href="#">Novo Pedido</a></li>
                     <li><a class="nav-link" href="#">Consultar Pedidos</a></li>
                     <li><a class="nav-link" href="#">Status de Entrega</a></li>
-                </ul>
-            </li>
-
-            <!-- Relatórios -->
-            <li class="nav-item">
-                <a class="nav-link fw-bold" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" aria-expanded="false" aria-controls="reportsSubmenu">
-                    <i class="bi bi-file-earmark-bar-graph me-2"></i> Relatórios
-                </a>
-                <ul class="collapse list-unstyled ms-3" id="reportsSubmenu">
-                    <li><a class="nav-link" href="#">Clientes</a></li>
-                    <li><a class="nav-link" href="#">Fornecedores</a></li>
-                    <li><a class="nav-link" href="#">Pedidos</a></li>
-                    <li><a class="nav-link" href="#">Estoque</a></li>
                 </ul>
             </li>
 
@@ -93,6 +84,19 @@
                 <ul class="collapse list-unstyled ms-3" id="billsReceiveSubmenu">
                     <li><a class="nav-link" href="#">Pagamentos a Receber</a></li>
                     <li><a class="nav-link" href="#">Histórico de Pagamentos</a></li>
+                </ul>
+            </li>
+
+            <!-- Relatórios -->
+            <li class="nav-item">
+                <a class="nav-link fw-bold" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" aria-expanded="false" aria-controls="reportsSubmenu">
+                    <i class="bi bi-file-earmark-bar-graph me-2"></i> Relatórios
+                </a>
+                <ul class="collapse list-unstyled ms-3" id="reportsSubmenu">
+                    <li><a class="nav-link" href="#">Clientes</a></li>
+                    <li><a class="nav-link" href="#">Fornecedores</a></li>
+                    <li><a class="nav-link" href="#">Pedidos</a></li>
+                    <li><a class="nav-link" href="#">Estoque</a></li>
                 </ul>
             </li>
         </ul>

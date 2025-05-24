@@ -1,0 +1,17 @@
+<div class="row g-3">
+    <!-- Observações -->
+    <div class="col-12">
+        <div class="form-floating">
+            <textarea class="form-control {% if form.notes.errors %}is-invalid{% endif %}"
+                      id="{{ form.notes.id_for_label }}"
+                      name="{{ form.notes.html_name }}"
+                      placeholder=" " {# Placeholder vazio para form-floating #}
+                      rows="{{ form.notes.field.widget.attrs.rows|default:4 }}"
+                      style="height: 120px;" {# Você pode ajustar a altura ou remover se preferir o default do Bootstrap baseado em rows #}
+                      >{{ form.notes.value|default_if_none:'' }}</textarea>
+            <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+        </div>
+        {% for error in form.notes.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.notes.help_text %}<small class="form-text text-muted">{{ form.notes.help_text }}</small>{% endif %}
+    </div>
+</div>
