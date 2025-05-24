@@ -1,91 +1,99 @@
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <!-- CEP -->
-    <div class="col-md-3">
-        <div class="input-group has-validation">
-            <div class="form-floating">
-                <input type="text" 
-                        class="form-control {% if form.zip_code.errors %}is-invalid{% endif %}"
-                        id="{{ form.zip_code.id_for_label }}"
-                        name="{{ form.zip_code.html_name }}"
-                        placeholder=" "
-                        value="{{ form.zip_code.value|default_if_none:'' }}"
-                        data-mask="00000-000"
-                        data-action="cep-lookup">
-                <label for="{{ form.zip_code.id_for_label }}" class="text-brown">
-                    {{ form.zip_code.label }}
-                </label>
+    <div class="col-md-4 col-lg-3">
+        {# Label visualmente escondido para form-floating dentro de input-group, mas presente para acessibilidade #}
+        <label for="{{ form.zip_code.id_for_label }}" class="form-label visually-hidden">{{ form.zip_code.label }}</label>
+        <div class="input-group {% if form.zip_code.errors %}is-invalid{% endif %}"> {# is-invalid no grupo para o Bootstrap #}
+            <div class="form-floating flex-grow-1"> {# form-floating ocupa o espaço disponível #}
+                <input type="text"
+                       class="form-control cep-mask {% if form.zip_code.errors %}is-invalid{% endif %}" {# is-invalid no input também #}
+                       id="{{ form.zip_code.id_for_label }}"
+                       name="{{ form.zip_code.html_name }}"
+                       placeholder="{{ form.zip_code.label }}" {# Placeholder para acessibilidade e se o label não flutuar #}
+                       value="{{ form.zip_code.value|default_if_none:'' }}"
+                       data-action="cep-lookup"
+                       maxlength="9"> {# "00000-000" tem 9 caracteres #}
+                <label for="{{ form.zip_code.id_for_label }}">{{ form.zip_code.label }}</label>
             </div>
-            <button class="btn btn-brown" 
-                    type="button" 
-                    id="search-zip-code"
-                    data-url="{% url 'suppliers:search_zip_code' %}">
+            <button class="btn btn-outline-secondary"
+                    type="button"
+                    id="search-zip-code" {# ID para o JS #}
+                    {# data-url não é necessário aqui se o JS já tem a URL ou a pega do form #}
+                    {% if form.fields.supplier_type.initial == "CORP" and form.supplier_type.value == "CORP" %}disabled{% endif %} {# Desabilitado para PJ por padrão, habilitado para PF #}
+                    >
                 <i class="bi bi-search"></i>
             </button>
-            {% if form.zip_code.errors %}
-            <div class="invalid-feedback">
-                {{ form.zip_code.errors|join:", " }}
-            </div>
-            {% endif %}
         </div>
-        <small class="text-muted">Formato: 00000-000</small>
+        {% for error in form.zip_code.errors %}
+        <div class="invalid-feedback d-block">
+            {{ error }}
+        </div>
+        {% endfor %}
+        {% if form.zip_code.help_text or not form.zip_code.help_text and not form.zip_code.errors %} {# Mostra help_text ou o padrão se não houver erros #}
+            <small class="form-text text-muted">{{ form.zip_code.help_text|default:"Formato: 00000-000" }}</small>
+        {% endif %}
     </div>
 
     <!-- Logradouro -->
-    <div class="col-md-6">
+    <div class="col-md-8 col-lg-6">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text"
+                   class="form-control {% if form.street.errors %}is-invalid{% endif %}"
                    id="{{ form.street.id_for_label }}"
                    name="{{ form.street.html_name }}"
                    placeholder=" "
-                   value="{{ form.street.value|default_if_none:'' }}">
-            <label for="{{ form.street.id_for_label }}" class="text-brown">
-                {{ form.street.label }}
-            </label>
+                   value="{{ form.street.value|default_if_none:'' }}"
+                   maxlength="{{ form.street.field.max_length|default:100 }}">
+            <label for="{{ form.street.id_for_label }}">{{ form.street.label }}</label>
         </div>
+        {% for error in form.street.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 
     <!-- Número -->
-    <div class="col-md-3">
+    <div class="col-md-4 col-lg-3">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text"
+                   class="form-control {% if form.number.errors %}is-invalid{% endif %}"
                    id="{{ form.number.id_for_label }}"
                    name="{{ form.number.html_name }}"
                    placeholder=" "
-                   value="{{ form.number.value|default_if_none:'' }}">
-            <label for="{{ form.number.id_for_label }}" class="text-brown">
-                {{ form.number.label }}
-            </label>
+                   value="{{ form.number.value|default_if_none:'' }}"
+                   maxlength="{{ form.number.field.max_length|default:10 }}">
+            <label for="{{ form.number.id_for_label }}">{{ form.number.label }}</label>
         </div>
+        {% for error in form.number.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 </div>
 
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <!-- Complemento -->
     <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text"
+                   class="form-control {% if form.complement.errors %}is-invalid{% endif %}"
                    id="{{ form.complement.id_for_label }}"
                    name="{{ form.complement.html_name }}"
                    placeholder=" "
-                   value="{{ form.complement.value|default_if_none:'' }}">
-            <label for="{{ form.complement.id_for_label }}" class="text-brown">
-                {{ form.complement.label }}
-            </label>
+                   value="{{ form.complement.value|default_if_none:'' }}"
+                   maxlength="{{ form.complement.field.max_length|default:50 }}">
+            <label for="{{ form.complement.id_for_label }}">{{ form.complement.label }}</label>
         </div>
+        {% for error in form.complement.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 
     <!-- Bairro -->
     <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text"
+                   class="form-control {% if form.neighborhood.errors %}is-invalid{% endif %}"
                    id="{{ form.neighborhood.id_for_label }}"
                    name="{{ form.neighborhood.html_name }}"
                    placeholder=" "
-                   value="{{ form.neighborhood.value|default_if_none:'' }}">
-            <label for="{{ form.neighborhood.id_for_label }}" class="text-brown">
-                {{ form.neighborhood.label }}
-            </label>
+                   value="{{ form.neighborhood.value|default_if_none:'' }}"
+                   maxlength="{{ form.neighborhood.field.max_length|default:50 }}">
+            <label for="{{ form.neighborhood.id_for_label }}">{{ form.neighborhood.label }}</label>
         </div>
+        {% for error in form.neighborhood.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 </div>
 
@@ -93,29 +101,32 @@
     <!-- Cidade -->
     <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown"
+            <input type="text"
+                   class="form-control {% if form.city.errors %}is-invalid{% endif %}"
                    id="{{ form.city.id_for_label }}"
                    name="{{ form.city.html_name }}"
                    placeholder=" "
-                   value="{{ form.city.value|default_if_none:'' }}">
-            <label for="{{ form.city.id_for_label }}" class="text-brown">
-                {{ form.city.label }}
-            </label>
+                   value="{{ form.city.value|default_if_none:'' }}"
+                   maxlength="{{ form.city.field.max_length|default:50 }}">
+            <label for="{{ form.city.id_for_label }}">{{ form.city.label }}</label>
         </div>
+        {% for error in form.city.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 
-    <!-- UF -->
+    <!-- UF (Estado) -->
     <div class="col-md-2">
         <div class="form-floating">
-            <input type="text" class="form-control border-brown focus-brown text-uppercase"
-                   id="{{ form.state.id_for_label }}"
-                   name="{{ form.state.html_name }}"
-                   placeholder=" "
-                   value="{{ form.state.value|default_if_none:'' }}"
-                   maxlength="2">
-            <label for="{{ form.state.id_for_label }}" class="text-brown">
-                {{ form.state.label }}
-            </label>
+            <select class="form-select {% if form.state.errors %}is-invalid{% endif %}"
+                    id="{{ form.state.id_for_label }}"
+                    name="{{ form.state.html_name }}">
+                {% for value, text in form.state.field.choices %}
+                    <option value="{{ value }}" {% if form.state.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                        {{ text }}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="{{ form.state.id_for_label }}">{{ form.state.label }}</label>
         </div>
+        {% for error in form.state.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
     </div>
 </div>

@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-p9y-*a(1fi9o#l5g2_h1k(j6=lb8jb-t%-k^u4-tdup)tl+&n7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']    ## ENQUANTO EM DESENVOLVIMENTO (MUDAR EM PRODUÇÃO)
 
 if 'makemigrations' in sys.argv or 'migrate' in sys.argv:
     DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

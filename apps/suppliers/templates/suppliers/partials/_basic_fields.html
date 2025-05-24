@@ -1,152 +1,128 @@
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
     <!-- Tipo de Fornecedor -->
     <div class="col-md-3">
         <div class="form-floating">
-            <select class="form-select supplier-type-select" id="{{ form.supplier_type.id_for_label }}"
+            <select class="form-select supplier-type-select {% if form.supplier_type.errors %}is-invalid{% endif %}"
+                    id="{{ form.supplier_type.id_for_label }}"
                     name="{{ form.supplier_type.html_name }}"
                     data-action="supplier-type-change">
-                {% for value, label in form.supplier_type.field.choices %}
+                {% for value, text in form.supplier_type.field.choices %}
                     <option value="{{ value }}" {% if form.supplier_type.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
-                        {{ label }}
+                        {{ text }}
                     </option>
                 {% endfor %}
             </select>
-            <label for="{{ form.supplier_type.id_for_label }}" class="text-navy">
+            <label for="{{ form.supplier_type.id_for_label }}">
                 {{ form.supplier_type.label }}
-                <span class="text-danger">*</span>
+                {% if form.supplier_type.field.required %}<span class="text-danger">*</span>{% endif %}
             </label>
         </div>
-        {% if form.supplier_type.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.supplier_type.errors|join:", " }}
-        </div>
-        {% endif %}
+        {% for error in form.supplier_type.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.supplier_type.help_text %}<small class="form-text text-muted">{{ form.supplier_type.help_text }}</small>{% endif %}
     </div>
 
     <!-- Razão Social/Nome Completo -->
     <div class="col-md-5">
         <div class="form-floating">
-            <input type="text" class="form-control {% if form.full_name.errors %}is-invalid{% endif %}" 
+            <input type="text"
+                   class="form-control {% if form.full_name.errors %}is-invalid{% endif %}"
                    id="{{ form.full_name.id_for_label }}"
                    name="{{ form.full_name.html_name }}"
                    placeholder=" "
-                   value="{{ form.full_name.value|default_if_none:'' }}">
-            <label for="{{ form.full_name.id_for_label }}" class="text-navy">
+                   value="{{ form.full_name.value|default_if_none:'' }}"
+                   maxlength="{{ form.full_name.field.max_length|default:100 }}">
+            <label for="{{ form.full_name.id_for_label }}">
                 {{ form.full_name.label }}
-                <span class="text-danger">*</span>
+                {% if form.full_name.field.required %}<span class="text-danger">*</span>{% endif %}
             </label>
         </div>
-        {% if form.full_name.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.full_name.errors|join:", " }}
-        </div>
-        {% endif %}
+        {% for error in form.full_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.full_name.help_text %}<small class="form-text text-muted">{{ form.full_name.help_text }}</small>{% endif %}
     </div>
 
     <!-- Nome Fantasia/Apelido -->
     <div class="col-md-4">
         <div class="form-floating">
-            <input type="text" class="form-control {% if form.preferred_name.errors %}is-invalid{% endif %}"
+            <input type="text"
+                   class="form-control {% if form.preferred_name.errors %}is-invalid{% endif %}"
                    id="{{ form.preferred_name.id_for_label }}"
                    name="{{ form.preferred_name.html_name }}"
                    placeholder=" "
-                   value="{{ form.preferred_name.value|default_if_none:'' }}">
-            <label for="{{ form.preferred_name.id_for_label }}" class="text-navy">
+                   value="{{ form.preferred_name.value|default_if_none:'' }}"
+                   maxlength="{{ form.preferred_name.field.max_length|default:50 }}">
+            <label for="{{ form.preferred_name.id_for_label }}">
                 {{ form.preferred_name.label }}
+                {% if form.preferred_name.field.required %}<span class="text-danger">*</span>{% endif %}
             </label>
         </div>
-        {% if form.preferred_name.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.preferred_name.errors|join:", " }}
-        </div>
-        {% endif %}
+        {% for error in form.preferred_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.preferred_name.help_text %}<small class="form-text text-muted">{{ form.preferred_name.help_text }}</small>{% endif %}
     </div>
 </div>
 
-<div class="row g-3 mb-4">
-    <!-- CPF/CNPJ -->
+<div class="row g-3 mb-3">
+    <!-- CNPJ/CPF -->
     <div class="col-md-4">
-        <div class="input-group">
-            <div class="form-floating">
-                <input type="text" class="form-control {% if form.tax_id.errors %}is-invalid{% endif %}"
-                    id="{{ form.tax_id.id_for_label }}"
-                    name="{{ form.tax_id.html_name }}"
-                    placeholder=" "
-                    value="{{ form.tax_id.value|default_if_none:'' }}"
-                    data-action="document-input"
-                    pattern="\d*"
-                    inputmode="numeric">
-                <label for="{{ form.tax_id.id_for_label }}" class="text-navy">
-                    {{ form.tax_id.label }} <span class="text-danger">*</span>
+        <div class="input-group {% if form.tax_id.errors %}is-invalid{% endif %}"> {# Aplicando is-invalid ao grupo #}
+            <div class="form-floating flex-grow-1"> {# flex-grow-1 para o form-floating ocupar espaço #}
+                <input type="text"
+                       class="form-control tax-id-mask {% if form.tax_id.errors %}is-invalid{% endif %}" {# is-invalid no input também #}
+                       id="{{ form.tax_id.id_for_label }}"
+                       name="{{ form.tax_id.html_name }}"
+                       placeholder=" " {# Placeholder vazio para form-floating #}
+                       value="{{ form.tax_id.value|default_if_none:'' }}"
+                       data-action="document-input"
+                       pattern="{{ form.tax_id.field.widget.attrs.pattern|default:'\d*' }}"
+                       inputmode="{{ form.tax_id.field.widget.attrs.inputmode|default:'text' }}">
+                <label for="{{ form.tax_id.id_for_label }}">
+                    {{ form.tax_id.label }}
+                    {% if form.tax_id.field.required %}<span class="text-danger">*</span>{% endif %}
                 </label>
             </div>
-            <button class="btn btn-brown" type="button" id="search-tax-id" disabled>
+            <button class="btn btn-outline-secondary" type="button" id="search-tax-id"
+                    {% if form.fields.supplier_type.initial == "IND" or form.supplier_type.value == "IND" %}disabled{% endif %}>
                 <i class="bi bi-search"></i>
             </button>
         </div>
-        {% if form.tax_id.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.tax_id.errors|join:", " }}
+        {% for error in form.tax_id.errors %}
+        <div class="invalid-feedback d-block"> {# Feedback de erro abaixo do grupo #}
+            {{ error }}
         </div>
+        {% endfor %}
+        {% if form.tax_id.help_text or not form.tax_id.help_text and not form.tax_id.errors %}
+             <small class="form-text text-muted">{{ form.tax_id.help_text|default:"Somente números" }}</small>
         {% endif %}
-        <small class="form-text text-muted">Somente números</small>
     </div>
 
-    <!-- Inscrição Estadual (visível apenas para PJ) -->
-    <div class="col-md-4" id="state-registration-field">
+    <!-- Inscrição Estadual -->
+    <div class="col-md-4" id="state-registration-field-div" {% if form.fields.supplier_type.initial == "IND" or form.supplier_type.value == "IND" %}style="display:none;"{% endif %}>
         <div class="form-floating">
-            <input type="text" class="form-control {% if form.state_registration.errors %}is-invalid{% endif %}"
+            <input type="text"
+                   class="form-control {% if form.state_registration.errors %}is-invalid{% endif %}"
                    id="{{ form.state_registration.id_for_label }}"
                    name="{{ form.state_registration.html_name }}"
                    placeholder=" "
-                   value="{{ form.state_registration.value|default_if_none:'' }}">
-            <label for="{{ form.state_registration.id_for_label }}" class="text-navy">
-                {{ form.state_registration.label }}
-            </label>
+                   value="{{ form.state_registration.value|default_if_none:'' }}"
+                   maxlength="{{ form.state_registration.field.max_length|default:20 }}">
+            <label for="{{ form.state_registration.id_for_label }}">{{ form.state_registration.label }}</label>
         </div>
-        {% if form.state_registration.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.state_registration.errors|join:", " }}
-        </div>
-        {% endif %}
+        {% for error in form.state_registration.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.state_registration.help_text %}<small class="form-text text-muted">{{ form.state_registration.help_text }}</small>{% endif %}
     </div>
 
-    <!-- Inscrição Municipal (visível apenas para PJ) -->
-    <div class="col-md-4" id="municipal-registration-field">
+    <!-- Inscrição Municipal -->
+    <div class="col-md-4" id="municipal-registration-field-div" {% if form.fields.supplier_type.initial == "IND" or form.supplier_type.value == "IND" %}style="display:none;"{% endif %}>
         <div class="form-floating">
-            <input type="text" class="form-control {% if form.municipal_registration.errors %}is-invalid{% endif %}"
+            <input type="text"
+                   class="form-control {% if form.municipal_registration.errors %}is-invalid{% endif %}"
                    id="{{ form.municipal_registration.id_for_label }}"
                    name="{{ form.municipal_registration.html_name }}"
                    placeholder=" "
-                   value="{{ form.municipal_registration.value|default_if_none:'' }}">
-            <label for="{{ form.municipal_registration.id_for_label }}" class="text-navy">
-                {{ form.municipal_registration.label }}
-            </label>
+                   value="{{ form.municipal_registration.value|default_if_none:'' }}"
+                   maxlength="{{ form.municipal_registration.field.max_length|default:20 }}">
+            <label for="{{ form.municipal_registration.id_for_label }}">{{ form.municipal_registration.label }}</label>
         </div>
-        {% if form.municipal_registration.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.municipal_registration.errors|join:", " }}
-        </div>
-        {% endif %}
+        {% for error in form.municipal_registration.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        {% if form.municipal_registration.help_text %}<small class="form-text text-muted">{{ form.municipal_registration.help_text }}</small>{% endif %}
     </div>
-    
-    <!-- Status Ativo -->
-    <div class="col-md-12">
-        <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" 
-                   id="{{ form.is_active.id_for_label }}"
-                   name="{{ form.is_active.html_name }}"
-                   {% if form.is_active.value %}checked{% endif %}>
-            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
-                {{ form.is_active.label }}
-            </label>
-        </div>
-        {% if form.is_active.errors %}
-        <div class="invalid-feedback d-block">
-            {{ form.is_active.errors|join:", " }}
-        </div>
-        {% endif %}
-    </div>
-
-
 </div>
