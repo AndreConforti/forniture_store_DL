@@ -1,0 +1,285 @@
+{# reports/templates/reports/customer_report_form.html #}
+{% extends "base/base_home.html" %}
+{% load static %}
+{% load reports_tags %} {# Carregar o filtro customizado #}
+
+{% block title %}Relatório de Clientes - {{ block.super汤{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="card shadow-sm">
+        <div class="card-header py-3 detail-page-header">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-file-earmark-bar-graph fs-4 me-2"></i>
+                <h1 class="h4">{{ title|default:"Gerar Relatório" }}</h1>
+            </div>
+        </div>
+        <div class="card-body p-lg-4 p-3">
+            <form method="post">
+                {% csrf_token %}
+
+                <section class="detail-section" aria-labelledby="filtros-heading">
+                    <header class="detail-section-header">
+                        <h2 id="filtros-heading" class="h5">
+                            <i class="bi bi-filter me-2"></i> Opções de Filtro
+                        </h2>
+                    </header>
+                    <div class="detail-section-body">
+                        {# Primeiras linhas para campos de texto/email/telefone/CPF/CNPJ #}
+                        <div class="row g-3 mb-3"> {# Row 1 para os primeiros campos #}
+                            <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.full_name %}
+                                <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
+                                    <input type="{{ field.widget.input_type }}"
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           id="{{ field.id_for_label }}"
+                                           name="{{ field.html_name }}"
+                                           placeholder=" "
+                                           value="{{ field.value|default_if_none:'' }}">
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.preferred_name %}
+                                <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
+                                    <input type="{{ field.widget.input_type }}"
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           id="{{ field.id_for_label }}"
+                                           name="{{ field.html_name }}"
+                                           placeholder=" "
+                                           value="{{ field.value|default_if_none:'' }}">
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+
+                             <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.tax_id %}
+                                <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
+                                    <input type="{{ field.widget.input_type }}"
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           id="{{ field.id_for_label }}"
+                                           name="{{ field.html_name }}"
+                                           placeholder=" "
+                                           value="{{ field.value|default_if_none:'' }}">
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                        </div> {# Fim Row 1 #}
+
+                         <div class="row g-3 mb-4"> {# Row 2 para os campos restantes de texto/email/telefone #}
+                              <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.phone %}
+                                <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
+                                    <input type="{{ field.widget.input_type }}"
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           id="{{ field.id_for_label }}"
+                                           name="{{ field.html_name }}"
+                                           placeholder=" "
+                                           value="{{ field.value|default_if_none:'' }}">
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+
+                            <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.email %}
+                                <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
+                                    <input type="{{ field.widget.input_type }}"
+                                           class="form-control {% if field.errors %}is-invalid{% endif %}"
+                                           id="{{ field.id_for_label }}"
+                                           name="{{ field.html_name }}"
+                                           placeholder=" "
+                                           value="{{ field.value|default_if_none:'' }}">
+                                    <label for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>
+                                {% endif %}
+                                {% endwith %}
+                            </div>
+                         </div> {# Fim Row 2 #}
+
+
+                        {# Row para os três grupos de RadioSelect #}
+                        <div class="row g-3 mb-4">
+                             {# Tipo de Cliente group #}
+                            <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
+                                {% with field=form.customer_type %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
+                                    <label class="form-label fw-bold"> {# Label do grupo #}
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <div> {# Container para radios empilhados verticalmente #}
+                                         {% for choice in field %} {# Itera sobre as opções #}
+                                             <div class="form-check"> {# form-check por padrão é display: block #}
+                                                 {{ choice.tag }} {# <-- Usa o tag do widget para renderizar o <input type="radio"> #}
+                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                     {{ choice.choice_label }}
+                                                 </label>
+                                             </div>
+                                         {% endfor %}
+                                     </div>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                            </div>
+
+                            {# Status RadioSelect field #}
+                             <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
+                                {% with field=form.is_active %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
+                                    <label class="form-label fw-bold"> {# Label do grupo #}
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <div> {# Container para radios empilhados verticalmente #}
+                                         {% for choice in field %} {# Itera sobre as opções #}
+                                             <div class="form-check"> {# form-check por padrão é display: block #}
+                                                 {{ choice.tag }} {# <-- Usa o tag do widget #}
+                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                     {{ choice.choice_label }}
+                                                 </label>
+                                             </div>
+                                         {% endfor %}
+                                     </div>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                            </div>
+
+                            {# VIP RadioSelect field #}
+                            <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
+                                {% with field=form.is_vip %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
+                                    <label class="form-label fw-bold"> {# Label do grupo #}
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <div> {# Container para radios empilhados verticalmente #}
+                                         {% for choice in field %} {# Itera sobre as opções #}
+                                             <div class="form-check"> {# form-check por padrão é display: block #}
+                                                 {{ choice.tag }} {# <-- Usa o tag do widget #}
+                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
+                                                     {{ choice.choice_label }}
+                                                 </label>
+                                             </div>
+                                         {% endfor %}
+                                     </div>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                            </div>
+                            {# Fim da Row para os três grupos de rádio #}
+                        </div>
+
+                        {# Outros campos se houverem e forem necessários abaixo dos rádios #}
+
+                    </div>
+                </section>
+
+                 <!-- Seção de Formato de Saída (Select) -->
+                 <section class="detail-section" aria-labelledby="formato-heading">
+                     <header class="detail-section-header">
+                        <h2 id="formato-heading" class="h5">
+                            <i class="bi bi-file-earmark-arrow-down me-2"></i> Formato de Saída
+                        </h2>
+                     </header>
+                     <div class="detail-section-body">
+                         <div class="row g-3">
+                              {# Renderiza o campo output_format explicitamente pois é um Select #}
+                              <div class="col-md-4">
+                                 <div class="form-floating {% if form.output_format.errors %}is-invalid{% endif %}">
+                                     {# Este loop itera sobre TODAS as choices do campo output_format #}
+                                     <select class="form-select {% if form.output_format.errors %}is-invalid{% endif %}"
+                                             id="{{ form.output_format.id_for_label }}"
+                                             name="{{ form.output_format.html_name }}">
+                                        {% for value, label in form.output_format.field.choices %}
+                                            <option value="{{ value }}" {% if form.output_format.value == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                     </select>
+                                     <label for="{{ form.output_format.id_for_label }}">
+                                          {{ form.output_format.label }}
+                                     </label>
+                                 </div>
+                                  {% if form.output_format.errors %}
+                                    <div class="invalid-feedback d-block">{{ form.output_format.errors|join:", " }}</div>
+                                  {% endif %}
+                              </div>
+                         </div>
+                     </div>
+                 </section>
+
+
+                <!-- Botão de Ação -->
+                <div class="d-flex justify-content-end mt-4 pt-3 border-top">
+                    <button type="submit" class="btn btn-primary mx-2">
+                        <i class="bi bi-download me-1"></i> Gerar Relatório
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+    {# Adicione scripts específicos se necessário, como máscaras de input #}
+{% endblock %}
