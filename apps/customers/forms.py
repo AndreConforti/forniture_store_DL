@@ -297,7 +297,5 @@ class CustomerForm(forms.ModelForm):
 
         if commit:
             instance.save(address_data=address_data_to_pass)
-        else:
-            pass
 
         return instance
