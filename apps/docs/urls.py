@@ -1,4 +1,3 @@
-# docs/urls.py
 from django.urls import path
 from . import views
 
@@ -25,5 +24,11 @@ urlpatterns = [
         "customers/manage/",
         views.tutorial_customers_manage_view,
         name="customers_manage",
+    ),
+    path("reports/", views.tutorial_reports_overview_view, name="reports_overview"),
+    path(
+        "reports/customers/",
+        views.tutorial_reports_customers_view,
+        name="reports_customers",
     ),
 ]

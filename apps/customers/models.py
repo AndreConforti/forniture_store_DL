@@ -33,7 +33,7 @@ class Customer(models.Model):
         related_query_name="customer",
         content_type_field="content_type",
         object_id_field="object_id",
-        verbose_name="Endereços", 
+        verbose_name="Endereços",
     )
     customer_type = models.CharField(
         verbose_name="Tipo de Cliente",
@@ -49,7 +49,7 @@ class Customer(models.Model):
     )
     phone = models.CharField(
         verbose_name="Telefone",
-        max_length=11, 
+        max_length=11,
         validators=[
             RegexValidator(r"^\d{10,11}$", "Telefone deve ter 10 ou 11 dígitos.")
         ],
@@ -59,7 +59,7 @@ class Customer(models.Model):
     email = models.EmailField(verbose_name="E-mail", blank=True, null=True)
     tax_id = models.CharField(
         verbose_name="CPF/CNPJ",
-        max_length=18,  
+        max_length=18,
         unique=True,
     )
     is_active = models.BooleanField(verbose_name="Ativo", default=True)
@@ -197,7 +197,7 @@ class Customer(models.Model):
                 if company_api_data.get("preferred_name"):
                     self.preferred_name = company_api_data["preferred_name"]
 
-        self.full_clean() 
+        self.full_clean()
 
         with transaction.atomic():
             super().save(*args, **kwargs)
@@ -211,11 +211,15 @@ class Customer(models.Model):
             form_has_valid_address_fields = (
                 form_provided_data
                 and isinstance(address_data_from_form, dict)
-                and address_data_from_form 
-                and any(v for v in address_data_from_form.values() if v not in [None, ""])
+                and address_data_from_form
+                and any(
+                    v for v in address_data_from_form.values() if v not in [None, ""]
+                )
             )
             form_requested_clear_address = (
-                form_provided_data and isinstance(address_data_from_form, dict) and not address_data_from_form # É {}
+                form_provided_data
+                and isinstance(address_data_from_form, dict)
+                and not address_data_from_form  # É {}
             )
 
             if form_has_valid_address_fields:
@@ -224,14 +228,24 @@ class Customer(models.Model):
                 perform_delete_address = True
             elif self.customer_type == "CORP" and not form_provided_data:
                 if not self._fetched_api_data_this_save and not company_api_data:
-                    company_api_data = fetch_company_data(self.tax_id) 
+                    company_api_data = fetch_company_data(self.tax_id)
 
                 if company_api_data:
                     api_address_payload = {
                         k: company_api_data.get(k)
-                        for k in ["zip_code", "street", "number", "complement", "neighborhood", "city", "state"]
+                        for k in [
+                            "zip_code",
+                            "street",
+                            "number",
+                            "complement",
+                            "neighborhood",
+                            "city",
+                            "state",
+                        ]
                     }
-                    if any(v for v in api_address_payload.values() if v not in [None, ""]):
+                    if any(
+                        v for v in api_address_payload.values() if v not in [None, ""]
+                    ):
                         final_address_data_to_persist = api_address_payload
                         address_source_is_api = True
 
@@ -244,11 +258,12 @@ class Customer(models.Model):
                 self._delete_existing_address()
 
         # Limpa o atributo temporário após o save
-        if hasattr(self, '_fetched_api_data_this_save'):
-            delattr(self, '_fetched_api_data_this_save')
+        if hasattr(self, "_fetched_api_data_this_save"):
+            delattr(self, "_fetched_api_data_this_save")
 
-
-    def _update_or_create_address_from_data(self, address_data: dict, from_api: bool = False):
+    def _update_or_create_address_from_data(
+        self, address_data: dict, from_api: bool = False
+    ):
         """
         Cria ou atualiza o endereço associado ao cliente com os dados fornecidos.
 
@@ -292,7 +307,7 @@ class Customer(models.Model):
             logger.error(
                 f"Erro de validação ao salvar endereço para Cliente ID {self.pk}: {e.message_dict if hasattr(e, 'message_dict') else e.messages}"
             )
-            raise # Propaga o erro para reverter a transação e permitir tratamento
+            raise  # Propaga o erro para reverter a transação e permitir tratamento
 
     def _delete_existing_address(self):
         """Deleta o primeiro endereço associado a este cliente, se existir."""
@@ -334,11 +349,11 @@ class Customer(models.Model):
         """
         if not self.phone:
             return ""
-        if len(self.phone) == 10: # Formato (XX) XXXX-XXXX
+        if len(self.phone) == 10:  # Formato (XX) XXXX-XXXX
             return f"({self.phone[:2]}) {self.phone[2:6]}-{self.phone[6:]}"
-        if len(self.phone) == 11: # Formato (XX) XXXXX-XXXX
+        if len(self.phone) == 11:  # Formato (XX) XXXXX-XXXX
             return f"({self.phone[:2]}) {self.phone[2:7]}-{self.phone[7:]}"
-        return self.phone # Retorna sem formatação se não se encaixar nos padrões
+        return self.phone  # Retorna sem formatação se não se encaixar nos padrões
 
     @cached_property
     def formatted_tax_id(self) -> str:
@@ -355,4 +370,4 @@ class Customer(models.Model):
             return f"{current_tax_id[:3]}.{current_tax_id[3:6]}.{current_tax_id[6:9]}-{current_tax_id[9:]}"
         if len(current_tax_id) == 14:  # CNPJ
             return f"{current_tax_id[:2]}.{current_tax_id[2:5]}.{current_tax_id[5:8]}/{current_tax_id[8:12]}-{current_tax_id[12:]}"
-        return current_tax_id # Retorna sem formatação se não se encaixar
+        return current_tax_id  # Retorna sem formatação se não se encaixar

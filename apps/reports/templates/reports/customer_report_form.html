@@ -1,9 +1,9 @@
-{# reports/templates/reports/customer_report_form.html #}
+--- START OF FILE customer_report_form.html ---
+
 {% extends "base/base_home.html" %}
 {% load static %}
-{% load reports_tags %} {# Carregar o filtro customizado #}
 
-{% block title %}Relatório de Clientes - {{ block.super汤{% endblock %}
+{% block title %}Relatório de Clientes - {{ block.super }}{% endblock %}
 
 {% block content %}
 <div class="container-fluid mt-4">
@@ -25,8 +25,7 @@
                         </h2>
                     </header>
                     <div class="detail-section-body">
-                        {# Primeiras linhas para campos de texto/email/telefone/CPF/CNPJ #}
-                        <div class="row g-3 mb-3"> {# Row 1 para os primeiros campos #}
+                        <div class="row g-3 mb-3">
                             <div class="col-md-4 col-sm-6 col-12">
                                 {% with field=form.full_name %}
                                 <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
@@ -73,7 +72,7 @@
                                 {% endwith %}
                             </div>
 
-                             <div class="col-md-4 col-sm-6 col-12">
+                            <div class="col-md-4 col-sm-6 col-12">
                                 {% with field=form.tax_id %}
                                 <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
                                     <input type="{{ field.widget.input_type }}"
@@ -95,10 +94,10 @@
                                 {% endif %}
                                 {% endwith %}
                             </div>
-                        </div> {# Fim Row 1 #}
+                        </div>
 
-                         <div class="row g-3 mb-4"> {# Row 2 para os campos restantes de texto/email/telefone #}
-                              <div class="col-md-4 col-sm-6 col-12">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4 col-sm-6 col-12">
                                 {% with field=form.phone %}
                                 <div class="form-floating {% if field.errors %}is-invalid{% endif %}">
                                     <input type="{{ field.widget.input_type }}"
@@ -143,97 +142,97 @@
                                 {% endif %}
                                 {% endwith %}
                             </div>
-                         </div> {# Fim Row 2 #}
-
-
-                        {# Row para os três grupos de RadioSelect #}
-                        <div class="row g-3 mb-4">
-                             {# Tipo de Cliente group #}
-                            <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
-                                {% with field=form.customer_type %}
-                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
-                                    <label class="form-label fw-bold"> {# Label do grupo #}
-                                        {{ field.label }}
-                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
-                                    </label>
-                                     <div> {# Container para radios empilhados verticalmente #}
-                                         {% for choice in field %} {# Itera sobre as opções #}
-                                             <div class="form-check"> {# form-check por padrão é display: block #}
-                                                 {{ choice.tag }} {# <-- Usa o tag do widget para renderizar o <input type="radio"> #}
-                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
-                                                     {{ choice.choice_label }}
-                                                 </label>
-                                             </div>
-                                         {% endfor %}
-                                     </div>
-                                </div>
-                                {% if field.help_text %}
-                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
-                                {% endif %}
-                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
-                                {% endwith %}
-                            </div>
-
-                            {# Status RadioSelect field #}
-                             <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
-                                {% with field=form.is_active %}
-                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
-                                    <label class="form-label fw-bold"> {# Label do grupo #}
-                                        {{ field.label }}
-                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
-                                    </label>
-                                     <div> {# Container para radios empilhados verticalmente #}
-                                         {% for choice in field %} {# Itera sobre as opções #}
-                                             <div class="form-check"> {# form-check por padrão é display: block #}
-                                                 {{ choice.tag }} {# <-- Usa o tag do widget #}
-                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
-                                                     {{ choice.choice_label }}
-                                                 </label>
-                                             </div>
-                                         {% endfor %}
-                                     </div>
-                                </div>
-                                {% if field.help_text %}
-                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
-                                {% endif %}
-                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
-                                {% endwith %}
-                            </div>
-
-                            {# VIP RadioSelect field #}
-                            <div class="col-md-4 col-sm-6 col-12"> {# Coluna para este grupo #}
-                                {% with field=form.is_vip %}
-                                <div class="form-group {% if field.errors %}is-invalid{% endif %}"> {# Removido 'row' aqui #}
-                                    <label class="form-label fw-bold"> {# Label do grupo #}
-                                        {{ field.label }}
-                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
-                                    </label>
-                                     <div> {# Container para radios empilhados verticalmente #}
-                                         {% for choice in field %} {# Itera sobre as opções #}
-                                             <div class="form-check"> {# form-check por padrão é display: block #}
-                                                 {{ choice.tag }} {# <-- Usa o tag do widget #}
-                                                 <label class="form-check-label" for="{{ choice.id_for_label }}">
-                                                     {{ choice.choice_label }}
-                                                 </label>
-                                             </div>
-                                         {% endfor %}
-                                     </div>
-                                </div>
-                                {% if field.help_text %}
-                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
-                                {% endif %}
-                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
-                                {% endwith %}
-                            </div>
-                            {# Fim da Row para os três grupos de rádio #}
                         </div>
 
-                        {# Outros campos se houverem e forem necessários abaixo dos rádios #}
+                        <div class="row g-3 mb-4">
+                            {# customer_type como SELECT #}
+                            <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.customer_type %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}">
+                                    <label class="form-label fw-bold" for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <select class="form-select {% if field.errors %}is-invalid{% endif %}"
+                                             id="{{ field.id_for_label }}"
+                                             name="{{ field.html_name }}">
+                                        {% if not field.field.required %}
+                                            <option value="">-- Todos --</option>
+                                        {% endif %}
+                                        {% for value, label in field.field.choices %}
+                                            <option value="{{ value }}" {% if field.value|stringformat:"s" == value|stringformat:"s" %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                            </div>
 
+                             {# is_active como SELECT #}
+                             <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.is_active %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}">
+                                    <label class="form-label fw-bold" for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <select class="form-select {% if field.errors %}is-invalid{% endif %}"
+                                             id="{{ field.id_for_label }}"
+                                             name="{{ field.html_name }}">
+                                         {% if not field.field.required %}
+                                            {# Adicionar opção "Todos" para campos booleanos não obrigatórios #}
+                                            <option value="">-- Todos --</option>
+                                         {% endif %}
+                                        {% for value, label in field.field.choices %}
+                                            <option value="{{ value|yesno:'True,False' }}" {% if field.value == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                             </div>
+
+                             {# is_vip como SELECT #}
+                             <div class="col-md-4 col-sm-6 col-12">
+                                {% with field=form.is_vip %}
+                                <div class="form-group {% if field.errors %}is-invalid{% endif %}">
+                                    <label class="form-label fw-bold" for="{{ field.id_for_label }}">
+                                        {{ field.label }}
+                                        {% if field.field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+                                     <select class="form-select {% if field.errors %}is-invalid{% endif %}"
+                                             id="{{ field.id_for_label }}"
+                                             name="{{ field.html_name }}">
+                                         {% if not field.field.required %}
+                                            <option value="">-- Todos --</option>
+                                         {% endif %}
+                                        {% for value, label in field.field.choices %}
+                                            <option value="{{ value|yesno:'True,False' }}" {% if field.value == value %}selected{% endif %}>
+                                                {{ label }}
+                                            </option>
+                                        {% endfor %}
+                                     </select>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text d-block mt-1">{{ field.help_text|safe }}</small>
+                                {% endif %}
+                                {% if field.errors %}<div class="invalid-feedback d-block">{{ field.errors|join:", " }}</div>{% endif %}
+                                {% endwith %}
+                             </div>
+                        </div>
                     </div>
                 </section>
 
-                 <!-- Seção de Formato de Saída (Select) -->
                  <section class="detail-section" aria-labelledby="formato-heading">
                      <header class="detail-section-header">
                         <h2 id="formato-heading" class="h5">
@@ -242,10 +241,8 @@
                      </header>
                      <div class="detail-section-body">
                          <div class="row g-3">
-                              {# Renderiza o campo output_format explicitamente pois é um Select #}
                               <div class="col-md-4">
                                  <div class="form-floating {% if form.output_format.errors %}is-invalid{% endif %}">
-                                     {# Este loop itera sobre TODAS as choices do campo output_format #}
                                      <select class="form-select {% if form.output_format.errors %}is-invalid{% endif %}"
                                              id="{{ form.output_format.id_for_label }}"
                                              name="{{ form.output_format.html_name }}">
@@ -267,10 +264,8 @@
                      </div>
                  </section>
 
-
-                <!-- Botão de Ação -->
                 <div class="d-flex justify-content-end mt-4 pt-3 border-top">
-                    <button type="submit" class="btn btn-primary mx-2">
+                    <button type="submit" class="btn btn-primary p-3" id="generateReportBtn">
                         <i class="bi bi-download me-1"></i> Gerar Relatório
                     </button>
                 </div>
@@ -281,5 +276,5 @@
 {% endblock %}
 
 {% block scripts %}
-    {# Adicione scripts específicos se necessário, como máscaras de input #}
+    <script src="{% static 'reports/js/customer_report_form.js' %}"></script>
 {% endblock %}

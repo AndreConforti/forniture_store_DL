@@ -53,7 +53,25 @@
                 </ul>
             </li>
 
-            <!-- Pedidos -->
+            {# INÍCIO: Nova seção de Estoque #}
+            <!-- Estoque -->
+            <li class="nav-item">
+                <a class="nav-link fw-bold" data-bs-toggle="collapse" href="#stockSubmenu" role="button" aria-expanded="false" aria-controls="stockSubmenu">
+                    <i class="bi bi-boxes me-2"></i> Estoque {# Ícone bi-boxes para estoque #}
+                </a>
+                <ul class="collapse list-unstyled ms-3" id="stockSubmenu"> {# ID único para o submenu #}
+                    <li><a class="nav-link" href="#">Controle de Estoque</a></li> {# Item do submenu, placeholder href #}
+                     {# Adicione outros links relacionados a estoque aqui futuramente, se necessário #}
+                     {% comment %}
+                     <li><a class="nav-link" href="{% url 'stock:current_stock' %}">Estoque Atual</a></li>
+                     <li><a class="nav-link" href="{% url 'stock:movements' %}">Movimentações</a></li>
+                     {% endcomment %}
+                </ul>
+            </li>
+             {# FIM: Nova seção de Estoque #}
+
+
+            <!-- Pedidos --> {# Esta seção agora vem depois de Estoque #}
             <li class="nav-item">
                 <a class="nav-link fw-bold" data-bs-toggle="collapse" href="#ordersSubmenu" role="button" aria-expanded="false" aria-controls="ordersSubmenu">
                     <i class="bi bi-cart me-2"></i> Pedidos
@@ -95,8 +113,11 @@
                 <ul class="collapse list-unstyled ms-3" id="reportsSubmenu">
                     <li><a class="nav-link" href="{% url 'reports:customer_report' %}">Clientes</a></li>
                     <li><a class="nav-link" href="#">Fornecedores</a></li>
+                    <li><a class="nav-link" href="#">Produtos</a></li>
+                    <li><a class="nav-link" href="#">Estoque</a></li> {# Este é o link para o *relatório* de estoque, diferente do *controle* de estoque #}
                     <li><a class="nav-link" href="#">Pedidos</a></li>
-                    <li><a class="nav-link" href="#">Estoque</a></li>
+                    <li><a class="nav-link" href="#">Contas a Pagar</a></li>
+                    <li><a class="nav-link" href="#">Contas a Receber</a></li>
                 </ul>
             </li>
         </ul>
