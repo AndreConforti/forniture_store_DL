@@ -334,3 +334,13 @@ class Address(models.Model):
                 self.state,
             ]
         )
+
+
+class DummyOwnerModel(models.Model): # A DEFINIÇÃO DE DUMMYOWNERMODEL ESTÁ AQUI
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        pass # Não precisa de app_label aqui
+
+    def __str__(self):
+        return self.name

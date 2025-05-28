@@ -1,4 +1,3 @@
-# employees/context_processors.py
 from .models import Employee
 
 # Mapeamento manual das classes de tema para cores de preview (fundo, borda).
@@ -6,10 +5,10 @@ from .models import Employee
 # por exemplo, em um seletor de temas. As cores devem corresponder
 # de forma representativa às cores principais de cada tema CSS.
 THEME_PREVIEW_COLORS = {
-    'theme-blue-gray': ('#042345', '#DCDCDC'),  # Ex: azul escuro com cinza claro
-    'theme-green-gray': ('#01370d', '#a3a3a3'), # Ex: verde escuro com cinza médio
-    'theme-brown-sand': ('#2f1703', '#F2E8DA'), # Ex: marrom escuro com areia claro
-    'theme-purple-gray': ('#2f0a60', '#DCDCDC'), # Ex: roxo escuro com cinza claro
+    'theme-blue-gray': ('#042345', '#DCDCDC'), 
+    'theme-green-gray': ('#01370d', '#a3a3a3'),
+    'theme-brown-sand': ('#2f1703', '#F2E8DA'), 
+    'theme-purple-gray': ('#2f0a60', '#DCDCDC'), 
 }
 
 def theme_processor(request):

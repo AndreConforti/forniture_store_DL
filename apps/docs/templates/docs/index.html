@@ -1,135 +1,136 @@
-{% extends "docs/docs_base.html" %} {% load static %} {% block
-tutorial_page_content %}
-<div class="pb-2 mb-3 border-bottom">
-  <h1 class="h2">Bem-vindo ao Tutorial do Sistema Decora by Lu</h1>
-</div>
+{% extends "docs/docs_base.html" %} 
+{% load static %} 
 
-<p class="lead">
-  Este tutorial foi criado para ajudar você a utilizar todas as funcionalidades
-  do sistema de gerenciamento da loja Decora by Lu de forma eficiente. Navegue
-  pelas seções abaixo para aprender mais sobre cada parte do sistema.
-</p>
-
-<div class="row">
-  <div class="col-md-6 mb-3">
-    <div class="card">
-      <div class="card-header">
-        <i class="bi bi-box-arrow-in-right me-2"></i>Acesso e Personalização
-      </div>
-      <div class="card-body">
-        <p class="card-text">
-          Aprenda como fazer login, logout e personalizar a aparência do sistema
-          com diferentes temas.
-        </p>
-        <a href="{% url 'docs:authentication' %}" class="btn btn-primary"
-          >Ver Seção</a
-        >
-      </div>
-    </div>
-  </div>
-  <div class="col-md-6 mb-3">
-    <div class="card">
-      <div class="card-header">
-        <i class="bi bi-key me-2"></i>Recuperação de Senha
-      </div>
-      <div class="card-body">
-        <p class="card-text">
-          Passo a passo para o caso de você esquecer sua senha de acesso.
-        </p>
-        <a href="{% url 'docs:password_recovery' %}" class="btn btn-primary"
-          >Ver Seção</a
-        >
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="row mt-3">
-  <div class="col-md-6 mb-3">
-    <div class="card">
-      <div class="card-header">
-        <i class="bi bi-people me-2"></i>Gerenciando Clientes
-      </div>
-      <div class="card-body">
-        <p class="card-text">
-          Tudo sobre como cadastrar novos clientes, consultar informações e
-          editar dados existentes.
-        </p>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <a
-              href="{% url 'docs:customers_overview' %}"
-              class="text-decoration-none"
-              >Visão Geral do Módulo de Clientes</a
-            >
-          </li>
-          <li class="list-group-item">
-            <a
-              href="{% url 'docs:customers_create' %}"
-              class="text-decoration-none"
-              >Cadastrando um Novo Cliente</a
-            >
-          </li>
-          <li class="list-group-item">
-            <a
-              href="{% url 'docs:customers_manage' %}"
-              class="text-decoration-none"
-              >Consultando e Editando Clientes</a
-            >
-          </li>
-        </ul>
-      </div>
-    </div>
+{% block tutorial_page_content %}
+  <div class="pb-2 mb-3 border-bottom">
+    <h1 class="h2">Bem-vindo ao Tutorial do Sistema Decora by Lu</h1>
   </div>
 
-  <div class="col-md-6 mb-3">
-    <div class="card">
-      <div class="card-header">
-        <i class="bi bi-file-earmark-bar-graph me-2"></i>Relatórios
-      </div>
-      <div class="card-body">
-        <p class="card-text">
-          Aprenda como gerar relatórios filtrados para extrair dados importantes
-          do sistema.
-        </p>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            <a
-              href="{% url 'docs:reports_overview' %}"
-              class="text-decoration-none"
-              >Visão Geral dos Relatórios</a
-            >
-          </li>
-          <li class="list-group-item">
-            <a
-              href="{% url 'docs:reports_customers' %}"
-              class="text-decoration-none"
-              >Gerando Relatório de Clientes</a
-            >
-          </li>
-          {# Esboço para futuros relatórios no card #} {#
-          <li class="list-group-item text-muted">
-            Relatório de Produtos (Em Breve)
-          </li>
-          #} {#
-          <li class="list-group-item text-muted">
-            Relatório de Fornecedores (Em Breve)
-          </li>
-          #} {# etc. #}
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="alert alert-info mt-4" role="alert">
-  <h4 class="alert-heading">
-    <i class="bi bi-info-circle-fill me-2"></i>Dica!
-  </h4>
-  <p>
-    Se você tiver alguma dúvida que não foi coberta neste tutorial, não hesite
-    em perguntar ao administrador do sistema.
+  <p class="lead">
+    Este tutorial foi criado para ajudar você a utilizar todas as funcionalidades
+    do sistema de gerenciamento da loja Decora by Lu de forma eficiente. Navegue
+    pelas seções abaixo para aprender mais sobre cada parte do sistema.
   </p>
-</div>
 
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Acesso e Personalização
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Aprenda como fazer login, logout e personalizar a aparência do sistema
+            com diferentes temas.
+          </p>
+          <a href="{% url 'docs:authentication' %}" class="btn btn-primary"
+            >Ver Seção</a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-key me-2"></i>Recuperação de Senha
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Passo a passo para o caso de você esquecer sua senha de acesso.
+          </p>
+          <a href="{% url 'docs:password_recovery' %}" class="btn btn-primary"
+            >Ver Seção</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-people me-2"></i>Gerenciando Clientes
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Tudo sobre como cadastrar novos clientes, consultar informações e
+            editar dados existentes.
+          </p>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a
+                href="{% url 'docs:customers_overview' %}"
+                class="text-decoration-none"
+                >Visão Geral do Módulo de Clientes</a
+              >
+            </li>
+            <li class="list-group-item">
+              <a
+                href="{% url 'docs:customers_create' %}"
+                class="text-decoration-none"
+                >Cadastrando um Novo Cliente</a
+              >
+            </li>
+            <li class="list-group-item">
+              <a
+                href="{% url 'docs:customers_manage' %}"
+                class="text-decoration-none"
+                >Consultando e Editando Clientes</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <div class="card">
+        <div class="card-header">
+          <i class="bi bi-file-earmark-bar-graph me-2"></i>Relatórios
+        </div>
+        <div class="card-body">
+          <p class="card-text">
+            Aprenda como gerar relatórios filtrados para extrair dados importantes
+            do sistema.
+          </p>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a
+                href="{% url 'docs:reports_overview' %}"
+                class="text-decoration-none"
+                >Visão Geral dos Relatórios</a
+              >
+            </li>
+            <li class="list-group-item">
+              <a
+                href="{% url 'docs:reports_customers' %}"
+                class="text-decoration-none"
+                >Gerando Relatório de Clientes</a
+              >
+            </li>
+            {# Esboço para futuros relatórios no card #} {#
+            <li class="list-group-item text-muted">
+              Relatório de Produtos (Em Breve)
+            </li>
+            #} {#
+            <li class="list-group-item text-muted">
+              Relatório de Fornecedores (Em Breve)
+            </li>
+            #} {# etc. #}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-info mt-4" role="alert">
+    <h4 class="alert-heading">
+      <i class="bi bi-info-circle-fill me-2"></i>Dica!
+    </h4>
+    <p>
+      Se você tiver alguma dúvida que não foi coberta neste tutorial, não hesite
+      em perguntar ao administrador do sistema.
+    </p>
+  </div>
 {% endblock tutorial_page_content %}
