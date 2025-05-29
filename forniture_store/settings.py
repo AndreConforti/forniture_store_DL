@@ -56,17 +56,35 @@ DB_PASSWORD_ENV = os.environ.get('DB_PASSWORD')
 DB_HOST_ENV = os.environ.get('DB_HOST', 'localhost')
 DB_PORT_ENV = os.environ.get('DB_PORT', '5432')
 
-DATABASES = {
-    'default': {
-        'ENGINE': DB_ENGINE_ENV,
-        'NAME': DB_NAME_ENV,
-        'USER': DB_USER_ENV,
-        'PASSWORD': DB_PASSWORD_ENV,
-        'HOST': DB_HOST_ENV,
-        'PORT': DB_PORT_ENV,
+if 'DATABASE_URL' in os.environ:
+    DATABASES = {
+        'default': dj_database_url.config(conn_max_age=600, ssl_require=os.environ.get('DB_SSL_REQUIRE', 'False').lower() == 'true')
     }
-}
+else:
+    # Configuração de fallback para desenvolvimento local (se DATABASE_URL não estiver definida)
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE_ENV,
+            'NAME': DB_NAME_ENV,
+            'USER': DB_USER_ENV,
+            'PASSWORD': DB_PASSWORD_ENV,
+            'HOST': DB_HOST_ENV,
+            'PORT': DB_PORT_ENV,
+        }
+    }
 
+if not DEBUG:
+    db_configured = False
+    if 'DATABASE_URL' in os.environ and os.environ['DATABASE_URL']:
+        db_configured = True
+    elif all([DB_NAME_ENV, DB_USER_ENV, DB_PASSWORD_ENV]): # Fallback para local se DEBUG=False e sem DATABASE_URL
+        db_configured = True
+
+    if not db_configured:
+        raise ValueError(
+            "ERRO CRÍTICO DE PRODUÇÃO: Configuração do banco de dados (DATABASE_URL ou DB_NAME/USER/PASSWORD) não está definida!"
+        )
+    
 # Verificação para garantir que as variáveis de ambiente do banco de dados estão definidas
 # Esta verificação é importante para qualquer ambiente, mas crítica para produção
 if not all([DB_NAME_ENV, DB_USER_ENV, DB_PASSWORD_ENV]): # ENGINE, HOST, PORT têm defaults
@@ -105,6 +123,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -164,7 +183,7 @@ USE_TZ = True
 # --- Configurações de Arquivos Estáticos e Mídia ---
 STATIC_URL = "/static/"
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")  # Para 'collectstatic' em produção
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Para compressão e cache busting
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"), # Para desenvolvimento
 ]
